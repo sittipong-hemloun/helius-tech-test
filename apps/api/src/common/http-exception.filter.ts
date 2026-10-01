@@ -56,6 +56,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     } else if (exception instanceof HttpException) {
       status = exception.getStatus();
       body = { ...(STATUS_CODES[status] ?? { code: 'HTTP_ERROR', message: 'The request failed.' }) };
+      // Nest wraps body-parser SyntaxErrors in BadRequestException; never echo the parser message.
+      const original = (exception.getResponse() as { message?: unknown })?.message;
+      if (status === 400 && /JSON/i.test(String(original))) {
+        body = { code: 'MALFORMED_JSON', message: 'The request body is not valid JSON.' };
+      }
     } else if ((exception as BodyParserError)?.type === 'entity.too.large') {
       status = 413;
       body = { ...STATUS_CODES[413] };

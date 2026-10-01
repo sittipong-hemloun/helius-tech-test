@@ -1,0 +1,50 @@
+import { execFileSync } from 'node:child_process';
+import { resolve } from 'node:path';
+import pg from 'pg';
+import { loadEnvFile } from '../../src/config/env-file.js';
+
+/** Builds connection strings for a throwaway test database on the dev PostgreSQL container. */
+export function testDatabaseUrls(runId: string) {
+  loadEnvFile();
+  const user = process.env.APP_DB_USER ?? 'employee_console_app';
+  const password = process.env.APP_DB_PASSWORD;
+  const port = process.env.POSTGRES_HOST_PORT ?? '5432';
+  const host = process.env.TEST_DB_HOST ?? 'localhost';
+  if (!password) throw new Error('APP_DB_PASSWORD missing: run `pnpm run setup` and `pnpm dev:up` first');
+  const name = `employee_console_test_${runId}`;
+  const base = `postgresql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}`;
+  return { name, adminUrl: `${base}/postgres`, url: `${base}/${name}` };
+}
+
+export async function createTestDatabase(runId: string): Promise<string> {
+  const { name, adminUrl, url } = testDatabaseUrls(runId);
+  const admin = new pg.Client({ connectionString: adminUrl });
+  await admin.connect();
+  try {
+    await admin.query(`DROP DATABASE IF EXISTS "${name}" WITH (FORCE)`);
+    await admin.query(`CREATE DATABASE "${name}"`);
+  } finally {
+    await admin.end();
+  }
+  execFileSync('pnpm', ['exec', 'prisma', 'migrate', 'deploy'], {
+    cwd: resolve(import.meta.dirname, '../..'),
+    env: { ...process.env, DATABASE_URL: url, ENV_FILE: '/dev/null' },
+    stdio: 'pipe',
+  });
+  const client = new pg.Client({ connectionString: url });
+  await client.connect();
+  await client.query(`INSERT INTO app_meta (key, value) VALUES ('database_purpose', 'test')`);
+  await client.end();
+  return url;
+}
+
+export async function dropTestDatabase(runId: string): Promise<void> {
+  const { name, adminUrl } = testDatabaseUrls(runId);
+  const admin = new pg.Client({ connectionString: adminUrl });
+  await admin.connect();
+  try {
+    await admin.query(`DROP DATABASE IF EXISTS "${name}" WITH (FORCE)`);
+  } finally {
+    await admin.end();
+  }
+}
