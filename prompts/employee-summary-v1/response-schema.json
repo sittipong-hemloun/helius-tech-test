@@ -1,0 +1,14 @@
+{
+  "type": "OBJECT",
+  "properties": {
+    "headline": { "type": "STRING", "maxLength": 120 },
+    "bullets": {
+      "type": "ARRAY",
+      "items": { "type": "STRING", "maxLength": 240 },
+      "minItems": 3,
+      "maxItems": 5
+    }
+  },
+  "required": ["headline", "bullets"],
+  "propertyOrdering": ["headline", "bullets"]
+}

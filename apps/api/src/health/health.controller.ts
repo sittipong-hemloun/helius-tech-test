@@ -1,13 +1,23 @@
 import { Controller, Get, Module, Res } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import type { Response } from 'express';
-import { readdirSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, readdirSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import { Public, RateLimit } from '../auth/auth.decorators.js';
 import { PrismaService } from '../database/prisma.service.js';
 
 /** Latest migration bundled with this build; readiness requires it to be applied. */
-export function latestMigrationName(dir = resolve(import.meta.dirname, '../../prisma/migrations')): string | null {
+function migrationsDir(): string {
+  let dir = import.meta.dirname;
+  for (let i = 0; i < 6; i += 1) {
+    const candidate = resolve(dir, 'prisma/migrations');
+    if (existsSync(candidate)) return candidate;
+    dir = dirname(dir);
+  }
+  return resolve(import.meta.dirname, '../../prisma/migrations');
+}
+
+export function latestMigrationName(dir = migrationsDir()): string | null {
   try {
     const names = readdirSync(dir, { withFileTypes: true })
       .filter((d) => d.isDirectory())

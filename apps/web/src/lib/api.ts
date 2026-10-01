@@ -95,6 +95,12 @@ export async function api<T, M = Record<string, unknown>>(path: string, opts: Re
     const err = (json as ApiErrorBody | null)?.error;
     const code = err?.code ?? (res.status >= 500 ? 'INTERNAL_ERROR' : 'HTTP_ERROR');
     if (res.status === 401 && onUnauthorized && !path.startsWith('/api/auth/providers')) onUnauthorized(code);
+    // Removed from the allowlist since this page loaded: the server already ended the session.
+    if (res.status === 403 && code === 'ACCOUNT_NOT_ALLOWED' && typeof window !== 'undefined') {
+      // Full navigation on purpose: drops every piece of client state from the ended session.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+      window.location.assign('/access-denied?reason=not_allowed');
+    }
     const retryAfter = res.headers.get('retry-after');
     throw new ApiError(
       res.status,

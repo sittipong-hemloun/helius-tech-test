@@ -1,5 +1,5 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import type { PrismaClient } from '../generated/prisma/client.js';
 import { unwrap } from '../validation/rule.js';
 import { joinDateRule, nameRule, salaryRule, statusFromExcel } from '../employees/employee-rules.js';
@@ -19,7 +19,18 @@ interface SourceFile {
   employees: SourceRow[];
 }
 
-export function loadSourceData(path = resolve(import.meta.dirname, '../../prisma/seed-data/test-exam-data.json')): SourceFile {
+/** Finds prisma/seed-data from src/, dist/ or dist-scripts/ layouts alike. */
+function seedFile(): string {
+  let dir = import.meta.dirname;
+  for (let i = 0; i < 6; i += 1) {
+    const candidate = resolve(dir, 'prisma/seed-data/test-exam-data.json');
+    if (existsSync(candidate)) return candidate;
+    dir = dirname(dir);
+  }
+  throw new Error('prisma/seed-data/test-exam-data.json not found');
+}
+
+export function loadSourceData(path = seedFile()): SourceFile {
   return JSON.parse(readFileSync(path, 'utf8')) as SourceFile;
 }
 

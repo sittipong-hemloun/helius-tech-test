@@ -72,7 +72,10 @@ services:
     environment:
       JENKINS_ADMIN_ID: ${JENKINS_ADMIN_ID:-admin}
       JENKINS_ADMIN_PASSWORD: ${JENKINS_ADMIN_PASSWORD:?run pnpm run setup}
-      JENKINS_AGENT_SECRET_FILE: /var/jenkins_home/agent-secret
+      JENKINS_AGENT_WORKDIR: ${JENKINS_AGENT_WORKDIR:-/tmp/employee-console-jenkins-agent}
+      # Absolute path of this repo on the host; mounted at the same path so the controller
+      # (Jenkinsfile lookup) and the host agent (checkout) share one file:// URL.
+      JENKINS_LOCAL_REPO: ${JENKINS_LOCAL_REPO:-/repo}
       JENKINS_GIT_URL: ${JENKINS_GIT_URL:-}
       JENKINS_GIT_BRANCH: ${JENKINS_GIT_BRANCH:-main}
       GIT_CREDENTIAL_ID: ${GIT_CREDENTIAL_ID:-}
@@ -85,6 +88,8 @@ services:
       - "127.0.0.1:50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
+      - ${JENKINS_LOCAL_REPO:-./}:${JENKINS_LOCAL_REPO:-/repo}:ro
+      - ./.env.staging:/run/secrets/staging.env:ro
 
   open-webui:
     profiles: [ai-workspace]

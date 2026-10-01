@@ -27,3 +27,5 @@ infra/jenkins/agent/agent.jar
 infra/jenkins/agent/work/
 .planning/
 tests/e2e/.auth/
+dist-scripts/
+.deploy/

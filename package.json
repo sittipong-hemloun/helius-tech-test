@@ -2,7 +2,7 @@
   "name": "employee-console",
   "private": true,
   "version": "1.0.0",
-  "description": "Employee Console \u2014 Next.js + NestJS + PostgreSQL employee data manager (AI-Augmented Developer test)",
+  "description": "Employee Console: Next.js + NestJS + PostgreSQL employee data manager (AI-Augmented Developer test)",
   "type": "module",
   "packageManager": "pnpm@12.8.1",
   "engines": {
@@ -17,7 +17,7 @@
     "db:migrate": "pnpm --filter @employee-console/api run db:migrate",
     "db:seed": "pnpm --filter @employee-console/api run db:seed",
     "demo:reset": "pnpm --filter @employee-console/api run demo:reset",
-    "test:unit": "pnpm --filter @employee-console/api run test:unit && pnpm --filter @employee-console/web run test:unit",
+    "test:unit": "pnpm --filter @employee-console/api run test:unit && pnpm --filter @employee-console/web run test:unit && pnpm run test:prompt",
     "test:api": "pnpm --filter @employee-console/api run test:api",
     "test:session": "pnpm --filter @employee-console/api run test:session",
     "test:postman": "node scripts/test-postman.mjs",
@@ -32,9 +32,14 @@
     "staging:down": "node scripts/staging.mjs down",
     "ai:up": "node scripts/ai-up.mjs",
     "perf:seed": "pnpm --filter @employee-console/api run perf:seed",
-    "perf:run": "node scripts/perf-run.mjs"
+    "perf:run": "node scripts/perf-run.mjs",
+    "ci:up": "node scripts/ci-up.mjs",
+    "n8n:build": "node workflows/n8n/build.mjs",
+    "test:prompt": "node --test prompts/employee-summary-v1/validate.test.mjs"
   },
   "devDependencies": {
+    "lighthouse": "13.5.0",
+    "newman": "6.2.2",
     "pg": "8.23.1"
   }
 }

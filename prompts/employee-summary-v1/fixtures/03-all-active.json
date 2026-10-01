@@ -1,0 +1,70 @@
+{
+  "description": "Everyone Active",
+  "snapshot": {
+    "schemaVersion": 1,
+    "capturedAt": "2026-10-01T03:00:00.000Z",
+    "businessDate": "2026-10-01",
+    "timezone": "Asia/Bangkok",
+    "totalEmployees": 8,
+    "activeEmployees": 8,
+    "inactiveEmployees": 0,
+    "departments": [
+      {
+        "id": "engineering",
+        "name": "Engineering",
+        "total": 3,
+        "active": 3,
+        "inactive": 0
+      },
+      {
+        "id": "marketing",
+        "name": "Marketing",
+        "total": 2,
+        "active": 2,
+        "inactive": 0
+      },
+      {
+        "id": "sales",
+        "name": "Sales",
+        "total": 2,
+        "active": 2,
+        "inactive": 0
+      },
+      {
+        "id": "hr",
+        "name": "HR",
+        "total": 1,
+        "active": 1,
+        "inactive": 0
+      }
+    ]
+  },
+  "expected": {
+    "totalEmployees": 8,
+    "activeEmployees": 8,
+    "inactiveEmployees": 0,
+    "departments": {
+      "Engineering": {
+        "total": 3,
+        "active": 3,
+        "inactive": 0
+      },
+      "Marketing": {
+        "total": 2,
+        "active": 2,
+        "inactive": 0
+      },
+      "Sales": {
+        "total": 2,
+        "active": 2,
+        "inactive": 0
+      },
+      "HR": {
+        "total": 1,
+        "active": 1,
+        "inactive": 0
+      }
+    },
+    "generator": "GEMINI"
+  }
+}

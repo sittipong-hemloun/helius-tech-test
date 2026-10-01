@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { Inject, Injectable } from '@nestjs/common';
 import { ApiException, Errors } from '../common/api-exception.js';
 import { Clock } from '../common/clock.js';
+import { JsonLogger } from '../common/json-logger.js';
 import { businessDate } from '../common/dates.js';
 import { APP_CONFIG, type AppConfig } from '../config/app-config.js';
 import { isUniqueViolation, pgErrorCode } from '../database/db-errors.js';
@@ -121,8 +122,14 @@ export class ReportsService {
     private readonly prisma: PrismaService,
     private readonly idempotency: IdempotencyService,
     private readonly clock: Clock,
+    private readonly logger: JsonLogger,
     @Inject(APP_CONFIG) private readonly config: AppConfig,
   ) {}
+
+  /** Job events carry ids and counters only — never snapshot, narrative or lease token (PRD §13.4). */
+  private event(message: string, fields: Record<string, unknown>): void {
+    this.logger.write('info', message, fields);
+  }
 
   private assertEnabled(): void {
     if (!this.config.reports.enabled) {
@@ -280,6 +287,7 @@ export class ReportsService {
                 r.prompt_version, r.error_code, r.result_hash`;
     const job = rows[0];
     if (!job) return null;
+    this.event('report_job_claimed', { reportId: job.id, attempt: job.attempts });
     return {
       reportId: job.id,
       leaseToken,
@@ -349,6 +357,7 @@ export class ReportsService {
           generated_by = ${input.generatedBy}::"ReportGenerator", completed_at = ${now}, error_code = NULL,
           result_hash = ${resultHash}, lease_expires_at = NULL
         WHERE id = ${row.id}::uuid`;
+      this.event('report_job_succeeded', { reportId: row.id, attempt: row.attempts, generatedBy: input.generatedBy });
       return { reportId: row.id, status: 'SUCCEEDED' as const };
     });
   }
@@ -365,12 +374,14 @@ export class ReportsService {
           UPDATE reports SET status = 'QUEUED', next_attempt_at = ${new Date(now.getTime() + delay)},
             lease_token_hash = NULL, lease_expires_at = NULL, error_code = ${errorCode}
           WHERE id = ${row.id}::uuid`;
+        this.event('report_job_retry_scheduled', { reportId: row.id, attempt: row.attempts, errorCode, delayMs: delay });
         return { reportId: row.id, status: 'QUEUED' as const };
       }
       await tx.$executeRaw`
         UPDATE reports SET status = 'FAILED', completed_at = ${now}, error_code = ${errorCode},
           lease_token_hash = NULL, lease_expires_at = NULL
         WHERE id = ${row.id}::uuid`;
+      this.event('report_job_failed', { reportId: row.id, attempt: row.attempts, errorCode });
       return { reportId: row.id, status: 'FAILED' as const };
     });
   }

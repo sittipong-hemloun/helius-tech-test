@@ -1,0 +1,93 @@
+# Employee Console — local staging (production images, http://localhost:3100). PRD §13.1, §14.1.
+# Project name employee-console-staging keeps containers, volume and cookie name apart from dev.
+# Images are tagged with the commit SHA by `pnpm staging:up` / Jenkins; never `latest`.
+name: employee-console-staging
+
+x-api-env: &api-env
+  APP_ENV: staging
+  NODE_ENV: production
+  APP_TIMEZONE: ${APP_TIMEZONE:-Asia/Bangkok}
+  LOG_LEVEL: ${LOG_LEVEL:-info}
+  PUBLIC_APP_ORIGIN: ${PUBLIC_APP_ORIGIN:-http://localhost:3100}
+  HOST: 0.0.0.0
+  PORT: "3001"
+  DATABASE_URL: ${DATABASE_URL:?run pnpm run setup}
+  DB_POOL_MAX: ${DB_POOL_MAX:-10}
+  TRUST_PROXY: loopback, linklocal, uniquelocal
+  SESSION_SECRET: ${SESSION_SECRET:?run pnpm run setup}
+  SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-employee_console.staging.sid}
+  GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+  GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+  GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-http://localhost:3100/api/auth/google/callback}
+  ADMIN_EMAILS: ${ADMIN_EMAILS:-}
+  VIEWER_EMAILS: ${VIEWER_EMAILS:-}
+  REPORTS_ENABLED: ${REPORTS_ENABLED:-false}
+  GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
+  WORKER_SERVICE_TOKEN: ${WORKER_SERVICE_TOKEN:-}
+  SCHEDULER_SERVICE_TOKEN: ${SCHEDULER_SERVICE_TOKEN:-}
+  AUTH_FIXTURES_ENABLED: "false"
+  PERF_RATE_LIMIT_OVERRIDE: "false"
+
+services:
+  postgres:
+    image: postgres:17.11-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run pnpm run setup}
+      APP_DB_USER: ${APP_DB_USER:-employee_console_app}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?run pnpm run setup}
+      APP_DATABASES: employee_console_staging
+      TZ: UTC
+    volumes:
+      - pgdata_staging:/var/lib/postgresql/data
+      - ./infra/postgres/init-databases.sh:/docker-entrypoint-initdb.d/10-init-databases.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d employee_console_staging"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  # One-shot: apply committed migrations before the API starts (no db push, no reset).
+  migrate:
+    image: employee-console/api:${IMAGE_TAG:?set IMAGE_TAG to a commit SHA}
+    profiles: [tools]
+    environment: *api-env
+    command: ["./node_modules/.bin/prisma", "migrate", "deploy"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    image: employee-console/api:${IMAGE_TAG:?set IMAGE_TAG to a commit SHA}
+    restart: unless-stopped
+    environment:
+      <<: *api-env
+      BUILD_COMMIT_SHA: ${IMAGE_TAG}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      default: {}
+      shared:
+        aliases: [api-staging]
+
+  web:
+    image: employee-console/web:${IMAGE_TAG:?set IMAGE_TAG to a commit SHA}
+    restart: unless-stopped
+    environment:
+      API_INTERNAL_URL: http://api:3001
+    ports:
+      - "127.0.0.1:${STAGING_WEB_PORT:-3100}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata_staging:
+
+networks:
+  default: {}
+  shared:
+    name: employee-console-shared
+    external: true

@@ -1,0 +1,79 @@
+# Jenkins configuration as code. Secrets come from the container environment / mounted files only.
+jenkins:
+  systemMessage: "Employee Console — local CI/CD. Builds run on the host agent; deploy target is local staging (:3100)."
+  numExecutors: 0
+  mode: EXCLUSIVE
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "${JENKINS_ADMIN_ID:-admin}"
+          password: "${JENKINS_ADMIN_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+  crumbIssuer:
+    standard:
+      excludeClientIPFromCrumb: false
+  nodes:
+    - permanent:
+        name: "host-agent"
+        labelString: "employee-console"
+        remoteFS: "${JENKINS_AGENT_WORKDIR:-/tmp/employee-console-jenkins-agent}"
+        numExecutors: 1
+        mode: EXCLUSIVE
+        retentionStrategy: "always"
+        launcher:
+          inbound:
+            webSocket: true
+            workDirSettings:
+              disabled: false
+              failIfWorkDirIsMissing: false
+              internalDir: "remoting"
+
+unclassified:
+  location:
+    url: "http://localhost:8080/"
+  lockableResourcesManager:
+    declaredResources:
+      - name: "employee-console-staging"
+        description: "Serializes local staging deploys and migrations"
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - file:
+              scope: GLOBAL
+              id: "employee-console-staging-env"
+              description: ".env.staging for the local staging deploy (mounted read-only)"
+              fileName: ".env.staging"
+              secretBytes: "${readFileBase64:/run/secrets/staging.env}"
+
+jobs:
+  - script: |
+      def repo = System.getenv('JENKINS_GIT_URL') ?: ('file://' + (System.getenv('JENKINS_LOCAL_REPO') ?: '/repo'))
+      def branchName = System.getenv('JENKINS_GIT_BRANCH') ?: 'main'
+      def credId = System.getenv('GIT_CREDENTIAL_ID') ?: ''
+      pipelineJob('employee-console') {
+        description('CI: lint, typecheck, OpenAPI drift, unit, API, Postman, build, E2E, images. CD: local staging on the default branch.')
+        properties {
+          disableConcurrentBuilds()
+        }
+        logRotator { numToKeep(30) }
+        definition {
+          cpsScm {
+            lightweight(true)
+            scriptPath('Jenkinsfile')
+            scm {
+              git {
+                remote {
+                  url(repo)
+                  if (credId) { credentials(credId) }
+                }
+                branch("*/${branchName}")
+              }
+            }
+          }
+        }
+      }

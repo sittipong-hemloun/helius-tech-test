@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/app-shell';
 import { applyServerErrors, EmployeeForm, toInput, valuesFromEmployee, type EmployeeFormValues } from '@/components/employee-form';
@@ -30,16 +30,11 @@ export function EditEmployeeView({ rawId }: { rawId: string }) {
   const id = parseEmployeeId(rawId);
   const { session } = useSession();
   const router = useRouter();
-  const query = useEmployee(id);
+  // No background refetch while editing: the copy (and its version) the user started from stays put.
+  const query = useEmployee(id, { editing: true });
   const update = useUpdateEmployee(id ?? 0);
   const [banner, setBanner] = useState<Banner>(null);
-  // The version the user started editing from; a newer server copy must not be overwritten silently.
-  const [base, setBase] = useState<Employee | null>(null);
-  const employee = base ?? query.data ?? null;
-  // Freeze the copy being edited; background refetches must not reset the form.
-  useEffect(() => {
-    if (!base && query.data) setBase(query.data);
-  }, [base, query.data]);
+  const employee = query.data ?? null;
 
   if (!session.permissions.canWriteEmployees) {
     return <Notice tone="error" title="Your role can't edit employees.">Viewers can read records only.</Notice>;
@@ -59,10 +54,7 @@ export function EditEmployeeView({ rawId }: { rawId: string }) {
 
   const reloadLatest = async () => {
     const latest = await query.refetch();
-    if (latest.data) {
-      setBase(latest.data);
-      setBanner(null);
-    }
+    if (latest.data) setBanner(null); // new version → resetKey changes → form shows the latest values
   };
 
   const save = (values: EmployeeFormValues, setError: Parameters<Parameters<typeof EmployeeForm>[0]['onSubmit']>[1], markClean: (v?: EmployeeFormValues) => void) => {
@@ -78,7 +70,6 @@ export function EditEmployeeView({ rawId }: { rawId: string }) {
       {
         onSuccess: (res) => {
           markClean();
-          setBase(res.data);
           toast[res.meta.changed ? 'success' : 'info'](res.meta.changed ? 'Employee updated.' : 'No changes to save.');
           router.push(`/employees/${res.data.id}`);
         },

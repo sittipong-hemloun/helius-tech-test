@@ -33,13 +33,15 @@ export function useEmployees(params: ListParams) {
   });
 }
 
-export function useEmployee(id: number | null) {
+/** `editing`: fetch fresh on mount, then never refetch in the background so the form is not reset under the user. */
+export function useEmployee(id: number | null, { editing = false }: { editing?: boolean } = {}) {
   const { scope } = useSession();
   return useQuery({
     queryKey: [...scope, 'employee', id],
     queryFn: ({ signal }) => api<Employee>(`/api/v1/employees/${id}`, { signal }).then((r) => r.data),
     enabled: id !== null,
     retry: (count, err) => (err as { status?: number }).status !== 404 && count < 1,
+    ...(editing ? { refetchOnMount: 'always' as const, refetchOnWindowFocus: false, refetchOnReconnect: false } : {}),
   });
 }
 
