@@ -42,7 +42,7 @@
 | Google/เน็ตใช้ไม่ได้ | ถ้ามี session ค้างอยู่ใช้ต่อได้ตามอายุจริง; ไม่มีก็เปิดหลักฐาน login ที่บันทึกไว้ — ไม่มี bypass |
 | Gemini/n8n ล่ม | demo CRUD ต่อ, เปิดรายงานที่สร้างไว้แล้ว, ชี้ว่ารายงานใหม่จะ FAILED ตาม deadline จริง |
 | Jenkins ไม่ขึ้น | เปิด build log/artifacts ที่เก็บไว้ (`docs/evidence/jenkins/`) พร้อม SHA |
-| DB ไม่พร้อม | `pnpm doctor`, `docker compose ps`; reset demo เฉพาะเมื่อจำเป็นและบอกว่า reset |
+| DB ไม่พร้อม | `pnpm run doctor`, `docker compose ps`; reset demo เฉพาะเมื่อจำเป็นและบอกว่า reset |
 | เวลาน้อย | P0 ก่อน (CRUD + สิทธิ์) แล้วหลักฐาน 1–2 จุด |
 
 ## ซ้อม Live Coding (PRD §18.5)

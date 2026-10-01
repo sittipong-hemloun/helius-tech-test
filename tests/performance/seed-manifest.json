@@ -1,0 +1,39 @@
+{
+  "generator": "apps/api/scripts/perf-seed.ts (mulberry32)",
+  "seed": 42,
+  "count": 10000,
+  "distribution": {
+    "engineering": 0.4,
+    "marketing": 0.25,
+    "sales": 0.2,
+    "hr": 0.15,
+    "activeShare": 0.8
+  },
+  "searchGroup": {
+    "query": "searchwell",
+    "matches": 200
+  },
+  "checksumSha256": "31e0cea831391882c389ee382049f754fb64456637b9008f8e5cc3fc958fac79",
+  "byDepartment": [
+    {
+      "department_id": "engineering",
+      "total": 4000,
+      "active": 3200
+    },
+    {
+      "department_id": "hr",
+      "total": 1500,
+      "active": 1200
+    },
+    {
+      "department_id": "marketing",
+      "total": 2500,
+      "active": 2000
+    },
+    {
+      "department_id": "sales",
+      "total": 2000,
+      "active": 1600
+    }
+  ]
+}

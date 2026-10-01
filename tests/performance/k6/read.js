@@ -31,20 +31,20 @@ export default function () {
   const pick = (a) => a[Math.floor(Math.random() * a.length)];
   const page = 1 + Math.floor(Math.random() * 25);
 
-  const list = http.get(`${BASE}/api/v1/employees?page=${page}&pageSize=20`, { ...h, tags: { kind: 'list' } });
+  const list = http.get(`${BASE}/api/v1/employees?page=${page}&pageSize=20`, { ...h, tags: { kind: 'list', name: 'GET /employees?page' } });
   check(list, { 'list 200': (r) => r.status === 200 });
   payload.add(list.body ? list.body.length : 0);
 
   const filter = http.get(`${BASE}/api/v1/employees?departmentId=${pick(DEPTS)}&status=${pick(STATUS)}&page=${1 + Math.floor(Math.random() * 5)}&pageSize=20&sortBy=name`, {
     ...h,
-    tags: { kind: 'filter' },
+    tags: { kind: 'filter', name: 'GET /employees?departmentId&status' },
   });
   check(filter, { 'filter 200': (r) => r.status === 200 });
 
-  const detail = http.get(`${BASE}/api/v1/employees/${1 + Math.floor(Math.random() * 10000)}`, { ...h, tags: { kind: 'detail' } });
+  const detail = http.get(`${BASE}/api/v1/employees/${1 + Math.floor(Math.random() * 10000)}`, { ...h, tags: { kind: 'detail', name: 'GET /employees/:id' } });
   check(detail, { 'detail 200': (r) => r.status === 200 });
 
-  const search = http.get(`${BASE}/api/v1/employees?q=${encodeURIComponent(pick(SEARCH))}&pageSize=20`, { ...h, tags: { kind: 'search' } });
+  const search = http.get(`${BASE}/api/v1/employees?q=${encodeURIComponent(pick(SEARCH))}&pageSize=20`, { ...h, tags: { kind: 'search', name: 'GET /employees?q' } });
   check(search, { 'search 200': (r) => r.status === 200 });
 }
 

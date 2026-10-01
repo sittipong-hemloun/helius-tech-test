@@ -10,9 +10,9 @@ export const options = {
 };
 
 export default function () {
-  const r = http.post(`${BASE}/api/v1/reports`, '{}', { headers: writeHeaders({ 'Idempotency-Key': uuid() }), tags: { kind: 'enqueue' } });
+  const r = http.post(`${BASE}/api/v1/reports`, '{}', { headers: writeHeaders({ 'Idempotency-Key': uuid() }), tags: { kind: 'enqueue', name: 'POST /reports' } });
   check(r, { 'enqueue 202': (x) => x.status === 202 });
-  const auth = { headers: { Authorization: `Bearer ${__ENV.WORKER_TOKEN}`, 'Content-Type': 'application/json' }, tags: { kind: 'worker' } };
+  const auth = { headers: { Authorization: `Bearer ${__ENV.WORKER_TOKEN}`, 'Content-Type': 'application/json' }, tags: { kind: 'worker', name: 'internal worker' } };
   const job = http.post(`${BASE}/internal/v1/report-jobs/claim`, '{}', auth).json('data');
   if (job) http.post(`${BASE}/internal/v1/report-jobs/${job.reportId}/fail`, JSON.stringify({ leaseToken: job.leaseToken, errorCode: 'PROVIDER_AUTH_ERROR' }), auth);
 }

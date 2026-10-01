@@ -16,7 +16,7 @@ export default async function ConsoleLayout({ children }: { children: ReactNode 
     return (
       <main className="mx-auto max-w-xl px-4 py-16">
         <Notice tone="error" title="Employee Console can't reach its API right now.">
-          The database or API service is not ready. Reload in a moment; if it keeps failing, run <code>pnpm doctor</code>.
+          The database or API service is not ready. Reload in a moment; if it keeps failing, run <code>pnpm run doctor</code>.
         </Notice>
       </main>
     );

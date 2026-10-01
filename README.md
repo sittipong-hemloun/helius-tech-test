@@ -61,7 +61,7 @@ pnpm dev
 
 เปิด http://localhost:3000 — web (Next.js hot reload) และ API (NestJS watch) ที่พอร์ต `PORT` ใน `.env` (ค่าเริ่มต้น 3001)
 
-> ถ้าพอร์ต 3001 มีโปรแกรมอื่นใช้อยู่ ให้ปิดโปรแกรมนั้น หรือเปลี่ยน `PORT` และ `API_INTERNAL_URL` ใน `.env` ให้ตรงกัน (`pnpm doctor` จะบอกว่าโปรเซสไหนใช้พอร์ต)
+> ถ้าพอร์ต 3001 มีโปรแกรมอื่นใช้อยู่ ให้ปิดโปรแกรมนั้น หรือเปลี่ยน `PORT` และ `API_INTERNAL_URL` ใน `.env` ให้ตรงกัน (`pnpm run doctor` จะบอกว่าโปรเซสไหนใช้พอร์ต)
 
 ## ค่าที่ต้องเติมเอง
 
@@ -81,7 +81,7 @@ pnpm dev
 | คำสั่ง | ทำอะไร |
 | --- | --- |
 | `pnpm run setup` | ตรวจ Node/pnpm/Docker/พอร์ต, สร้าง env ที่ขาด, บอกค่าภายนอกที่ต้องเติม |
-| `pnpm doctor` | ตรวจ process/DB/migration/config/worker โดยไม่แสดง secret |
+| `pnpm run doctor` | ตรวจ process/DB/migration/config/worker โดยไม่แสดง secret |
 | `pnpm dev:up` / `pnpm dev` | เปิด DB + migrate (+ seed ครั้งแรก) / รัน web + API แบบ hot reload |
 | `pnpm db:migrate` / `pnpm db:seed` | apply migrations / เติมข้อมูล Excel ที่ขาด (ไม่ทับ) |
 | `pnpm demo:reset --confirm-reset` | คืนข้อมูลเป็น 5 records (เฉพาะ APP_ENV local/staging และฐานที่ mark ว่า demo) |

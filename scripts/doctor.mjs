@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// pnpm doctor — health of processes, database, schema and configuration presence.
+// pnpm run doctor — (plain `pnpm doctor` is a pnpm built-in) health of processes, database, schema and configuration presence.
 // Prints whether values are set, never the values themselves.
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -55,7 +55,19 @@ if (env.get('DATABASE_URL') && pgHealth === 'healthy') {
 const apiPort = env.get('PORT') || '3001';
 const live = await http(`http://127.0.0.1:${apiPort}/api/health/live`);
 const ready = await http(`http://127.0.0.1:${apiPort}/api/health/ready`);
-add('dev', `API :${apiPort}`, ready === 200 ? 'ok' : live ? 'warn' : 'off', ready === 200 ? 'ready' : live ? `live, ready=${ready}` : (await portInUse(Number(apiPort))) ? `port used by ${portOwner(Number(apiPort)) ?? 'another process'}` : 'not running');
+const busy = await portInUse(Number(apiPort));
+add(
+  'dev',
+  `API :${apiPort}`,
+  ready === 200 ? 'ok' : live === 200 ? 'warn' : busy ? 'warn' : 'off',
+  ready === 200
+    ? 'ready'
+    : live === 200
+      ? `live, not ready (${ready})`
+      : busy
+        ? `port used by ${portOwner(Number(apiPort)) ?? 'another process'} — not this API`
+        : 'not running',
+);
 const web = await http('http://127.0.0.1:3000/login');
 add('dev', 'Web :3000', web === 200 ? 'ok' : 'off', web ? String(web) : 'not running');
 const staging = await http('http://127.0.0.1:3100/api/health/ready');

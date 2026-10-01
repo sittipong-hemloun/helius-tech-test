@@ -33,7 +33,7 @@ pnpm dev
 ```
 
 - พอร์ต API มาจาก `PORT` — ถ้าพอร์ตชน ให้เปลี่ยนทั้ง `PORT` และ `API_INTERNAL_URL`
-- `pnpm doctor` ตรวจทุกอย่างโดยไม่พิมพ์ secret
+- `pnpm run doctor` ตรวจทุกอย่างโดยไม่พิมพ์ secret
 
 ## 4. Reset ข้อมูล demo
 
@@ -130,7 +130,7 @@ pnpm perf:run --label=baseline
 
 | อาการ | ตรวจ / แก้ |
 | --- | --- |
-| หน้าเว็บบอก "can't reach its API" | `pnpm doctor` → API ไม่รันหรือพอร์ตชน; ตรวจ `API_INTERNAL_URL` |
+| หน้าเว็บบอก "can't reach its API" | `pnpm run doctor` → API ไม่รันหรือพอร์ตชน; ตรวจ `API_INTERNAL_URL` |
 | Login แล้วกลับมาหน้า Login ด้วย `login_failed` | redirect URI ไม่ตรง, นาฬิกาเครื่องเพี้ยน, หรือ client secret ผิด (ดู log `oidc_callback_rejected`) |
 | Access denied `not_allowed` | อีเมลไม่อยู่ใน `ADMIN_EMAILS`/`VIEWER_EMAILS` (แก้แล้ว restart API) |
 | API start ไม่ได้ "Invalid configuration" | อ่านรายการปัญหาที่พิมพ์ออกมา (เช่น อีเมลซ้ำสองกลุ่ม, SESSION_SECRET สั้น) |

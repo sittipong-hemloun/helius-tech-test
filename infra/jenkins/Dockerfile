@@ -5,5 +5,11 @@ USER root
 RUN git config --system --add safe.directory '*'
 USER jenkins
 COPY --chown=jenkins:jenkins plugins.txt /usr/share/jenkins/ref/plugins.txt
-RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt --latest false
+# The default updates.jenkins.io JSON redirect returned 404 inside Docker builds, so the metadata comes
+# from the mirror and downloads go through updates.jenkins.io/download (redirects to a fast mirror).
+# Latest compatible plugin versions are used so known security fixes are included.
+ENV JENKINS_UC_DOWNLOAD=https://updates.jenkins.io/download
+RUN jenkins-plugin-cli --jenkins-update-center https://mirrors.updates.jenkins.io/current/update-center.json \
+      --plugin-file /usr/share/jenkins/ref/plugins.txt \
+ && jenkins-plugin-cli --list --no-download > /usr/share/jenkins/ref/plugins-resolved.txt 2>&1 || true
 COPY --chown=jenkins:jenkins casc.yaml /usr/share/jenkins/ref/casc.yaml
