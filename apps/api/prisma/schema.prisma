@@ -58,6 +58,8 @@ model Employee {
   updatedAt       DateTime   @default(now()) @map("updated_at") @db.Timestamptz(3)
   department      Department @relation(fields: [departmentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
+  // + employees_name_trgm_idx (GIN on lower(name) gin_trgm_ops) — SQL-only, see migration 20261002000000_perf_indexes
+  @@index([departmentId, isActive])
   @@map("employees")
 }
 
