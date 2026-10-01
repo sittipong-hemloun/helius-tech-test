@@ -7,7 +7,7 @@ import { Controller, useForm, type UseFormSetError } from 'react-hook-form';
 import { z } from 'zod';
 import { formatDateOnly } from '@/lib/format';
 import { DEPARTMENT_OPTIONS } from '@/lib/list-params';
-import { formatSalaryInput, parseSalaryInput, unformatSalaryInput } from '@/lib/salary';
+import { formatSalaryInput, parseSalaryInput } from '@/lib/salary';
 import type { EmployeeInput } from '@/lib/queries';
 import { useUnsavedChanges } from '@/lib/unsaved-changes';
 import type { FieldError } from '@/lib/api';
@@ -207,7 +207,7 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
                 ref={field.ref}
                 value={field.value}
                 onChange={(e) => field.onChange(e.target.value)}
-                onFocus={() => field.onChange(unformatSalaryInput(field.value))}
+                // Commas are accepted while typing; reformatting only on blur avoids moving the caret/selection.
                 onBlur={() => {
                   field.onChange(formatSalaryInput(field.value));
                   field.onBlur();

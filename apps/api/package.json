@@ -17,7 +17,8 @@
     "test:unit": "vitest run --project unit",
     "test:api": "vitest run --project integration",
     "openapi:generate": "prisma generate && tsc -p tsconfig.scripts.json && node .tmp/scripts/scripts/generate-openapi.js",
-    "perf:seed": "tsx scripts/perf-seed.ts"
+    "perf:seed": "tsx scripts/perf-seed.ts",
+    "test:reset": "tsx scripts/test-reset.ts"
   },
   "dependencies": {
     "@nestjs/common": "12.1.2",
