@@ -1,0 +1,17 @@
+{
+  "source": "Test Exam Data.xlsx → sheet \"Example Data\" A1:G6 (PRD Appendix C.3)",
+  "sha256": "39602a16768a42c44fbb2b4db91884a6647a6f7e57a9502da46a7ba19dbdc7fe",
+  "departments": [
+    { "id": "engineering", "name": "Engineering", "sortOrder": 1 },
+    { "id": "marketing", "name": "Marketing", "sortOrder": 2 },
+    { "id": "sales", "name": "Sales", "sortOrder": 3 },
+    { "id": "hr", "name": "HR", "sortOrder": 4 }
+  ],
+  "employees": [
+    { "ID": 101, "Name": "John Doe", "Department": "Engineering", "Salary": 65000, "Join Date": "2023-01-15", "Status": "Active", "Last Updated Date": "2026-01-10" },
+    { "ID": 102, "Name": "Jane Smith", "Department": "Marketing", "Salary": 58000, "Join Date": "2023-03-22", "Status": "Active", "Last Updated Date": "2025-12-05" },
+    { "ID": 103, "Name": "Alice Wong", "Department": "Sales", "Salary": 45000, "Join Date": "2024-06-01", "Status": "Active", "Last Updated Date": "2026-02-14" },
+    { "ID": 104, "Name": "Bob Brown", "Department": "Engineering", "Salary": 72000, "Join Date": "2022-11-10", "Status": "In Active", "Last Updated Date": "2026-03-01" },
+    { "ID": 105, "Name": "Charlie Day", "Department": "HR", "Salary": 50000, "Join Date": "2024-02-19", "Status": "Active", "Last Updated Date": "2026-04-20" }
+  ]
+}

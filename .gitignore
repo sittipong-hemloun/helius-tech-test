@@ -1,0 +1,28 @@
+node_modules/
+.pnpm-store/
+dist/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+.DS_Store
+
+# environment files with secrets (templates stay tracked)
+.env
+.env.*
+!.env.example
+!.env.staging.example
+
+# generated
+apps/api/src/generated/
+test-results/
+playwright-report/
+blob-report/
+.backups/
+.tmp/
+docs/evidence/raw/
+tests/performance/results/*.json
+!tests/performance/results/.gitkeep
+infra/jenkins/agent/agent.jar
+infra/jenkins/agent/work/
+.planning/
