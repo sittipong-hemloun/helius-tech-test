@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/*
+ * Employee Console — "green-bar ledger" tokens (docs/design.md).
+ * Light theme only (PRD §7.1). The one bold element is the payroll-printout table:
+ * alternating pale green bands and tabular figures. Everything else stays quiet.
+ */
+@theme {
+  --color-ground: #f3f5f1;
+  --color-sheet: #ffffff;
+  --color-ink: #1b2a22;
+  --color-ink-2: #4b5a52;
+  --color-ink-3: #6b7a72;
+  --color-rule: #d3dbd2;
+  --color-rule-strong: #b7c4b8;
+  --color-bar: #e6f0e3;
+  --color-bar-strong: #d5e6d1;
+  --color-ledger: #1d6a49;
+  --color-ledger-deep: #134d34;
+  --color-ledger-wash: #edf5ea;
+  --color-stamp: #a8321f;
+  --color-stamp-wash: #fbece8;
+  --color-amber: #8a5a00;
+  --color-amber-wash: #fbf2dc;
+
+  --font-sans: var(--font-archivo), var(--font-anuphan), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-control: 6px;
+  --radius-sheet: 10px;
+
+  --text-display: 2.75rem;
+  --text-display--line-height: 1;
+  --text-title: 1.75rem;
+  --text-title--line-height: 1.15;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    font-feature-settings: "kern";
+    text-rendering: optimizeLegibility;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ledger);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-bar-strong);
+  }
+}
+
+@layer utilities {
+  /* Archivo's width axis carries the voice: expanded for titles/numerals, condensed for headers. */
+  .type-expanded {
+    font-variation-settings: "wdth" 125;
+    letter-spacing: -0.01em;
+  }
+  .type-wide {
+    font-variation-settings: "wdth" 112;
+  }
+  .type-condensed {
+    font-variation-settings: "wdth" 82;
+  }
+  .figures {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  /* Green-bar printout: bands every row; hover deepens; focus row outlined by the cell focus ring. */
+  .greenbar > tr:nth-child(even) > :is(td, th) {
+    background: var(--color-bar);
+  }
+  .greenbar > tr:hover > :is(td, th) {
+    background: var(--color-bar-strong);
+  }
+  /* Paper-form field: label sits inside the box like a printed form cell. */
+  .form-cell {
+    border: 1px solid var(--color-rule-strong);
+    border-radius: var(--radius-control);
+    background: var(--color-sheet);
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+  }
+  .form-cell:focus-within {
+    border-color: var(--color-ledger);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ledger) 18%, transparent);
+  }
+  .form-cell[data-invalid="true"] {
+    border-color: var(--color-stamp);
+  }
+  .select-control {
+    height: 2.5rem;
+    width: 100%;
+    appearance: none;
+    border: 1px solid var(--color-rule-strong);
+    border-radius: var(--radius-control);
+    background-color: var(--color-sheet);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 7.5 10 12l4.5-4.5' stroke='%234b5a52' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    background-size: 1.1rem;
+    padding-left: 0.75rem;
+    padding-right: 2.25rem;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+  }
+  .ledger-lines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2.25rem,
+      var(--color-bar) 2.25rem,
+      var(--color-bar) 4.5rem
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

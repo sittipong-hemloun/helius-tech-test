@@ -2,7 +2,7 @@
   "name": "employee-console",
   "private": true,
   "version": "1.0.0",
-  "description": "Employee Console — Next.js + NestJS + PostgreSQL employee data manager (AI-Augmented Developer test)",
+  "description": "Employee Console \u2014 Next.js + NestJS + PostgreSQL employee data manager (AI-Augmented Developer test)",
   "type": "module",
   "packageManager": "pnpm@12.8.1",
   "engines": {
@@ -33,5 +33,8 @@
     "ai:up": "node scripts/ai-up.mjs",
     "perf:seed": "pnpm --filter @employee-console/api run perf:seed",
     "perf:run": "node scripts/perf-run.mjs"
+  },
+  "devDependencies": {
+    "pg": "8.23.1"
   }
 }
