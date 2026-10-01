@@ -46,6 +46,8 @@ export interface TestContext {
   clock: FakeClock;
   prisma: PrismaClient;
   http: ReturnType<typeof request>;
+  /** http://127.0.0.1:<port> of the listening test app. */
+  baseUrl: string;
   close: () => Promise<void>;
 }
 
@@ -56,14 +58,19 @@ export async function startApp(envOverrides: Record<string, string> = {}, now = 
   const config = loadConfig(testEnv(envOverrides));
   const clock = new FakeClock(new Date(now));
   const app = await createApp(config, { clock, logger: new JsonLogger('test', 'error') });
-  await app.init();
+  // Listen once on an explicit loopback port. Passing the bare server to supertest makes it
+  // bind a new wildcard ephemeral port per request, which occasionally collided with another
+  // local process bound to 127.0.0.1 on that port (requests then hit the wrong server: 404).
+  await app.listen(0, '127.0.0.1');
+  const { port } = app.getHttpServer().address() as { port: number };
   const prisma = createPrismaClient(config.databaseUrl, 3);
   return {
     app,
     config,
     clock,
     prisma,
-    http: request(app.getHttpServer()),
+    http: request(`http://127.0.0.1:${port}`),
+    baseUrl: `http://127.0.0.1:${port}`,
     close: async () => {
       await app.close();
       await prisma.$disconnect();

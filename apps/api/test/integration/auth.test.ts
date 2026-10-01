@@ -312,7 +312,7 @@ describe('Google OIDC callback with a mock provider (AC-29, AC-30, AC-31)', () =
 
   /** Runs the browser round trip; `tamper` edits ID token claims before signing. */
   async function roundTrip(claims: Claims, opts: { tamperState?: boolean; reuse?: boolean } = {}) {
-    const agent = request.agent(ctx.app.getHttpServer());
+    const agent = request.agent(ctx.baseUrl);
     const start = await agent.get('/api/auth/google').expect(302);
     const authorizeUrl = new URL(start.headers.location);
     expect(authorizeUrl.searchParams.get('code_challenge_method')).toBe('S256');

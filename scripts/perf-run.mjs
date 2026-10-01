@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // pnpm perf:run --label=baseline|optimized [--runs=3] [--steady=3m] [--warmup=30s] [--skip-build] [--no-lighthouse]
+//                [--without-perf-indexes]  same build, but drop the tuning indexes (apples-to-apples baseline)
 // Reproducible benchmark (PRD §15): production builds, APP_ENV=performance, 10k synthetic employees
 // (seed 42), one API instance with a 10-connection pool, k6 in Docker, Lighthouse desktop × 3.
 // Results: tests/performance/results/<label>/ (raw k6 summaries, EXPLAIN plans, environment, Lighthouse).
@@ -26,6 +27,14 @@ mkdirSync(outDir, { recursive: true });
 
 // ---- database + data
 const url = await freshDatabase(DB, 'performance', { seed: false });
+const PERF_INDEXES = ['employees_name_trgm_idx', 'employees_department_id_is_active_idx'];
+if (has('without-perf-indexes')) {
+  const c = new pg.Client({ connectionString: url });
+  await c.connect();
+  for (const idx of PERF_INDEXES) await c.query(`DROP INDEX IF EXISTS "${idx}"`);
+  await c.end();
+  info(`dropped tuning indexes for this run: ${PERF_INDEXES.join(', ')}`);
+}
 const env = apiEnv({
   databaseUrl: url,
   port: API_PORT,
@@ -60,6 +69,7 @@ try {
   const dockerInfo = capture('docker', ['info', '--format', '{{.NCPU}} cpus, {{.MemTotal}} bytes, {{.OperatingSystem}}']);
   summary.environment = {
     commit: capture('git', ['rev-parse', 'HEAD']),
+    tuningIndexesDropped: has('without-perf-indexes'),
     dirty: Boolean(capture('git', ['status', '--porcelain', '--untracked-files=no'])),
     migrations: readdirSync(resolve(ROOT, 'apps/api/prisma/migrations')).filter((d) => !d.endsWith('.toml')),
     os: `${os.type()} ${os.release()} ${os.arch()}`,

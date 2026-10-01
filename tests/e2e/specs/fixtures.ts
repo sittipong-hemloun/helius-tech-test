@@ -66,6 +66,10 @@ export const test = base.extend<{ admin: Page; viewer: Page }>({
 
 export { expect };
 
+/**
+ * Data rows actually shown in the page: inside <main> (not Next's hidden streaming buffer)
+ * and not the loading skeleton, so counts never pass before real data is visible.
+ */
 export function rows(page: Page) {
-  return page.locator('table tbody tr');
+  return page.locator('main table tbody tr:not([data-skeleton])');
 }

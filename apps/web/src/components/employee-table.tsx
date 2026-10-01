@@ -78,7 +78,7 @@ export function EmployeeTable({ rows, isAdmin, params, loading, onSort, onDelete
         <tbody className="greenbar">
           {rows === undefined
             ? Array.from({ length: 5 }, (_, i) => (
-                <tr key={i}>
+                <tr key={i} data-skeleton="" aria-hidden>
                   {Array.from({ length: colCount }, (__, j) => (
                     <td key={j} className="px-3 py-3">
                       <Skeleton className="h-4 w-full max-w-[9rem]" />

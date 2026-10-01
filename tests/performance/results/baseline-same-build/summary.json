@@ -1,0 +1,83 @@
+{
+  "label": "baseline-same-build",
+  "startedAt": "2026-10-01T19:13:10.325Z",
+  "runs": [
+    {
+      "run": 1,
+      "readThresholdsPassed": true,
+      "writeThresholdsPassed": true,
+      "enqueueThresholdsPassed": true
+    },
+    {
+      "run": 2,
+      "readThresholdsPassed": true,
+      "writeThresholdsPassed": true,
+      "enqueueThresholdsPassed": true
+    },
+    {
+      "run": 3,
+      "readThresholdsPassed": true,
+      "writeThresholdsPassed": true,
+      "enqueueThresholdsPassed": true
+    }
+  ],
+  "environment": {
+    "commit": "7d0a72e11f722e5e7c179b0bb213c0ecd9e3d3dc",
+    "tuningIndexesDropped": true,
+    "dirty": true,
+    "migrations": [
+      "20261001000000_init",
+      "20261002000000_perf_indexes"
+    ],
+    "os": "Darwin 25.0.0 arm64",
+    "cpu": "Apple M3 × 8",
+    "memoryGiB": 24,
+    "node": "24.21.0",
+    "dockerVm": "8 cpus, 8218251264 bytes, Docker Desktop",
+    "postgres": "postgres (PostgreSQL) 17.11 (Debian 17.11-1.pgdg12+2)",
+    "apiPool": 10,
+    "apiInstances": 1,
+    "k6": "grafana/k6:2.3.0",
+    "rateLimitOverride": "PERF_RATE_LIMIT_OVERRIDE=true (performance env only)",
+    "target": "API direct http://host.docker.internal:3201 from the k6 container"
+  },
+  "indexes": [
+    {
+      "indexname": "employees_pkey",
+      "indexdef": "CREATE UNIQUE INDEX employees_pkey ON public.employees USING btree (id)",
+      "size": "240 kB"
+    }
+  ],
+  "lighthouse": {
+    "runs": [
+      {
+        "performance": 100,
+        "accessibility": 96,
+        "cls": 0,
+        "lcpMs": 740,
+        "tbtMs": 0
+      },
+      {
+        "performance": 100,
+        "accessibility": 96,
+        "cls": 0,
+        "lcpMs": 650,
+        "tbtMs": 0
+      },
+      {
+        "performance": 100,
+        "accessibility": 96,
+        "cls": 0,
+        "lcpMs": 653,
+        "tbtMs": 0
+      }
+    ],
+    "median": {
+      "performance": 100,
+      "accessibility": 96,
+      "cls": 0,
+      "lcpMs": 653
+    }
+  },
+  "finishedAt": "2026-10-01T19:35:00.435Z"
+}
