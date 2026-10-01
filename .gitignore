@@ -21,8 +21,7 @@ blob-report/
 .backups/
 .tmp/
 docs/evidence/raw/
-tests/performance/results/*.json
-!tests/performance/results/.gitkeep
+tests/performance/results/**/*.log
 infra/jenkins/agent/agent.jar
 infra/jenkins/agent/work/
 .planning/

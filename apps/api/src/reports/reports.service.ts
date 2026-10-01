@@ -147,8 +147,12 @@ export class ReportsService {
     return new ApiException(409, 'REPORT_IN_PROGRESS', 'A report is already being generated.', undefined, { currentReportId });
   }
 
-  private async insertReport(tx: Prisma.TransactionClient, source: 'MANUAL' | 'SCHEDULED', requestedBy: string | null): Promise<ReportRow> {
-    const now = this.clock.now();
+  private async insertReport(
+    tx: Prisma.TransactionClient,
+    source: 'MANUAL' | 'SCHEDULED',
+    requestedBy: string | null,
+    now: Date = this.clock.now(),
+  ): Promise<ReportRow> {
     const snapshot = await captureSnapshot(tx, now, this.config.timezone);
     try {
       const rows = await tx.$queryRaw<ReportRow[]>`
@@ -201,22 +205,24 @@ export class ReportsService {
   /** Daily scheduled report: the server decides the business day; one per day (PRD §12.2). */
   async createScheduled(): Promise<{ status: 200 | 202; body: ReportSummary }> {
     this.assertEnabled();
-    const day = businessDate(this.clock.now(), this.config.timezone);
+    // One instant for the whole call: the day checked is the day stored in generation_date.
+    const now = this.clock.now();
+    const day = businessDate(now, this.config.timezone);
     const existing = await this.findScheduled(day);
     if (existing) return { status: 200, body: toSummary(existing) };
     try {
       const row = await this.prisma.$transaction(async (tx) => {
         const active = await tx.$queryRaw<{ id: string }[]>`SELECT id FROM reports WHERE status IN ('QUEUED', 'RUNNING') LIMIT 1`;
         if (active.length > 0) throw this.inProgress(active[0].id);
-        return this.insertReport(tx, 'SCHEDULED', null);
+        return this.insertReport(tx, 'SCHEDULED', null, now);
       });
       return { status: 202, body: toSummary(row) };
     } catch (err) {
       if (err instanceof UniqueIndexHit) {
-        if (err.index === 'scheduled') {
-          const again = await this.findScheduled(day);
-          if (again) return { status: 200, body: toSummary(again) };
-        }
+        // Decide from the data, not from the constraint name in the driver error:
+        // a concurrent scheduler call may have created today's report first.
+        const again = await this.findScheduled(day);
+        if (again) return { status: 200, body: toSummary(again) };
         throw this.inProgress(await this.activeReportId());
       }
       throw err;

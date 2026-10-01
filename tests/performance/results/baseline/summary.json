@@ -1,0 +1,81 @@
+{
+  "label": "baseline",
+  "startedAt": "2026-10-01T16:15:11.911Z",
+  "runs": [
+    {
+      "run": 1,
+      "readThresholdsPassed": true,
+      "writeThresholdsPassed": true,
+      "enqueueThresholdsPassed": true
+    },
+    {
+      "run": 2,
+      "readThresholdsPassed": true,
+      "writeThresholdsPassed": true,
+      "enqueueThresholdsPassed": true
+    },
+    {
+      "run": 3,
+      "readThresholdsPassed": true,
+      "writeThresholdsPassed": true,
+      "enqueueThresholdsPassed": true
+    }
+  ],
+  "environment": {
+    "commit": "8ed69ab06d176aefa12be399d3124aa3c5126662",
+    "dirty": true,
+    "migrations": [
+      "20261001000000_init"
+    ],
+    "os": "Darwin 25.0.0 arm64",
+    "cpu": "Apple M3 × 8",
+    "memoryGiB": 24,
+    "node": "24.21.0",
+    "dockerVm": "8 cpus, 8218251264 bytes, Docker Desktop",
+    "postgres": "postgres (PostgreSQL) 17.11 (Debian 17.11-1.pgdg12+2)",
+    "apiPool": 10,
+    "apiInstances": 1,
+    "k6": "grafana/k6:2.3.0",
+    "rateLimitOverride": "PERF_RATE_LIMIT_OVERRIDE=true (performance env only)",
+    "target": "API direct http://host.docker.internal:3201 from the k6 container"
+  },
+  "indexes": [
+    {
+      "indexname": "employees_pkey",
+      "indexdef": "CREATE UNIQUE INDEX employees_pkey ON public.employees USING btree (id)",
+      "size": "240 kB"
+    }
+  ],
+  "lighthouse": {
+    "runs": [
+      {
+        "performance": 100,
+        "accessibility": 96,
+        "cls": 0.01361986366488632,
+        "lcpMs": 665,
+        "tbtMs": 0
+      },
+      {
+        "performance": 100,
+        "accessibility": 96,
+        "cls": 0.01361986366488632,
+        "lcpMs": 687,
+        "tbtMs": 0
+      },
+      {
+        "performance": 100,
+        "accessibility": 96,
+        "cls": 0.01361986366488632,
+        "lcpMs": 645,
+        "tbtMs": 0
+      }
+    ],
+    "median": {
+      "performance": 100,
+      "accessibility": 96,
+      "cls": 0.01361986366488632,
+      "lcpMs": 665
+    }
+  },
+  "finishedAt": "2026-10-01T16:37:04.778Z"
+}

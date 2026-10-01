@@ -354,6 +354,15 @@ describe('scheduled reports (AC-46)', () => {
     expect(next.body.data.id).not.toBe(first.body.data.id);
   });
 
+  it('concurrent scheduler calls create one report and the others get it back', async () => {
+    const results = await Promise.all(
+      Array.from({ length: 4 }, () => ctx.http.post('/internal/v1/reports/scheduled').set(scheduler()).send({})),
+    );
+    expect(results.filter((r) => r.status === 202)).toHaveLength(1);
+    expect(results.every((r) => r.status === 202 || r.status === 200)).toBe(true);
+    expect(new Set(results.map((r) => r.body.data.id)).size).toBe(1);
+  });
+
   it('returns 409 when a manual job is active; scheduled reports do not count toward the manual quota', async () => {
     const manual = await generate().expect(202);
     const res = await ctx.http.post('/internal/v1/reports/scheduled').set(scheduler()).send({}).expect(409);

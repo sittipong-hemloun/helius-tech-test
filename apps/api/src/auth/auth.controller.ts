@@ -162,7 +162,7 @@ export class AuthController {
   @RateLimit('none')
   async logout(@Req() req: AppRequest, @Res() res: Response): Promise<void> {
     if (!req.principal) throw Errors.unauthenticated();
-    await destroySession(req);
+    await destroySession(req, { strict: true }); // store error → 503, cookie left as is
     res.clearCookie(this.config.session.cookieName, {
       path: '/',
       httpOnly: true,

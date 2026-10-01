@@ -35,6 +35,10 @@
 | 9 | กรอก Salary ใหม่ในหน้า Edit ได้ `62000.0063000.00` | onFocus เปลี่ยนค่า (เอา comma ออก) แล้ว selection หาย ข้อความใหม่ไปต่อท้าย — **Playwright จับได้** | format เฉพาะตอน blur (D-31), commit `test(e2e)` |
 | 10 | React lint: setState ใน effect ของหน้า Edit | ใช้ state เก็บสำเนาที่กำลังแก้ | ใช้ query แบบ `editing` (ไม่ refetch ระหว่างแก้) แทน state |
 | 11 | ESLint ไม่มี config ฝั่ง API ทำให้ stage Static checks ใน Jenkins จะล้ม | เพิ่ม script `lint` แต่ยังไม่มี config | เพิ่ม `apps/api/eslint.config.mjs` (typescript-eslint) |
+| 12 | `/api/docs-yaml` เปิดสาธารณะ — **reviewer subagent จับได้** | `@nestjs/swagger` เสิร์ฟ YAML โดย default (`raw: true`) แต่ middleware guard แค่ `/api/docs` กับ `/api/openapi.json` | `raw: ['json']` + guard path เพิ่ม + test `docs-yaml → 401/404` |
+| 13 | Form สร้างพนักงานเปลี่ยน Idempotency-Key เมื่อได้ 5xx | ถือว่า 5xx เป็นคำตอบแน่นอน ทั้งที่ API อาจ commit แล้วหรือ proxy ตอบระหว่าง restart | `outcomeUnknown` รวม 5xx → คง key; ถ้าแก้ค่าแล้วชน `IDEMPOTENCY_CONFLICT` ให้เตือนตรวจรายการ |
+| 14 | Logout ตอบ 204 แม้ลบ session ใน DB ไม่สำเร็จ | callback ของ `session.destroy` ทิ้ง error | logout ใช้ `destroySession(req, { strict: true })` → 503 เมื่อ store ล้ม |
+| 15 | Scheduled report ที่ชน unique index อาจตอบ 409 แทน 200 | เดาชนิด index จากข้อความ error ของ driver | ตัดสินจากข้อมูล (`findScheduled(day)`) + ใช้เวลาเดียวกันทั้งคำขอ; test scheduler พร้อมกัน 4 คำขอ |
 
 ## สิ่งที่ AI ไม่ได้ทำแทน (ต้องใช้ข้อมูลจริงของผู้สมัคร)
 

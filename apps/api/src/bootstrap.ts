@@ -101,7 +101,7 @@ export async function createApp(config: AppConfig, options: CreateAppOptions = {
   if (options.swagger !== false) {
     const policy = app.get(AccessPolicyService);
     // OpenAPI UI/document are Admin-only; no interactive login bypass (PRD §10.2).
-    app.use(['/api/docs', '/api/openapi.json'], (req: AppRequest, res: Response, next: NextFunction) => {
+    app.use(['/api/docs', '/api/docs-yaml', '/api/openapi.json'], (req: AppRequest, res: Response, next: NextFunction) => {
       const auth = req.session?.auth;
       if (!auth || isAbsolutelyExpired(auth.absoluteExpiresAt, clock.now())) {
         return errorBody(res, req, 401, 'UNAUTHENTICATED', 'Sign in to continue.');
@@ -112,7 +112,8 @@ export async function createApp(config: AppConfig, options: CreateAppOptions = {
     const document = buildOpenApiDocument(app, config);
     SwaggerModule.setup('api/docs', app, document, {
       jsonDocumentUrl: 'api/openapi.json',
-      yamlDocumentUrl: undefined,
+      // JSON only: @nestjs/swagger would otherwise also serve /api/docs-yaml by default.
+      raw: ['json'],
       swaggerOptions: { withCredentials: true },
     });
   }

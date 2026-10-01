@@ -1,4 +1,14 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import type { NextConfig } from 'next';
+
+// Next.js only reads .env files inside apps/web, but the repo keeps one root .env. Take only
+// API_INTERNAL_URL from it (the web server needs no other secret); real env vars always win.
+const rootEnv = resolve(process.cwd(), '../../.env');
+if (!process.env.API_INTERNAL_URL && existsSync(rootEnv)) {
+  const line = readFileSync(rootEnv, 'utf8').match(/^API_INTERNAL_URL=(.*)$/m);
+  if (line?.[1]?.trim()) process.env.API_INTERNAL_URL = line[1].trim();
+}
 
 // /api/* is proxied to NestJS on the same origin so cookies stay first-party (PRD §7.2).
 // Rewrites are resolved at build time: staging images are built with API_INTERNAL_URL=http://api:3001.

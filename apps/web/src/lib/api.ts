@@ -21,9 +21,13 @@ export class ApiError extends Error {
     this.name = 'ApiError';
   }
 
-  /** True when we cannot know whether the server applied the request. */
+  /**
+   * True when we cannot know whether the server applied the request: no response at all, or a
+   * 5xx (the API may have committed before failing, or a proxy answered while the API restarted).
+   * Create flows keep their Idempotency-Key in this case so a retry replays instead of duplicating.
+   */
   get outcomeUnknown(): boolean {
-    return this.status === 0;
+    return this.status === 0 || this.status >= 500;
   }
 }
 

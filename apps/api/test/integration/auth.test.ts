@@ -93,6 +93,10 @@ describe('role projections and authorization (AC-26..AC-28, §11.3)', () => {
     const doc = await ctx.http.get('/api/openapi.json').set('Cookie', admin.cookieHeader).expect(200);
     expect(doc.body.paths['/api/v1/employees']).toBeDefined();
     await ctx.http.get('/api/docs/').set('Cookie', viewer.cookieHeader).expect(403);
+    // No YAML copy of the document is served (and the path is guarded anyway).
+    await ctx.http.get('/api/docs-yaml').expect(401);
+    const yaml = await ctx.http.get('/api/docs-yaml').set('Cookie', admin.cookieHeader);
+    expect(yaml.status).toBe(404);
   });
 
   it('health endpoints are public and reveal nothing internal', async () => {

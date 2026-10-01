@@ -20,10 +20,15 @@ export function saveSession(req: Request): Promise<void> {
   return new Promise((resolve, reject) => req.session.save((err) => (err ? reject(err) : resolve())));
 }
 
-export function destroySession(req: Request): Promise<void> {
-  return new Promise((resolve) => {
+/**
+ * Destroys the server-side session. `strict` (logout) propagates store errors so the caller
+ * never reports success while the session row still exists; elsewhere a failure is tolerated
+ * because the request is rejected anyway.
+ */
+export function destroySession(req: Request, { strict = false }: { strict?: boolean } = {}): Promise<void> {
+  return new Promise((resolve, reject) => {
     if (!req.session) return resolve();
-    req.session.destroy(() => resolve());
+    req.session.destroy((err) => (err && strict ? reject(err) : resolve()));
   });
 }
 

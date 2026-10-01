@@ -58,6 +58,15 @@ export function NewEmployeeView() {
                   return;
                 }
                 keyRef.current = crypto.randomUUID(); // definitive answer: the next attempt is a new intent
+                if (err instanceof ApiError && err.code === 'IDEMPOTENCY_CONFLICT') {
+                  // An earlier, unconfirmed attempt used different values and may have been saved.
+                  setBanner({
+                    tone: 'warning',
+                    title: 'An earlier attempt with different values may already be saved.',
+                    detail: 'Check the employee list before saving again.',
+                  });
+                  return;
+                }
                 if (err instanceof ApiError && err.code === 'VALIDATION_ERROR' && applyServerErrors(err.details, setError)) return;
                 const { title, detail } = describeError(err);
                 setBanner({ tone: 'error', title, detail });
