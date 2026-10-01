@@ -165,3 +165,27 @@ test('two tabs editing the same record: the stale tab gets a conflict (AC-16)', 
   await expect(b.getByLabel('Name')).toHaveValue('Jane Smith-Updated');
   await context.close();
 });
+
+test('lost create response: retry with the same key lands on the same record, no duplicate (AC-20)', async ({ admin: page }) => {
+  let dropped = false;
+  await page.route('**/api/v1/employees', async (route) => {
+    if (route.request().method() === 'POST' && !dropped) {
+      dropped = true;
+      await route.fetch(); // the server commits the row…
+      await route.abort('connectionreset'); // …but the browser never sees the response
+      return;
+    }
+    await route.continue();
+  });
+  await page.goto('/employees/new');
+  await page.getByLabel('Name').fill('Retry Person');
+  await page.getByLabel('Department').selectOption('sales');
+  await page.getByLabel('Salary').fill('40000');
+  await page.getByLabel('Join date').fill('2026-05-01');
+  await page.getByRole('button', { name: 'Save employee' }).click();
+  await expect(page.getByText("We couldn't confirm whether the employee was saved.")).toBeVisible();
+  await page.getByRole('button', { name: 'Save employee' }).click();
+  await expect(page).toHaveURL(/\/employees\/106$/);
+  await page.goto('/employees?q=Retry%20Person');
+  await expect(rows(page)).toHaveCount(1);
+});

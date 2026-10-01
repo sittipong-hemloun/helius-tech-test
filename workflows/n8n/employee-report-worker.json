@@ -25,6 +25,19 @@
     },
     {
       "id": "00000000-0000-4000-8000-000000000002",
+      "name": "Run on demand",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        460
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
       "name": "Claim job",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -53,7 +66,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000003",
+      "id": "00000000-0000-4000-8000-000000000004",
       "name": "Job claimed?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -71,7 +84,7 @@
           },
           "conditions": [
             {
-              "id": "00000000-0000-4000-8000-000000000004",
+              "id": "00000000-0000-4000-8000-000000000005",
               "leftValue": "={{ $json.data !== null && $json.data !== undefined }}",
               "rightValue": "",
               "operator": {
@@ -87,7 +100,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000005",
+      "id": "00000000-0000-4000-8000-000000000006",
       "name": "Prepare job",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -101,7 +114,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000006",
+      "id": "00000000-0000-4000-8000-000000000007",
       "name": "Empty snapshot?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -119,7 +132,7 @@
           },
           "conditions": [
             {
-              "id": "00000000-0000-4000-8000-000000000007",
+              "id": "00000000-0000-4000-8000-000000000008",
               "leftValue": "={{ $json.mode === 'template' }}",
               "rightValue": "",
               "operator": {
@@ -135,7 +148,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000008",
+      "id": "00000000-0000-4000-8000-000000000009",
       "name": "Call Gemini",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -171,7 +184,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000009",
+      "id": "00000000-0000-4000-8000-000000000010",
       "name": "Interpret response",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -185,7 +198,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000010",
+      "id": "00000000-0000-4000-8000-000000000011",
       "name": "Model output OK?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -203,7 +216,7 @@
           },
           "conditions": [
             {
-              "id": "00000000-0000-4000-8000-000000000011",
+              "id": "00000000-0000-4000-8000-000000000012",
               "leftValue": "={{ $json.action === 'complete' }}",
               "rightValue": "",
               "operator": {
@@ -219,7 +232,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000012",
+      "id": "00000000-0000-4000-8000-000000000013",
       "name": "Complete job",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -254,7 +267,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000013",
+      "id": "00000000-0000-4000-8000-000000000014",
       "name": "Rejected by API?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -272,7 +285,7 @@
           },
           "conditions": [
             {
-              "id": "00000000-0000-4000-8000-000000000014",
+              "id": "00000000-0000-4000-8000-000000000015",
               "leftValue": "={{ $json.statusCode === 400 }}",
               "rightValue": "",
               "operator": {
@@ -288,7 +301,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000015",
+      "id": "00000000-0000-4000-8000-000000000016",
       "name": "Mark invalid output",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -302,7 +315,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000016",
+      "id": "00000000-0000-4000-8000-000000000017",
       "name": "Fail job",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -337,8 +350,8 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000017",
-      "name": "Note 17",
+      "id": "00000000-0000-4000-8000-000000000018",
+      "name": "Note 18",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -354,6 +367,17 @@
   ],
   "connections": {
     "Every 15 seconds": {
+      "main": [
+        [
+          {
+            "node": "Claim job",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run on demand": {
       "main": [
         [
           {

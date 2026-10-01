@@ -25,6 +25,19 @@
     },
     {
       "id": "00000000-0000-4000-8000-000000000102",
+      "name": "Run on demand",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        460
+      ],
+      "parameters": {
+        "inputSource": "passthrough"
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000103",
       "name": "Request scheduled report",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -59,7 +72,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000103",
+      "id": "00000000-0000-4000-8000-000000000104",
       "name": "Another report active?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
@@ -77,7 +90,7 @@
           },
           "conditions": [
             {
-              "id": "00000000-0000-4000-8000-000000000104",
+              "id": "00000000-0000-4000-8000-000000000105",
               "leftValue": "={{ $json.statusCode === 409 }}",
               "rightValue": "",
               "operator": {
@@ -93,7 +106,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000105",
+      "id": "00000000-0000-4000-8000-000000000106",
       "name": "Wait 60 seconds",
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
@@ -108,7 +121,7 @@
       "webhookId": "6c3e0f3a-1d7e-4bd6-9a59-0d5c3c7b0a11"
     },
     {
-      "id": "00000000-0000-4000-8000-000000000106",
+      "id": "00000000-0000-4000-8000-000000000107",
       "name": "Retry once",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -143,7 +156,7 @@
       }
     },
     {
-      "id": "00000000-0000-4000-8000-000000000107",
+      "id": "00000000-0000-4000-8000-000000000108",
       "name": "Done",
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
@@ -154,8 +167,8 @@
       "parameters": {}
     },
     {
-      "id": "00000000-0000-4000-8000-000000000108",
-      "name": "Note 108",
+      "id": "00000000-0000-4000-8000-000000000109",
+      "name": "Note 109",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
@@ -171,6 +184,17 @@
   ],
   "connections": {
     "Daily 09:00 Bangkok": {
+      "main": [
+        [
+          {
+            "node": "Request scheduled report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run on demand": {
       "main": [
         [
           {

@@ -23,7 +23,7 @@ pnpm dev:up
 1. Google Cloud Console → APIs & Services → OAuth consent screen: User type External (หรือ Internal ถ้ามี Workspace), เพิ่มอีเมลของคุณเป็น test user, scopes `openid email profile`
 2. Credentials → Create credentials → OAuth client ID → Web application
 3. Authorized redirect URIs: `http://localhost:3000/api/auth/google/callback` และ `http://localhost:3100/api/auth/google/callback`
-4. ใส่ `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ADMIN_EMAILS` ใน `.env` → `pnpm run setup` → restart `pnpm dev` (และ `pnpm staging:up --skip-build` สำหรับ staging)
+4. ใส่ `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ADMIN_EMAILS` ใน `.env` → `pnpm run setup` → restart `pnpm dev` (และ `pnpm staging:restart` สำหรับ staging)
 5. Smoke จริง: เปิด http://localhost:3000 → Sign in with Google → ต้องไปหน้า Employees; Sign out → กลับ Login; บัญชีที่ไม่อยู่ใน allowlist → หน้า Access denied
 
 ## 3. Dev
@@ -90,7 +90,7 @@ docker compose -p employee-console-staging -f compose.staging.yaml --env-file .e
    ```
    เปิด n8n (http://localhost:5678) + Open WebUI, import credentials (worker/scheduler bearer จาก env ของปลายทาง, Gemini key) และ workflows ทั้งสอง
 4. สร้างบัญชี owner ของ n8n ครั้งแรกในเบราว์เซอร์
-5. ตั้ง `REPORTS_ENABLED=true` ใน env ของปลายทาง แล้ว restart API (`pnpm staging:up --skip-build` หรือ `pnpm dev`)
+5. ตั้ง `REPORTS_ENABLED=true` ใน env ของปลายทาง แล้ว restart API (`pnpm staging:restart` หรือ `pnpm dev`)
 6. ```bash
    pnpm ai:up --activate
    ```

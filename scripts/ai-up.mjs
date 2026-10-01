@@ -22,7 +22,8 @@ const target = env.get('N8N_INTERNAL_API_URL') || 'http://api-staging:3001/inter
 const tokenSource = target.includes('api-staging') ? readEnvFile(resolve(ROOT, '.env.staging')) : env;
 const workerToken = tokenSource.get('WORKER_SERVICE_TOKEN');
 const schedulerToken = tokenSource.get('SCHEDULER_SERVICE_TOKEN');
-const geminiKey = env.get('GEMINI_API_KEY');
+// A key in the process environment wins (CI / one-off checks); otherwise .env.
+const geminiKey = process.env.GEMINI_API_KEY || env.get('GEMINI_API_KEY');
 
 if (!capture('docker', ['network', 'inspect', 'employee-console-shared'])) run('docker', ['network', 'create', 'employee-console-shared']);
 const services = ['postgres', 'n8n', ...(args.includes('--no-webui') ? [] : ['open-webui'])];

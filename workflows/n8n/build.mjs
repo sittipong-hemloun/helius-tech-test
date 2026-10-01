@@ -80,6 +80,16 @@ const sticky = (content, position, width = 420, height = 260) => ({
 
 const API = '={{ $env.INTERNAL_API_URL }}';
 
+/** Lets an operator run the workflow on demand (UI "Execute workflow" or `n8n execute --id=...`). */
+const onDemand = (position) => ({
+  id: id(),
+  name: 'Run on demand',
+  type: 'n8n-nodes-base.executeWorkflowTrigger',
+  typeVersion: 1.1,
+  position,
+  parameters: { inputSource: 'passthrough' },
+});
+
 // ---------------------------------------------------------------- worker
 const prepareJob = `// Builds the Gemini request from the claimed snapshot (aggregate counts only).
 const SYSTEM_PROMPT = ${JSON.stringify(SYSTEM_PROMPT)};
@@ -118,6 +128,7 @@ const W = {
     position: pos(0, 300),
     parameters: { rule: { interval: [{ field: 'seconds', secondsInterval: 15 }] } },
   },
+  manual: onDemand(pos(0, 460)),
   claim: http('Claim job', { url: `${API}/report-jobs/claim`, credential: CREDENTIALS.worker, body: '{}', position: pos(220, 300) }),
   claimed: ifNode('Job claimed?', '={{ $json.data !== null && $json.data !== undefined }}', pos(440, 300)),
   prepare: code('Prepare job', prepareJob, pos(660, 200)),
@@ -166,6 +177,7 @@ const worker = {
   ],
   connections: {
     'Every 15 seconds': { main: [[{ node: 'Claim job', type: 'main', index: 0 }]] },
+    'Run on demand': { main: [[{ node: 'Claim job', type: 'main', index: 0 }]] },
     'Claim job': { main: [[{ node: 'Job claimed?', type: 'main', index: 0 }]] },
     'Job claimed?': { main: [[{ node: 'Prepare job', type: 'main', index: 0 }], []] },
     'Prepare job': { main: [[{ node: 'Empty snapshot?', type: 'main', index: 0 }]] },
@@ -206,6 +218,7 @@ const D = {
     position: pos(0, 300),
     parameters: { rule: { interval: [{ field: 'cronExpression', expression: '0 9 * * *' }] } },
   },
+  manual: onDemand(pos(0, 460)),
   request: http('Request scheduled report', { url: `${API}/reports/scheduled`, credential: CREDENTIALS.scheduler, body: '{}', position: pos(240, 300), full: true }),
   conflict: ifNode('Another report active?', '={{ $json.statusCode === 409 }}', pos(480, 300)),
   wait: { id: id(), name: 'Wait 60 seconds', type: 'n8n-nodes-base.wait', typeVersion: 1.1, position: pos(720, 200), parameters: { amount: 60, unit: 'seconds' }, webhookId: '6c3e0f3a-1d7e-4bd6-9a59-0d5c3c7b0a11' },
@@ -228,6 +241,7 @@ const daily = {
   ],
   connections: {
     'Daily 09:00 Bangkok': { main: [[{ node: 'Request scheduled report', type: 'main', index: 0 }]] },
+    'Run on demand': { main: [[{ node: 'Request scheduled report', type: 'main', index: 0 }]] },
     'Request scheduled report': { main: [[{ node: 'Another report active?', type: 'main', index: 0 }]] },
     'Another report active?': { main: [[{ node: 'Wait 60 seconds', type: 'main', index: 0 }], [{ node: 'Done', type: 'main', index: 0 }]] },
     'Wait 60 seconds': { main: [[{ node: 'Retry once', type: 'main', index: 0 }]] },

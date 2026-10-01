@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Local staging (PRD §13.1, §14): production images tagged with the commit SHA on this machine.
 //   pnpm staging:up        build images → backup → migrate → first-bootstrap seed → start → smoke
+//   pnpm staging:restart   redeploy the current tag to apply .env.staging changes
 //   pnpm staging:smoke     health, login page, static assets, auth enforcement (not a Google login test)
 //   pnpm staging:rollback  redeploy the previous image tag (schema is not rolled back)
 //   pnpm staging:down      stop containers, keep the volume
@@ -215,6 +216,16 @@ if (command === 'up') {
       process.exit(1);
     }
   }
+} else if (command === 'restart') {
+  // Redeploy the current image tag so .env.staging changes (e.g. REPORTS_ENABLED) take effect.
+  requireEnv();
+  const m = readManifest();
+  if (!m.current) {
+    console.error('staging is not deployed yet; run pnpm staging:up');
+    process.exit(1);
+  }
+  await deploy(m.current, { previous: m.previous });
+  process.exit((await smoke()) ? 0 : 1);
 } else if (command === 'smoke') {
   process.exit((await smoke()) ? 0 : 1);
 } else if (command === 'rollback') {

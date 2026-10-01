@@ -55,6 +55,7 @@ pipeline {
           export PATH="$WORKSPACE/.ci-bin:$PATH"
           pnpm lint
           pnpm typecheck
+          pnpm secrets:scan
           pnpm openapi:generate
           git diff --exit-code -- packages/api-client || { echo "OpenAPI/client drift: run pnpm openapi:generate and commit"; exit 1; }
         '''

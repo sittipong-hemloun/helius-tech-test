@@ -27,6 +27,7 @@
     "build": "pnpm --filter @employee-console/api --filter @employee-console/web run build",
     "openapi:generate": "pnpm --filter @employee-console/api run openapi:generate && pnpm --filter @employee-console/api-client run generate",
     "staging:up": "node scripts/staging.mjs up",
+    "staging:restart": "node scripts/staging.mjs restart",
     "staging:smoke": "node scripts/staging.mjs smoke",
     "staging:rollback": "node scripts/staging.mjs rollback",
     "staging:down": "node scripts/staging.mjs down",
@@ -35,7 +36,8 @@
     "perf:run": "node scripts/perf-run.mjs",
     "ci:up": "node scripts/ci-up.mjs",
     "n8n:build": "node workflows/n8n/build.mjs",
-    "test:prompt": "node --test prompts/employee-summary-v1/validate.test.mjs"
+    "test:prompt": "node --test prompts/employee-summary-v1/validate.test.mjs",
+    "secrets:scan": "node scripts/secret-scan.mjs"
   },
   "devDependencies": {
     "lighthouse": "13.5.0",
