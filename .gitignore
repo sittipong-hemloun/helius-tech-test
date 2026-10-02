@@ -6,6 +6,7 @@ out/
 coverage/
 *.tsbuildinfo
 .DS_Store
+.vscode/
 
 # environment files with secrets (templates stay tracked)
 .env

@@ -5,7 +5,13 @@ test.beforeEach(() => resetData());
 test('Viewer: no Salary in UI or network, no CRUD actions (AC-27)', async ({ viewer: page }) => {
   const bodies: string[] = [];
   page.on('response', async (res) => {
-    if (res.url().includes('/api/v1/employees')) bodies.push(await res.text());
+    if (res.url().includes('/api/v1/employees')) {
+      try {
+        bodies.push(await res.text());
+      } catch {
+        // Ignored if navigated away before body could be retrieved
+      }
+    }
   });
   await page.goto('/employees');
   await expect(rows(page)).toHaveCount(5);

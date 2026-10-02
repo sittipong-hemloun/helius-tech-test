@@ -43,6 +43,7 @@
 | 17 | Jenkins agent online/offline สลับไปมาหลัง restart controller | JVM ของ agent รอบก่อนค้างเป็น orphan (wrapper ตายแต่ไม่ส่ง signal ต่อ) แล้วต่อเข้ามาด้วยชื่อ node เดียวกัน | wrapper ส่ง SIGTERM/SIGINT/SIGHUP ต่อให้ JVM |
 | 18 | `buildWithParameters` ตอบ 400 "not parameterized" หลัง restart controller | JCasC สร้าง job ใหม่ทุกครั้งที่ start; parameters จาก Jenkinsfile หายจนกว่าจะรัน build หนึ่งครั้ง | ประกาศ parameters ใน job DSL ด้วย + `pnpm ci:up` ตรวจ job/parameters/node/plugin versions |
 | 19 | App role มี `CREATEDB` (ใช้ร่วมกับ test runner) — **reviewer subagent จับได้** | ใช้ role เดียวทั้งรันแอปและสร้างฐาน test | แยก test role (D-43); `init-databases.sh` idempotent รันซ้ำทุก `dev:up`/deploy เพื่อปรับ volume เดิม |
+| 20 | Playwright E2E error `Protocol error (Network.getResponseBody): No resource with given identifier found` ใน `viewer.spec.ts` | `page.on('response')` ดักอ่าน `res.text()` แบบ async ระหว่างที่ browser navigate ไปหน้าอื่น ทำให้ context/body หลุด | wrap `res.text()` ด้วย try-catch ละเว้นคำขอที่ถูก navigate หนีไปแล้ว |
 
 ## สิ่งที่ AI ไม่ได้ทำแทน (ต้องใช้ข้อมูลจริงของผู้สมัคร)
 
