@@ -47,7 +47,7 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 | USR-04 Postman | PASS | collection + env templates + Newman |
 | USR-05 Jenkins CI/CD | PASS | AC-54/55 — pipeline ครบทุก stage + deploy staging จาก Jenkins |
 | USR-06 Google AI Studio | **BLOCKED** | ต้องใช้บัญชี Google + Gemini access; ขั้นตอน/ตารางใน `prompts/employee-summary-v1/ai-studio.md` |
-| USR-07 n8n | PASS (import/activate/execute live) / **BLOCKED** (เส้นทาง Gemini สำเร็จ) | ต้องใช้ Gemini API key จริง |
+| USR-07 n8n | PASS | import/activate/execute live + Gemini จริง SUCCEEDED (`docs/evidence/n8n.md`) |
 | USR-08 Open WebUI | **BLOCKED** | container/config พร้อม; ต้องใช้ Gemini key + สร้างบัญชี admin |
 | USR-09 Performance | PASS | AC-56 |
 
@@ -106,7 +106,7 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 | AC-37 | PASS | `Viewer cannot generate or see integrations but can read reports` |
 | AC-38 | PASS | replay / 409 `REPORT_IN_PROGRESS` + `currentReportId`, concurrent first requests |
 | AC-39 | PASS | `only one of many concurrent claims gets the job` (6 พร้อมกัน); scope token แยก |
-| AC-40 | PASS (mocked provider) / **BLOCKED (live Gemini)** | integration + E2E แสดงผลแบบ text; live ต้องใช้ key |
+| AC-40 | PASS | integration + E2E + **live Gemini** สำเร็จ (`SUCCEEDED`, Thai headline & 5 bullets, `docs/evidence/n8n.md`) |
 | AC-41 | PASS | backoff 30 s / 60 s, FAILED หลัง 3 attempts (FakeClock) |
 | AC-42 | PASS | non-retryable → FAILED ทันที, ไม่รับข้อความอิสระ; **live**: Gemini key ผิด → `PROVIDER_AUTH_ERROR` (`docs/evidence/n8n.md`) |
 | AC-43 | PASS | lease หมด → requeue, callback เก่า 409 `STALE_LEASE` |
