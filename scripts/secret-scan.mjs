@@ -7,7 +7,7 @@ import { resolve } from 'node:path';
 import { readEnvFile } from './lib/env.mjs';
 import { ROOT } from './lib/sh.mjs';
 
-const SECRET_KEYS = /(SECRET|PASSWORD|TOKEN|API_KEY|ENCRYPTION_KEY|DATABASE_URL|CLIENT_ID)$/;
+const SECRET_KEYS = /(SECRET|SECRET_KEY|PASSWORD|TOKEN|API_KEY|ENCRYPTION_KEY|DATABASE_URL|CLIENT_ID)$/;
 const secrets = new Map();
 for (const file of ['.env', '.env.staging']) {
   const path = resolve(ROOT, file);

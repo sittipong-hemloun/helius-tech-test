@@ -10,7 +10,7 @@
 | API integration | `pnpm test:api` | 4 files, 88 tests passed | ฐาน `employee_console_test_<run>` สร้าง/ลบเองทุกครั้งด้วย test role (D-43) |
 | Newman | `pnpm test:postman` | 107 requests, 616 assertions, 0 failed | API ใน APP_ENV=test, session จาก CLI fixture |
 | E2E | `pnpm test:e2e` | 22 passed, 1 skipped | production builds ของ web/API; test ที่ skip คือการถ่าย screenshot (รันเมื่อตั้ง `E2E_SCREENSHOT_DIR`, ผลอยู่ใน `screenshots/`) |
-| Secret scan | `pnpm secrets:scan` | 299 tracked files, no matches | ค่าใน `.env`/`.env.staging` + pattern |
+| Secret scan | `pnpm secrets:scan` | 301 tracked files, 17 local secret values, no matches | ค่าใน `.env`/`.env.staging` + pattern |
 | Lint / typecheck | `pnpm lint`, `pnpm typecheck` | ผ่านทั้ง api/web/api-client | |
 | Doctor | `pnpm run doctor` | database: migrations ล่าสุด, app role `NOCREATEDB`, test role password set | |
 | Perf connectivity | `pnpm perf:run --runs=1 --steady=15s --warmup=5s --skip-build --no-lighthouse` | read 21,484 req (p95 34.95 ms), write 20,094 req (p95 18.37 ms), enqueue 30 req, `http_req_failed` 0 ทุก scenario | ตรวจว่า k6 ใน Docker เข้าถึง API ที่ฟัง `127.0.0.1` ได้ (D-45) — รอบสั้น ไม่ใช่ benchmark จึงไม่ได้เก็บผล; benchmark จริงอยู่ใน `docs/performance.md` |
