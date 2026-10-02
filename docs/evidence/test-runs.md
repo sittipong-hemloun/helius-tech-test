@@ -22,4 +22,4 @@
 | เครื่องพัฒนา | `bdde0fb` | ทุกแถวในตารางด้านบน (2 ต.ค. 2026) |
 | Jenkins #6 | `b1aa074` (= `bdde0fb` + แก้ JCasC/`ci:up` เท่านั้น) | ผ่านทุก stage รวม deploy staging + smoke — `jenkins/build-6.log` |
 
-commit หลังจากนี้แก้เฉพาะเอกสาร/หลักฐาน (ไม่มีโค้ดเปลี่ยน)
+commit หลังจากนี้แก้เอกสาร/หลักฐาน และ regex ของ `scripts/secret-scan.mjs` (สแกน `*_SECRET_KEY` เพิ่ม) — ไม่มีโค้ดแอปเปลี่ยน

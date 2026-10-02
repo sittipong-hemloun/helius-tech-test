@@ -116,6 +116,8 @@ pnpm ci:up
 - Job `employee-console` อ่าน `Jenkinsfile` จาก `JENKINS_GIT_URL` ถ้ามี ไม่งั้นใช้ repo ในเครื่อง (`file://<path>`, branch `main`) — commit ก่อน build
 - Build with Parameters: `DEPLOY_STAGING` (deploy แม้ไม่ใช่ main), `RUN_PERF`
 - Credentials: `employee-console-staging-env` (file) มาจาก `.env.staging` ที่ mount read-only
+- `pnpm ci:up` ตรวจหลัง start ว่า JCasC ถูก apply (job + parameters + node `host-agent`) และ plugin ทั้ง 78 ตัวตรงเวอร์ชันที่ pin ไม่ตรง = exit 1
+- เปลี่ยนเวอร์ชัน plugin: แก้ `infra/jenkins/plugins.txt` → `pnpm ci:up` → รัน pipeline → commit (D-44)
 - หยุด: `pnpm ci:up --stop`
 
 ## 9. Performance
@@ -137,3 +139,4 @@ pnpm perf:run --label=baseline
 | Reports ตอบ 503 `AI_NOT_CONFIGURED` | `REPORTS_ENABLED=false` |
 | Worker Unavailable | n8n ไม่รัน/ไม่ active หรือ token ไม่ตรงกับ API ปลายทาง (รัน `pnpm ai:up` ใหม่) |
 | `ERR_PNPM_IGNORED_BUILDS` | `pnpm approve-builds` |
+| Test ล้มด้วย `TEST_DB_PASSWORD missing` หรือ `permission denied to create database` | `.env` สร้างก่อนมี test role → `pnpm run setup` (เติมค่าที่ขาด) แล้ว `pnpm dev:up` (ปรับ role ของ volume เดิม, D-43) |
