@@ -36,7 +36,7 @@
     "perf:run": "node scripts/perf-run.mjs",
     "ci:up": "node scripts/ci-up.mjs",
     "n8n:build": "node workflows/n8n/build.mjs",
-    "test:prompt": "node --test prompts/employee-summary-v1/validate.test.mjs",
+    "test:prompt": "mkdir -p test-results && node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=test-results/prompt-junit.xml prompts/employee-summary-v1/validate.test.mjs",
     "secrets:scan": "node scripts/secret-scan.mjs"
   },
   "devDependencies": {

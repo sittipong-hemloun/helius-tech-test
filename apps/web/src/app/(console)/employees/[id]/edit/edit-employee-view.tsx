@@ -96,7 +96,12 @@ export function EditEmployeeView({ rawId }: { rawId: string }) {
             } catch {
               /* still unknown */
             }
-            setBanner({ tone: 'warning', title: "We couldn't confirm the save.", detail: 'Reload the latest version and check the values before saving again.', reload: true });
+            setBanner({
+              tone: 'warning',
+              title: "We couldn't confirm the save.",
+              detail: `Reload the latest version and check the values before saving again.${err.requestId ? ` Request ID ${err.requestId}.` : ''}`,
+              reload: true,
+            });
             return;
           }
           if (err instanceof ApiError && err.code === 'VALIDATION_ERROR' && applyServerErrors(err.details, setError)) return;

@@ -53,7 +53,7 @@ export function NewEmployeeView() {
                   setBanner({
                     tone: 'warning',
                     title: "We couldn't confirm whether the employee was saved.",
-                    detail: 'Select Save employee again — the retry is safe and will not create a duplicate.',
+                    detail: `Select Save employee again — the retry is safe and will not create a duplicate.${err.requestId ? ` Request ID ${err.requestId}.` : ''}`,
                   });
                   return;
                 }

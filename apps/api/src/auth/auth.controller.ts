@@ -1,5 +1,6 @@
 import { Controller, Get, HttpCode, Inject, Post, Req, Res } from '@nestjs/common';
-import { ApiExcludeEndpoint, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiEnvelope, ApiErrors, ApiNoContent } from '../common/openapi.js';
 import type { Response } from 'express';
 import { ApiException, Errors } from '../common/api-exception.js';
 import { Clock } from '../common/clock.js';
@@ -13,6 +14,13 @@ import { OidcService } from './oidc.service.js';
 import { SessionDataDto } from './session.dto.js';
 import { destroySession, isAbsolutelyExpired, randomToken, regenerateSession, saveSession } from './session-helpers.js';
 import { AccountLinkConflict, UsersService } from './users.service.js';
+
+class GoogleProviderDto {
+  @ApiProperty() configured: boolean;
+}
+class ProvidersDto {
+  @ApiProperty({ type: GoogleProviderDto }) google: GoogleProviderDto;
+}
 
 @ApiTags('auth')
 @Controller('api/auth')
@@ -40,6 +48,7 @@ export class AuthController {
   /** Public: whether Google sign-in is configured (no secrets). Used by the Login page. */
   @Get('providers')
   @Public()
+  @ApiEnvelope(ProvidersDto)
   @RateLimit('none')
   providers() {
     return respond({ google: { configured: this.config.google.configured } });
@@ -79,6 +88,8 @@ export class AuthController {
   @ApiExcludeEndpoint()
   async callback(@Req() req: AppRequest, @Res() res: Response): Promise<void> {
     const pending = req.session?.oidc;
+    // A stray or cross-site hit on the callback (no login in progress) must not log out a signed-in user.
+    if (!pending && this.hasValidSession(req)) return this.redirect(res, '/employees');
     if (req.session) delete req.session.oidc; // single use
 
     if (typeof req.query.error === 'string') {
@@ -144,7 +155,8 @@ export class AuthController {
   }
 
   @Get('session')
-  @ApiOkResponse({ type: SessionDataDto })
+  @ApiEnvelope(SessionDataDto)
+  @ApiErrors(401, 403)
   session(@Req() req: AppRequest) {
     const p = req.principal!;
     const auth = req.session.auth!;
@@ -159,6 +171,8 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(204)
+  @ApiNoContent('Session destroyed and cookie cleared')
+  @ApiErrors(401, 403, 503)
   @RateLimit('none')
   async logout(@Req() req: AppRequest, @Res() res: Response): Promise<void> {
     if (!req.principal) throw Errors.unauthenticated();

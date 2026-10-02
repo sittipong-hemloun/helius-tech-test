@@ -42,7 +42,7 @@ export function EmployeeTable({ rows, isAdmin, params, loading, onSort, onDelete
   const colCount = columns.length + (isAdmin ? 1 : 0);
 
   return (
-    <div className="overflow-x-auto rounded-[var(--radius-sheet)] border border-rule bg-sheet">
+    <div className="relative overflow-x-auto rounded-[var(--radius-sheet)] border border-rule bg-sheet">
       <table className="w-full min-w-[48rem] border-collapse text-left">
         <caption className="sr-only">Employees, sorted by {params.sortBy} {params.sortOrder === 'asc' ? 'ascending' : 'descending'}</caption>
         <thead>
@@ -89,7 +89,7 @@ export function EmployeeTable({ rows, isAdmin, params, loading, onSort, onDelete
             : rows.map((e) => (
                 <tr key={e.id} className={cn(loading && 'opacity-70')}>
                   <td className="figures type-wide px-3 py-2.5 text-ink-2">{e.id}</td>
-                  <td className="px-3 py-2.5">
+                  <td className="whitespace-nowrap px-3 py-2.5">
                     <GuardedLink href={`/employees/${e.id}`} className="font-medium text-ink underline-offset-4 hover:underline">
                       {e.name}
                     </GuardedLink>

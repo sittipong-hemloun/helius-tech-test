@@ -61,6 +61,8 @@ pnpm dev
 
 เปิด http://localhost:3000 — web (Next.js hot reload) และ API (NestJS watch) ที่พอร์ต `PORT` ใน `.env` (ค่าเริ่มต้น 3001)
 
+> คำสั่ง `setup` และ `doctor` ต้องมี `run` (`pnpm run setup`, `pnpm run doctor`) เพราะ pnpm มีคำสั่ง built-in ชื่อเดียวกัน
+>
 > ถ้าพอร์ต 3001 มีโปรแกรมอื่นใช้อยู่ ให้ปิดโปรแกรมนั้น หรือเปลี่ยน `PORT` และ `API_INTERNAL_URL` ใน `.env` ให้ตรงกัน (`pnpm run doctor` จะบอกว่าโปรเซสไหนใช้พอร์ต)
 
 ## ค่าที่ต้องเติมเอง
@@ -86,14 +88,19 @@ pnpm dev
 | `pnpm db:migrate` / `pnpm db:seed` | apply migrations / เติมข้อมูล Excel ที่ขาด (ไม่ทับ) |
 | `pnpm demo:reset --confirm-reset` | คืนข้อมูลเป็น 5 records (เฉพาะ APP_ENV local/staging และฐานที่ mark ว่า demo) |
 | `pnpm test:unit` / `pnpm test:api` | Vitest unit / integration บน PostgreSQL จริง (ฐานทดสอบแยก) |
-| `pnpm test:e2e` | Playwright กับ production build + ฐานทดสอบแยก |
+| `pnpm test:e2e` | Playwright กับ production build + ฐานทดสอบแยก (`E2E_SCREENSHOT_DIR=…` เก็บภาพ 375/1024/1440 px) |
+| `pnpm test:session --email=…` | สร้าง session fixture ผ่าน CLI — ใช้ได้เฉพาะ `APP_ENV=test/performance` + `AUTH_FIXTURES_ENABLED=true` + ฐานที่ mark ไว้ (ไม่มี HTTP route) |
+| `pnpm test:prompt` | ตรวจ validator ของ prompt `employee-summary-v1` |
+| `pnpm secrets:scan` | ตรวจว่าไม่มีค่า secret จาก `.env*` หรือ pattern credential ใน tracked files |
 | `pnpm test:postman` | Newman กับ API ใน APP_ENV=test |
 | `pnpm lint` / `pnpm typecheck` / `pnpm build` | ตรวจและ build ทั้ง web/api |
 | `pnpm openapi:generate` | สร้าง OpenAPI + client types (CI ตรวจ drift) |
-| `pnpm staging:up` / `staging:smoke` / `staging:rollback` / `staging:down` | build images ตาม SHA → migrate → deploy :3100 → smoke / ย้อน image ก่อนหน้า |
+| `pnpm staging:up` / `staging:restart` / `staging:smoke` / `staging:rollback` / `staging:down` | build images ตาม SHA → backup → migrate → deploy :3100 → smoke (ล้มแล้ว rollback อัตโนมัติ) / apply env ใหม่ / ย้อน image ก่อนหน้า |
+| `node scripts/staging.mjs reset --confirm-reset` / `restore --file=… --confirm-restore` | คืนข้อมูล 5 records บน staging / restore backup ด้วยสิทธิ์ที่ถูกต้อง |
 | `pnpm ai:up [--activate]` | เปิด n8n + Open WebUI, ผูก credentials, import workflows |
 | `pnpm ci:up` | เปิด Jenkins controller (:8080) และ agent บนเครื่องนี้ |
-| `pnpm perf:run --label=baseline` | benchmark 10k records (k6 + Lighthouse) |
+| `pnpm perf:seed` | สร้าง 10k synthetic records (seed 42) — เฉพาะ `APP_ENV=performance` + ฐานที่ mark performance |
+| `pnpm perf:run --label=<name>` | benchmark 10k records (k6 + Lighthouse); `--without-perf-indexes` สำหรับ baseline บน build เดียวกัน; `node scripts/perf-report.mjs <labels…>` สร้างตาราง |
 | `pnpm down` | หยุดทุก container ของโปรเจกต์ (ไม่ลบ volume) |
 
 ## Environments

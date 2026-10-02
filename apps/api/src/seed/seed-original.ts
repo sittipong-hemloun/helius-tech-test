@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import type { PrismaClient } from '../generated/prisma/client.js';
+import type { Prisma, PrismaClient } from '../generated/prisma/client.js';
 import { unwrap } from '../validation/rule.js';
 import { joinDateRule, nameRule, salaryRule, statusFromExcel } from '../employees/employee-rules.js';
 
@@ -68,36 +68,69 @@ export interface SeedSummary {
  * Existing rows are never updated (AC-02). Afterwards the identity sequence is moved to
  * at least max(id) so new records get server IDs after the source range.
  */
+/** Seed body for an existing transaction (used by seed and by the atomic reset). */
+export async function seedOriginalTx(tx: Prisma.TransactionClient, source: SourceFile, now = new Date()): Promise<SeedSummary> {
+  let departmentsInserted = 0;
+  for (const d of source.departments) {
+    departmentsInserted += await tx.$executeRaw`
+      INSERT INTO departments (id, name, sort_order) VALUES (${d.id}, ${d.name}, ${d.sortOrder})
+      ON CONFLICT (id) DO NOTHING`;
+  }
+  let employeesInserted = 0;
+  for (const raw of source.employees) {
+    const e = mapSourceRow(raw, source.departments);
+    employeesInserted += await tx.$executeRaw`
+      INSERT INTO employees (id, name, department_id, salary, join_date, is_active, last_updated_date, version, created_at, updated_at)
+      VALUES (${e.id}, ${e.name}, ${e.departmentId}, ${e.salary}::numeric, ${e.joinDate}::date, ${e.isActive},
+              ${e.lastUpdatedDate}::date, 1, ${now}, ${now})
+      ON CONFLICT (id) DO NOTHING`;
+  }
+  const rows = await tx.$queryRaw<{ next: bigint }[]>`
+    SELECT setval(
+      pg_get_serial_sequence('employees', 'id'),
+      GREATEST(
+        COALESCE((SELECT max(id) FROM employees), 0),
+        COALESCE(pg_sequence_last_value(pg_get_serial_sequence('employees', 'id')::regclass), 0),
+        1
+      ),
+      true
+    ) + 1 AS next`;
+  return { departmentsInserted, employeesInserted, nextEmployeeId: Number(rows[0].next) };
+}
+
+/**
+ * Inserts departments and source employees that are missing by primary key.
+ * Existing rows are never updated (AC-02). Afterwards the identity sequence is moved to
+ * at least max(id) so new records get server IDs after the source range.
+ */
 export async function seedOriginal(prisma: PrismaClient, now = new Date()): Promise<SeedSummary> {
   const source = loadSourceData();
-  return prisma.$transaction(async (tx) => {
-    let departmentsInserted = 0;
-    for (const d of source.departments) {
-      departmentsInserted += await tx.$executeRaw`
-        INSERT INTO departments (id, name, sort_order) VALUES (${d.id}, ${d.name}, ${d.sortOrder})
-        ON CONFLICT (id) DO NOTHING`;
-    }
-    let employeesInserted = 0;
-    for (const raw of source.employees) {
-      const e = mapSourceRow(raw, source.departments);
-      employeesInserted += await tx.$executeRaw`
-        INSERT INTO employees (id, name, department_id, salary, join_date, is_active, last_updated_date, version, created_at, updated_at)
-        VALUES (${e.id}, ${e.name}, ${e.departmentId}, ${e.salary}::numeric, ${e.joinDate}::date, ${e.isActive},
-                ${e.lastUpdatedDate}::date, 1, ${now}, ${now})
-        ON CONFLICT (id) DO NOTHING`;
-    }
-    const rows = await tx.$queryRaw<{ next: bigint }[]>`
-      SELECT setval(
-        pg_get_serial_sequence('employees', 'id'),
-        GREATEST(
-          COALESCE((SELECT max(id) FROM employees), 0),
-          COALESCE(pg_sequence_last_value(pg_get_serial_sequence('employees', 'id')::regclass), 0),
-          1
-        ),
-        true
-      ) + 1 AS next`;
-    return { departmentsInserted, employeesInserted, nextEmployeeId: Number(rows[0].next) };
-  });
+  return prisma.$transaction((tx) => seedOriginalTx(tx, source, now));
+}
+
+/**
+ * Demo/test reset as ONE transaction (PRD §9.5): lock employees first so no concurrent write can
+ * slip between wipe and re-seed, then wipe, restart the identity and seed. Any failure rolls
+ * everything back and leaves the previous data in place.
+ */
+export async function resetToSource(prisma: PrismaClient, opts: { truncate?: boolean } = {}): Promise<SeedSummary> {
+  const source = loadSourceData();
+  source.employees.forEach((r) => mapSourceRow(r, source.departments)); // validate before touching data
+  return prisma.$transaction(
+    async (tx) => {
+      await tx.$executeRawUnsafe('LOCK TABLE employees, reports, idempotency_keys IN ACCESS EXCLUSIVE MODE');
+      if (opts.truncate) {
+        await tx.$executeRawUnsafe('TRUNCATE reports, idempotency_keys, employees, integration_state');
+      } else {
+        await tx.$executeRaw`DELETE FROM reports`;
+        await tx.$executeRaw`DELETE FROM idempotency_keys`;
+        await tx.$executeRaw`DELETE FROM employees`;
+      }
+      await tx.$executeRawUnsafe('ALTER TABLE employees ALTER COLUMN id RESTART WITH 1');
+      return seedOriginalTx(tx, source, new Date());
+    },
+    { timeout: 30_000 },
+  );
 }
 
 export async function seedSummary(prisma: PrismaClient) {

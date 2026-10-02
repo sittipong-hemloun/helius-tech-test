@@ -189,3 +189,42 @@ test('lost create response: retry with the same key lands on the same record, no
   await page.goto('/employees?q=Retry%20Person');
   await expect(rows(page)).toHaveCount(1);
 });
+
+test('pagination: page links, URL state and step-back after deleting the last row of a page (AC-24, AC-25)', async ({ admin: page }) => {
+  // 12 records → pageSize 10 gives two pages (5 source rows + 7 created through the API).
+  const session = await page.request.get('/api/auth/session');
+  const csrf = (await session.json()).data.csrfToken as string;
+  for (let i = 1; i <= 7; i += 1) {
+    const res = await page.request.post('/api/v1/employees', {
+      headers: { 'X-CSRF-Token': csrf, 'Idempotency-Key': crypto.randomUUID() },
+      data: { name: `Paging Person ${i}`, departmentId: 'sales', salary: '1000.00', joinDate: '2025-01-0' + ((i % 9) + 1), isActive: true },
+    });
+    expect(res.status()).toBe(201);
+  }
+  await page.goto('/employees?pageSize=10');
+  await expect(rows(page)).toHaveCount(10);
+  await expect(page.getByText('1–10 of 12 employees')).toBeVisible();
+  await page.getByRole('button', { name: 'Page 2' }).click();
+  await expect(page).toHaveURL(/page=2/);
+  await expect(rows(page)).toHaveCount(2);
+  await expect(page.getByText('11–12 of 12 employees')).toBeVisible();
+  await page.reload();
+  await expect(rows(page)).toHaveCount(2);
+
+  // Changing a filter returns to page 1.
+  await page.getByLabel('Status').selectOption('active');
+  await expect(page).not.toHaveURL(/page=2/);
+  await page.goBack();
+  await expect(page).toHaveURL(/page=2/);
+  await expect(rows(page)).toHaveCount(2);
+
+  // Delete both rows on page 2 → the list steps back to the last page that has data.
+  for (let i = 0; i < 2; i += 1) {
+    await rows(page).first().getByRole('button', { name: /^Delete / }).click();
+    await page.getByRole('button', { name: 'Delete employee' }).click();
+    await expect(page.getByText('Employee deleted.').first()).toBeVisible();
+  }
+  await expect(page).not.toHaveURL(/page=2/);
+  await expect(rows(page)).toHaveCount(10);
+  await expect(page.getByText('1–10 of 10 employees')).toBeVisible();
+});

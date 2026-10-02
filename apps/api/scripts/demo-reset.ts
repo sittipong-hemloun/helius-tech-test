@@ -3,7 +3,7 @@
 // Clears employees, reports and idempotency keys only; users and sessions are kept.
 import { loadEnvFile } from '../src/config/env-file.js';
 import { createPrismaClient } from '../src/database/prisma.service.js';
-import { databasePurpose, seedOriginal, seedSummary } from '../src/seed/seed-original.js';
+import { databasePurpose, resetToSource, seedSummary } from '../src/seed/seed-original.js';
 
 loadEnvFile();
 const appEnv = process.env.APP_ENV ?? 'local';
@@ -22,13 +22,7 @@ try {
     console.error(`database purpose is "${purpose ?? 'unmarked'}", expected "demo"; nothing was changed`);
     process.exit(1);
   }
-  await prisma.$transaction(async (tx) => {
-    await tx.$executeRaw`DELETE FROM reports`;
-    await tx.$executeRaw`DELETE FROM idempotency_keys`;
-    await tx.$executeRaw`DELETE FROM employees`;
-    await tx.$executeRaw`ALTER TABLE employees ALTER COLUMN id RESTART WITH 1`;
-  });
-  const result = await seedOriginal(prisma);
+  const result = await resetToSource(prisma); // single transaction: lock → wipe → restart id → seed
   const s = await seedSummary(prisma);
   console.log(`demo reset: ${s.total} employees (${s.active}/${s.inactive}), salary sum ${s.salary_sum}, next ID ${result.nextEmployeeId}`);
 } finally {

@@ -48,3 +48,16 @@ export async function dropTestDatabase(runId: string): Promise<void> {
     await admin.end();
   }
 }
+
+/** Refuses any database that is not marked database_purpose=test (e.g. a mistaken TEST_DATABASE_URL). */
+export async function assertTestDatabase(url: string): Promise<void> {
+  const client = new pg.Client({ connectionString: url });
+  await client.connect();
+  try {
+    const r = await client.query(`SELECT value FROM app_meta WHERE key = 'database_purpose'`).catch(() => ({ rows: [] }));
+    const purpose = (r.rows[0] as { value?: string } | undefined)?.value ?? null;
+    if (purpose !== 'test') throw new Error(`refusing to run integration tests: database purpose is "${purpose ?? 'unmarked'}", expected "test"`);
+  } finally {
+    await client.end();
+  }
+}

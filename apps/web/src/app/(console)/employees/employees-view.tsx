@@ -95,6 +95,22 @@ export function EmployeesView() {
         <EmployeeFilters params={params} onSearch={onSearch} onChange={update} onClear={() => navigate({ ...DEFAULT_PARAMS, pageSize: params.pageSize })} filtered={filtered} />
       </div>
 
+      {query.isError && rows ? (
+        // Background refresh failed: keep the last loaded data visible, say so, and offer a retry.
+        <Notice
+          tone="warning"
+          title="Couldn't refresh the list. Showing the last loaded data."
+          className="mb-4"
+          action={
+            <Button variant="secondary" size="sm" onClick={() => void query.refetch()}>
+              Try again
+            </Button>
+          }
+        >
+          {describeError(query.error).detail}
+        </Notice>
+      ) : null}
+
       {query.isError && !rows ? (
         <Notice
           tone="error"

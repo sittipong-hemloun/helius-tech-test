@@ -57,7 +57,7 @@ export const DEFAULT_NOW = '2026-10-01T03:00:00.000Z';
 export async function startApp(envOverrides: Record<string, string> = {}, now = DEFAULT_NOW): Promise<TestContext> {
   const config = loadConfig(testEnv(envOverrides));
   const clock = new FakeClock(new Date(now));
-  const app = await createApp(config, { clock, logger: new JsonLogger('test', 'error') });
+  const app = await createApp(config, { clock, logger: new JsonLogger('test', config.logLevel) });
   // Listen once on an explicit loopback port. Passing the bare server to supertest makes it
   // bind a new wildcard ephemeral port per request, which occasionally collided with another
   // local process bound to 127.0.0.1 on that port (requests then hit the wrong server: 404).

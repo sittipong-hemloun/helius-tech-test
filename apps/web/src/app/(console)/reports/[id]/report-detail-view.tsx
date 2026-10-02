@@ -26,6 +26,12 @@ export function ReportDetailView({ id }: { id: string }) {
   const s = r?.snapshot;
   return (
     <article className="max-w-4xl" aria-busy={!r}>
+      {query.isError && r ? (
+        <Notice tone="warning" title="Couldn't refresh this report. Showing the last loaded status." className="mb-4"
+          action={<Button variant="secondary" size="sm" onClick={() => void query.refetch()}>Try again</Button>}>
+          {describeError(query.error).detail}
+        </Notice>
+      ) : null}
       <GuardedLink href="/reports" className="mb-6 inline-flex items-center gap-1.5 text-sm text-ink-2 hover:text-ink">
         <ArrowLeft aria-hidden className="size-4" />
         Reports

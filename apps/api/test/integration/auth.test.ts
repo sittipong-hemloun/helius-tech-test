@@ -240,7 +240,7 @@ describe('allowlist changes apply on the next request (AC-33)', () => {
 describe('session fixtures are test-only (AC-34)', () => {
   it('refuses when the database purpose does not match APP_ENV', async () => {
     const ctx = await startApp();
-    const perfConfig = loadConfig(testEnv({ APP_ENV: 'performance', PERF_RATE_LIMIT_OVERRIDE: 'true' }));
+    const perfConfig = loadConfig(testEnv({ APP_ENV: 'performance', PERF_RATE_LIMIT_OVERRIDE: 'true', RATE_LIMIT_ENABLED: 'true' }));
     await expect(createFixtureSession(ctx.prisma, perfConfig, { email: ADMIN_EMAIL })).rejects.toBeInstanceOf(FixtureRefused);
     const disabled = loadConfig(testEnv({ AUTH_FIXTURES_ENABLED: 'false' }));
     await expect(createFixtureSession(ctx.prisma, disabled, { email: ADMIN_EMAIL })).rejects.toThrow(/AUTH_FIXTURES_ENABLED/);
@@ -270,6 +270,10 @@ describe('rate limits (PRD §11.4)', () => {
     const limited = await ctx.http.get('/api/auth/google').expect(429);
     expect(limited.body.error.code).toBe('RATE_LIMITED');
     expect(Number(limited.headers['retry-after'])).toBeGreaterThan(0);
+    // Through the proxy, a client's own X-Forwarded-For entries come first and the proxy appends the
+    // address it saw (here 127.0.0.1). Only that last hop is believed, so forged entries change nothing.
+    await ctx.http.get('/api/auth/google').set('X-Forwarded-For', '203.0.113.7, 127.0.0.1').expect(429);
+    await ctx.http.get('/api/auth/google').set('X-Forwarded-For', '198.51.100.1, 203.0.113.9, 127.0.0.1').expect(429);
     await ctx.close();
   });
 
@@ -383,6 +387,13 @@ describe('Google OIDC callback with a mock provider (AC-29, AC-30, AC-31)', () =
       expect(sessions[0].n).toBe(0);
     });
   }
+
+  it('a stray callback hit does not log out a signed-in user', async () => {
+    const admin = await login(ctx, ADMIN_EMAIL);
+    const res = await ctx.http.get('/api/auth/google/callback?error=access_denied').set('Cookie', admin.cookieHeader).expect(302);
+    expect(res.headers.location).toBe(`${ORIGIN}/employees`);
+    await ctx.http.get('/api/auth/session').set('Cookie', admin.cookieHeader).expect(200);
+  });
 
   it('a callback without a pending login state is rejected', async () => {
     const res = await ctx.http.get('/api/auth/google/callback?code=abc&state=xyz').expect(302);

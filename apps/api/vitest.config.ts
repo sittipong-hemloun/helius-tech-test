@@ -37,7 +37,7 @@ export default defineConfig({
         },
       },
     ],
+    // JUnit files are named per suite by the package scripts (--outputFile.junit=…) so CI keeps both.
     reporters: process.env.CI ? ['default', 'junit'] : ['default'],
-    outputFile: { junit: '../../test-results/api-junit.xml' },
   },
 });

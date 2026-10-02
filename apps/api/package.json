@@ -14,8 +14,8 @@
     "db:mark": "tsx scripts/mark-database.ts",
     "demo:reset": "tsx scripts/demo-reset.ts",
     "test:session": "tsx scripts/test-session.ts",
-    "test:unit": "vitest run --project unit",
-    "test:api": "vitest run --project integration",
+    "test:unit": "vitest run --project unit --outputFile.junit=../../test-results/api-unit-junit.xml",
+    "test:api": "vitest run --project integration --outputFile.junit=../../test-results/api-integration-junit.xml",
     "openapi:generate": "prisma generate && tsc -p tsconfig.scripts.json && node .tmp/scripts/scripts/generate-openapi.js",
     "perf:seed": "tsx scripts/perf-seed.ts",
     "test:reset": "tsx scripts/test-reset.ts"

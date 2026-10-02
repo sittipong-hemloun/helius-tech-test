@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Headers, HttpCode, Param, Patch, Post, Query, Req, Res, UsePipes } from '@nestjs/common';
-import { ApiBody, ApiCreatedResponse, ApiHeader, ApiNoContentResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiEnvelope, ApiErrors, ApiNoContent, ChangedMetaDto, EmployeeListMetaDto, Headers as H } from '../common/openapi.js';
 import type { Response } from 'express';
 import { Errors } from '../common/api-exception.js';
 import { respond } from '../common/envelope.js';
@@ -48,7 +49,8 @@ export class EmployeesController {
 
   @Get()
   @UsePipes(queryValidationPipe)
-  @ApiOkResponse({ type: EmployeeDto, isArray: true })
+  @ApiEnvelope(EmployeeDto, { isArray: true, meta: EmployeeListMetaDto, description: 'Viewer responses omit the salary key' })
+  @ApiErrors(400, 401, 403, 429)
   async list(@Query() raw: ListEmployeesQueryDto, @Req() req: AppRequest) {
     const query: ListQuery = {
       q: raw.q === undefined ? '' : unwrap(qRule(raw.q)),
@@ -74,7 +76,8 @@ export class EmployeesController {
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: EmployeeDto })
+  @ApiEnvelope(EmployeeDto, { headers: H.etag })
+  @ApiErrors(401, 403, 404, 429)
   async get(@Param('id') id: string, @Req() req: AppRequest, @Res({ passthrough: true }) res: Response) {
     const row = await this.employees.get(parseId(id), this.viewer(req));
     res.setHeader('ETag', `"${row.version}"`);
@@ -86,7 +89,8 @@ export class EmployeesController {
   @UsePipes(bodyValidationPipe)
   @ApiHeader({ name: 'Idempotency-Key', required: true, description: 'UUID generated once per create intent' })
   @ApiHeader({ name: 'X-CSRF-Token', required: true })
-  @ApiCreatedResponse({ type: EmployeeDto })
+  @ApiEnvelope(EmployeeDto, { status: 201, headers: { ...H.etag, ...H.location, ...H.replayed } })
+  @ApiErrors(400, 401, 403, 409, 413, 415, 429)
   async create(
     @Body() body: CreateEmployeeDto,
     @Headers('idempotency-key') keyHeader: string | undefined,
@@ -109,7 +113,8 @@ export class EmployeesController {
   @ApiHeader({ name: 'If-Match', required: true, description: 'Quoted employee version, e.g. "1"' })
   @ApiHeader({ name: 'X-CSRF-Token', required: true })
   @ApiBody({ type: UpdateEmployeeDto })
-  @ApiOkResponse({ type: EmployeeDto })
+  @ApiEnvelope(EmployeeDto, { meta: ChangedMetaDto, headers: H.etag })
+  @ApiErrors(400, 401, 403, 404, 409, 413, 415, 428, 429)
   async update(
     @Param('id') id: string,
     @Body() body: UpdateEmployeeDto,
@@ -131,7 +136,8 @@ export class EmployeesController {
   @HttpCode(204)
   @ApiHeader({ name: 'If-Match', required: true })
   @ApiHeader({ name: 'X-CSRF-Token', required: true })
-  @ApiNoContentResponse()
+  @ApiNoContent('Deleted')
+  @ApiErrors(400, 401, 403, 404, 409, 428, 429)
   async remove(@Param('id') id: string, @Headers('if-match') ifMatch: string | undefined): Promise<void> {
     const employeeId = parseId(id);
     await this.employees.remove(employeeId, parseIfMatch(ifMatch));

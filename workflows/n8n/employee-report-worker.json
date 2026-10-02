@@ -519,8 +519,8 @@
     "executionOrder": "v1",
     "timezone": "Asia/Bangkok",
     "saveDataSuccessExecution": "none",
-    "saveDataErrorExecution": "all",
-    "saveManualExecutions": true,
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false,
     "executionTimeout": 110
   },
   "pinData": {},

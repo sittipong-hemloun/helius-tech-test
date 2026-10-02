@@ -40,6 +40,7 @@ export interface ApiResult<T, M = Record<string, unknown>> {
 
 let csrfToken: string | null = null;
 let onUnauthorized: ((code: string) => void) | null = null;
+let onForbidden: (() => void) | null = null;
 
 export function setCsrfToken(token: string | null): void {
   csrfToken = token;
@@ -47,6 +48,11 @@ export function setCsrfToken(token: string | null): void {
 
 export function setUnauthorizedHandler(handler: ((code: string) => void) | null): void {
   onUnauthorized = handler;
+}
+
+/** Called on 403 FORBIDDEN: the UI offered something the server refused — re-check the session (PRD §11.2). */
+export function setForbiddenHandler(handler: (() => void) | null): void {
+  onForbidden = handler;
 }
 
 interface RequestOptions {
@@ -105,6 +111,7 @@ export async function api<T, M = Record<string, unknown>>(path: string, opts: Re
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.assign('/access-denied?reason=not_allowed');
     }
+    if (res.status === 403 && code === 'FORBIDDEN' && onForbidden) onForbidden();
     const retryAfter = res.headers.get('retry-after');
     throw new ApiError(
       res.status,
@@ -126,6 +133,7 @@ export function describeError(err: unknown): { title: string; detail?: string } 
   if (err instanceof ApiError) {
     const ref = err.requestId ? `Request ID ${err.requestId}` : undefined;
     if (err.status === 0) return { title: err.message, detail: 'Nothing was shown as saved. Check the record before trying again.' };
+    if (err.status === 403 && err.code === 'FORBIDDEN') return { title: 'Your role does not allow this action. The page was refreshed with your current access.', detail: ref };
     if (err.status >= 500) return { title: 'The server could not complete the request. Try again.', detail: ref };
     return { title: err.message, detail: ref };
   }

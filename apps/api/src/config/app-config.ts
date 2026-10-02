@@ -107,7 +107,9 @@ const envSchema = z.object({
   HOST: z.string().default('127.0.0.1'),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
   DB_POOL_MAX: z.coerce.number().int().min(1).max(100).default(10),
-  TRUST_PROXY: z.string().default('loopback, linklocal, uniquelocal'),
+  // "private-1hop": trust only the immediate proxy (Next.js) and only when it connects from a
+  // loopback/private address, so client-supplied X-Forwarded-For entries are never believed.
+  TRUST_PROXY: z.string().default('private-1hop'),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
   SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters'),
   SESSION_COOKIE_NAME: z.string().optional(),
@@ -179,6 +181,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
 
   if (e.AUTH_FIXTURES_ENABLED && e.APP_ENV !== 'test' && e.APP_ENV !== 'performance') {
     problems.push('AUTH_FIXTURES_ENABLED=true is only allowed when APP_ENV is test or performance (PRD §11.5)');
+  }
+  if (!e.RATE_LIMIT_ENABLED && e.APP_ENV !== 'test') {
+    problems.push('RATE_LIMIT_ENABLED=false is only allowed when APP_ENV=test (performance uses PERF_RATE_LIMIT_OVERRIDE)');
   }
   if (e.PERF_RATE_LIMIT_OVERRIDE && e.APP_ENV !== 'performance') {
     problems.push('PERF_RATE_LIMIT_OVERRIDE=true is only allowed when APP_ENV=performance');

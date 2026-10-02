@@ -34,7 +34,10 @@ export function ReportsView() {
       },
       onError: (err) => {
         if (err instanceof ApiError && err.outcomeUnknown) {
-          setNotice({ title: "We couldn't confirm the request.", detail: 'Select Generate report again; the retry will not create a second report.' });
+          setNotice({
+            title: "We couldn't confirm the request.",
+            detail: `Select Generate report again; the retry will not create a second report.${err.requestId ? ` Request ID ${err.requestId}.` : ''}`,
+          });
           return;
         }
         keyRef.current = crypto.randomUUID();
@@ -96,7 +99,7 @@ export function ReportsView() {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-[var(--radius-sheet)] border border-rule bg-sheet">
+        <div className="relative overflow-x-auto rounded-[var(--radius-sheet)] border border-rule bg-sheet">
           <table className="w-full min-w-[46rem] border-collapse text-left">
             <caption className="sr-only">Reports, newest first</caption>
             <thead>

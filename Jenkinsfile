@@ -131,7 +131,12 @@ pipeline {
         }
       }
       steps {
-        sh 'node scripts/staging.mjs smoke | tee test-results/staging-smoke.txt'
+        // pipefail: a failed smoke must fail the stage even though the output is also teed to a file.
+        sh '''#!/bin/bash
+          set -o pipefail
+          mkdir -p test-results
+          node scripts/staging.mjs smoke | tee test-results/staging-smoke.txt
+        '''
       }
     }
 

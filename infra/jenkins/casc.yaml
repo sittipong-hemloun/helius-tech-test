@@ -68,7 +68,8 @@ jobs:
                   url(repo)
                   if (credId) { credentials(credId) }
                 }
-                branch("*/${branchName}")
+                // String concatenation on purpose: JCasC would substitute ${...} itself.
+                branch('*/' + branchName)
               }
             }
           }

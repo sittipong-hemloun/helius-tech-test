@@ -53,7 +53,9 @@ node scripts/staging.mjs reset --confirm-reset
 pnpm staging:up
 ```
 
-ลำดับ: build `employee-console/api:<sha>` และ `web:<sha>` → start postgres → **pg_dump backup** ไป `.backups/` (ถ้ามี schema แล้ว) → `prisma migrate deploy` → seed เฉพาะการ bootstrap ครั้งแรก → start api → web → smoke → บันทึก `.deploy/staging-manifest.json` (current/previous/history) ถ้า smoke ล้มจะ redeploy image ก่อนหน้าอัตโนมัติ
+ลำดับ: build `employee-console/api:<sha>` และ `web:<sha>` → start postgres → **pg_dump backup** (ถ้ามี schema แล้ว) → `prisma migrate deploy` → seed เฉพาะการ bootstrap ครั้งแรก → start api → web → smoke → บันทึก manifest (current/previous/history) ขั้นใดล้ม (migrate, health, smoke) จะ redeploy tag ที่ดีล่าสุดอัตโนมัติ และบันทึก `failed` ไว้ใน manifest
+
+สถานะ deploy อยู่ที่ `~/.employee-console/staging/` (`manifest.json`, `backups/`) — ใช้ร่วมกันระหว่างคำสั่งในเครื่องและ Jenkins (เปลี่ยนได้ด้วย `STAGING_STATE_DIR`); สำเนา manifest อยู่ที่ `.deploy/staging-manifest.json` ใน workspace
 
 ```bash
 pnpm staging:smoke
@@ -62,24 +64,22 @@ pnpm staging:smoke
 ตรวจ liveness, readiness (DB + migration), หน้า Login, static asset, API บังคับ auth (401), `/internal` ไม่ถูกเปิดผ่านเว็บ (404), และสถานะ Google config (presence เท่านั้น — login จริงต้องตรวจมือ)
 
 ```bash
+pnpm staging:restart
+```
+
+redeploy tag ปัจจุบันเพื่อให้ค่าใน `.env.staging` ที่แก้ (เช่น `REPORTS_ENABLED`, Google client) มีผล
+
+```bash
 pnpm staging:rollback
 ```
 
-กลับไป image ก่อนหน้าโดย **ไม่ย้อน schema** (migration ออกแบบให้ expand-compatible) ถ้าต้องย้อน schema ให้ restore backup:
+กลับไป tag ก่อนหน้า (`previous` ใน manifest) โดย **ไม่ย้อน schema** (migration ออกแบบให้ expand-compatible) ถ้าต้องย้อน schema ให้ restore backup ที่ทำไว้ก่อน migrate:
 
 ```bash
-docker compose -p employee-console-staging -f compose.staging.yaml --env-file .env.staging stop api web
+node scripts/staging.mjs restore --file=$HOME/.employee-console/staging/backups/<file>.sql --tag=<sha ที่ตรงกับ backup> --confirm-restore
 ```
 
-```bash
-docker compose -p employee-console-staging -f compose.staging.yaml --env-file .env.staging exec -T postgres psql -U postgres -c "DROP DATABASE employee_console_staging WITH (FORCE)" -c "CREATE DATABASE employee_console_staging OWNER employee_console_app"
-```
-
-```bash
-docker compose -p employee-console-staging -f compose.staging.yaml --env-file .env.staging exec -T postgres psql -U postgres -d employee_console_staging < .backups/<file>.sql
-```
-
-แล้ว `pnpm staging:up --tag=<sha ที่ตรงกับ backup>`
+คำสั่งนี้หยุด api/web → drop + create `employee_console_staging` โดยให้ app role เป็นเจ้าของ → โหลด dump ด้วย app role (object ทั้งหมดเป็นของ app role) → deploy tag ที่ระบุ → smoke
 
 ## 6. AI reports (n8n + Gemini)
 

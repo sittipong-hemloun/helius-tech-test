@@ -19,22 +19,26 @@ export function formatSalary(value: string | null | undefined): string {
   return `${integer}.${(m[2] ?? '').padEnd(2, '0')}`;
 }
 
-const bangkok = new Intl.DateTimeFormat('en-GB', {
+const bangkokParts = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'Asia/Bangkok',
   day: '2-digit',
-  month: 'short',
+  month: '2-digit',
   year: 'numeric',
   hour: '2-digit',
   minute: '2-digit',
-  hour12: false,
+  hourCycle: 'h23',
 });
 
-/** UTC timestamp → "01 Oct 2026, 10:00" in Asia/Bangkok. */
+/**
+ * UTC timestamp → "01 Oct 2026, 10:00" in Asia/Bangkok. Numeric parts + our own month names, so the
+ * output is the same three-letter `dd MMM yyyy` everywhere (ICU's en-GB would print "Sept").
+ */
 export function formatTimestamp(value: string | null | undefined): string {
   if (!value) return '—';
   const d = new Date(value);
   if (Number.isNaN(d.getTime())) return value;
-  return bangkok.format(d).replace(/ at /, ', ');
+  const p = Object.fromEntries(bangkokParts.formatToParts(d).map((x) => [x.type, x.value]));
+  return `${p.day} ${MONTHS[Number(p.month) - 1]} ${p.year}, ${p.hour}:${p.minute}`;
 }
 
 export function statusLabel(isActive: boolean): 'Active' | 'In Active' {

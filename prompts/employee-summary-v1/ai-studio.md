@@ -8,9 +8,9 @@
 2. System instructions: วางข้อความจาก `system-prompt.txt` ทั้งหมด
 3. Run settings: Temperature 0.2, Output length 1024, Structured output = On → Edit → วาง `response-schema.json`, ปิด Grounding/Code execution/URL context
 4. ข้อความผู้ใช้: วาง `snapshot` (เฉพาะ object `snapshot`) จาก fixture ทีละไฟล์ `01`, `03`, `04`, `05` (fixture `02` ไม่มีพนักงาน — worker ใช้ template โดยไม่เรียกโมเดล; ลองใน AI Studio ได้เพื่อดูพฤติกรรม แต่ผลจริงใช้ template)
-5. คัดลอก JSON ที่ได้มาใส่ตารางด้านล่าง แล้วตรวจด้วย:
+5. คัดลอก JSON ที่ได้มาใส่ตารางด้านล่าง แล้วตรวจกับ fixture เดียวกับที่ใช้เป็น input:
    ```bash
-   node -e "import('./prompts/employee-summary-v1/validate.mjs').then(m=>console.log(m.checkNarrative(JSON.parse(process.argv[1]), JSON.parse(require('fs').readFileSync('prompts/employee-summary-v1/fixtures/01-seed.json','utf8')).snapshot)))" '<output json>'
+   node prompts/employee-summary-v1/check-output.mjs 03-all-active '<output json>'
    ```
 6. Get code → เทียบกับ request ที่ worker ส่ง (`geminiRequest()` ใน `validate.mjs`)
 

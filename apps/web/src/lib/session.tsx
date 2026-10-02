@@ -3,7 +3,7 @@
 import type { SessionData } from '@employee-console/api-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { createContext, useCallback, useContext, useEffect, useMemo, type ReactNode } from 'react';
-import { api, setCsrfToken, setUnauthorizedHandler } from './api';
+import { api, setCsrfToken, setForbiddenHandler, setUnauthorizedHandler } from './api';
 
 interface SessionContextValue {
   session: SessionData;
@@ -30,8 +30,29 @@ export function SessionProvider({ session, children }: { session: SessionData; c
       setCsrfToken(null);
       goToLogin('session_expired');
     });
-    return () => setUnauthorizedHandler(null);
-  }, [queryClient]);
+    // 403 although the UI showed the control: the allowlist/role may have changed since this page
+    // loaded. Re-read the session and reload only when the role really differs (no reload loop).
+    let checking = false;
+    setForbiddenHandler(() => {
+      if (checking) return;
+      checking = true;
+      api<SessionData>('/api/auth/session')
+        .then((r) => {
+          if (r.data.user.role !== session.user.role) {
+            queryClient.clear();
+            window.location.reload();
+          }
+        })
+        .catch(() => undefined)
+        .finally(() => {
+          checking = false;
+        });
+    });
+    return () => {
+      setUnauthorizedHandler(null);
+      setForbiddenHandler(null);
+    };
+  }, [queryClient, session.user.role]);
 
   const logout = useCallback(async () => {
     try {
@@ -43,7 +64,7 @@ export function SessionProvider({ session, children }: { session: SessionData; c
     }
   }, [queryClient]);
 
-  // A 403 while the UI believes it has the role means the allowlist changed: reload the session.
+  /** Reloads the page so the server re-checks session and role. */
   const refresh = useCallback(() => window.location.reload(), []);
 
   const value = useMemo<SessionContextValue>(

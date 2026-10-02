@@ -44,3 +44,13 @@ D-01 ถึง D-12 มาจาก PRD §20.1 และนำมาใช้ต
 | D-31 | ช่อง Salary ไม่ reformat ตอน focus (format เฉพาะตอน blur และรับ comma ระหว่างพิมพ์) | Playwright เจอว่าการเปลี่ยนค่าใน onFocus ทับ selection แล้วข้อความต่อท้าย (`62000.0063000.00`) |
 | D-32 | Baseline performance ไม่มี index บน `department_id`/ชื่อ; index เพิ่มใน migration แยกหลังวัด | PRD §15.3 ให้เก็บ baseline ก่อนเพิ่ม index แล้ววัดซ้ำ |
 | D-33 | Readiness ตรวจว่า migration ล่าสุดที่มากับ build ถูก apply แล้ว | "readiness ตรวจ DB และ schema version ที่ app ต้องใช้" (PRD §13.4) |
+| D-34 | `pnpm run setup` และ `pnpm run doctor` (มี `run`) | pnpm 12 มีคำสั่ง built-in `setup` และ `doctor` ที่ทับชื่อ script — PRD §13.3 เองระบุให้ใช้ `run` กับ setup ด้วยเหตุผลเดียวกัน |
+| D-35 | Trust proxy แบบ `private-1hop` | เชื่อเฉพาะ proxy ตัวที่ต่อเข้ามาตรง (Next.js บน loopback/private) และไม่เชื่อ X-Forwarded-For ชั้นถัดไป — กันการปลอม IP เพื่อหลบ limit 10/นาที/IP ของ Google start (audit finding) |
+| D-36 | `RATE_LIMIT_ENABLED=false` ได้เฉพาะ `APP_ENV=test` | performance ใช้ `PERF_RATE_LIMIT_OVERRIDE` ตาม PRD; local/staging ปิด limiter ไม่ได้ |
+| D-37 | `demo:reset`/`test:reset` เป็น transaction เดียว (`LOCK TABLE` → ลบ → restart identity → seed) | ไม่มีช่วงที่คำขอสร้างพนักงานแทรกได้ และถ้า seed ล้มข้อมูลเดิมยังอยู่ (audit finding) |
+| D-38 | Callback ของ Google ที่ไม่มี login ค้างอยู่ จะไม่ทำลาย session ที่ login แล้ว | กันการ logout ข้ามไซต์ด้วยลิงก์ GET (audit finding) |
+| D-39 | 403 `FORBIDDEN` ทำให้ UI อ่าน session ใหม่และ reload เมื่อ role เปลี่ยนจริง | PRD §11.2 "refresh session และ UI" โดยไม่ reload วนซ้ำ |
+| D-40 | n8n worker ไม่เก็บ execution data (`saveDataErrorExecution: none`, `saveManualExecutions: false`) | execution data จะมี raw response ของ Gemini; PRD §13.4 ให้ปิดการเก็บ raw provider response โดย default — เปิดชั่วคราวใน n8n UI เมื่อต้อง debug |
+| D-41 | สถานะ staging (manifest + backups) อยู่ที่ `~/.employee-console/staging` (`STAGING_STATE_DIR`) | local และ Jenkins (workspace คนละที่) ต้องเห็นประวัติ deploy/rollback ชุดเดียวกัน; restore ผ่าน `staging.mjs restore` ให้ object เป็นของ app role |
+| D-42 | OpenAPI อธิบาย envelope `{data, meta}`, error envelope, header สัญญา (ETag, Location, Idempotency-Replayed, Retry-After, X-Request-Id) และ 200/202 ของ scheduled | ให้เอกสารตรงกับ runtime จริง (audit finding) |
+

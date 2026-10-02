@@ -1,5 +1,6 @@
 import { Controller, Get, Inject, Module } from '@nestjs/common';
-import { ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiEnvelope, ApiErrors } from '../common/openapi.js';
 import { Roles } from '../auth/auth.decorators.js';
 import { Clock } from '../common/clock.js';
 import { respond } from '../common/envelope.js';
@@ -38,7 +39,8 @@ export class IntegrationsController {
 
   @Get('status')
   @Roles('ADMIN')
-  @ApiOkResponse({ type: IntegrationStatusDto })
+  @ApiEnvelope(IntegrationStatusDto)
+  @ApiErrors(401, 403, 429)
   async status() {
     const lastSeen = await this.reports.workerLastSeenAt();
     const workerAvailable = lastSeen !== null && this.clock.now().getTime() - lastSeen.getTime() <= this.config.reports.workerStaleMs;

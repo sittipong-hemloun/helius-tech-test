@@ -6,14 +6,25 @@
 //   pnpm staging:rollback  redeploy the previous image tag (schema is not rolled back)
 //   pnpm staging:down      stop containers, keep the volume
 //   node scripts/staging.mjs reset --confirm-reset   restore the 5 source records on staging
+//   node scripts/staging.mjs restore --file=<backup.sql> --confirm-restore [--tag=<sha>]
+//                          restore a pg_dump backup into a fresh database owned by the app role
 // Options: --tag=<sha> deploy an existing tag; --skip-build reuse images; --no-smoke.
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+// State (manifest + backups) lives in STAGING_STATE_DIR (default ~/.employee-console/staging) so
+// local runs and Jenkins builds (different working directories) see the same deployment history.
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { resolve } from 'node:path';
+import { readEnvFile } from './lib/env.mjs';
 import { capture, info, ok, ROOT, run, sleep, waitFor, warn } from './lib/sh.mjs';
 
 // Jenkins passes the staging env as a secret file (STAGING_ENV_FILE); locally .env.staging is used.
 const ENV_FILE = process.env.STAGING_ENV_FILE ?? resolve(ROOT, '.env.staging');
-const MANIFEST = resolve(ROOT, '.deploy/staging-manifest.json');
+const STATE_DIR = process.env.STAGING_STATE_DIR ?? resolve(homedir(), '.employee-console/staging');
+const MANIFEST = resolve(STATE_DIR, 'manifest.json');
+const BACKUP_DIR = resolve(STATE_DIR, 'backups');
+const LEGACY_MANIFEST = resolve(ROOT, '.deploy/staging-manifest.json');
+mkdirSync(BACKUP_DIR, { recursive: true });
+if (!existsSync(MANIFEST) && existsSync(LEGACY_MANIFEST)) copyFileSync(LEGACY_MANIFEST, MANIFEST);
 const BASE = process.env.STAGING_URL ?? 'http://localhost:3100';
 const PROJECT = 'employee-console-staging';
 const [command = 'up', ...rest] = process.argv.slice(2);
@@ -34,13 +45,22 @@ function compose(args, tag, opts = {}) {
   });
 }
 
+/** Like compose() but throws instead of exiting, so a failed deploy step can trigger a rollback. */
+function composeChecked(args, tag) {
+  const status = compose(args, tag, { allowFailure: true });
+  if (status !== 0) throw new Error(`docker compose ${args.join(' ')} exited with ${status}`);
+}
+
 function readManifest() {
   return existsSync(MANIFEST) ? JSON.parse(readFileSync(MANIFEST, 'utf8')) : { current: null, previous: null, history: [] };
 }
 
 function writeManifest(m) {
-  mkdirSync(resolve(ROOT, '.deploy'), { recursive: true });
+  mkdirSync(STATE_DIR, { recursive: true });
   writeFileSync(MANIFEST, `${JSON.stringify(m, null, 2)}\n`);
+  // Also mirror into the workspace so Jenkins can archive it as a build artifact.
+  mkdirSync(resolve(ROOT, '.deploy'), { recursive: true });
+  writeFileSync(LEGACY_MANIFEST, `${JSON.stringify(m, null, 2)}\n`);
 }
 
 export function commitTag() {
@@ -81,11 +101,10 @@ function dbExec(tag, sql) {
 }
 
 function backup(tag) {
-  // Safety copy before applying migrations (git-ignored .backups/). Restore is explicit; see docs/runbook.md.
+  // Safety copy before applying migrations (STATE_DIR/backups). Restore with the `restore` command.
   const hasSchema = dbExec(tag, "SELECT to_regclass('public._prisma_migrations') IS NOT NULL");
   if (hasSchema !== 't') return null;
-  mkdirSync(resolve(ROOT, '.backups'), { recursive: true });
-  const file = resolve(ROOT, `.backups/staging-${new Date().toISOString().replace(/[:.]/g, '-')}.sql`);
+  const file = resolve(BACKUP_DIR, `staging-${new Date().toISOString().replace(/[:.]/g, '-')}-before-${tag}.sql`);
   const dump = capture(
     'docker',
     ['compose', '-p', PROJECT, '-f', 'compose.staging.yaml', '--env-file', ENV_FILE, 'exec', '-T', 'postgres', 'pg_dump', '-U', 'postgres', '--no-owner', 'employee_console_staging'],
@@ -166,28 +185,50 @@ async function smoke() {
 }
 
 async function deploy(tag, { previous }) {
-  compose(['up', '-d', 'postgres'], tag);
+  composeChecked(['up', '-d', 'postgres'], tag);
   await waitHealthy('postgres', tag);
   const backupFile = backup(tag);
-  if (backupFile) info(`backup written to ${backupFile.replace(`${ROOT}/`, '')}`);
-  compose(['run', '--rm', 'migrate'], tag);
+  if (backupFile) info(`backup written to ${backupFile}`);
+  composeChecked(['run', '--rm', 'migrate'], tag);
 
   const purpose = dbExec(tag, "SELECT value FROM app_meta WHERE key = 'database_purpose'");
   if (!purpose) {
     // First bootstrap only: mark as demo and load the Excel source data (never on later deploys).
-    compose(['run', '--rm', '--entrypoint', 'node', 'migrate', 'dist-scripts/scripts/mark-database.js', '--purpose=demo'], tag);
-    compose(['run', '--rm', '--entrypoint', 'node', 'migrate', 'dist-scripts/scripts/seed.js'], tag);
+    composeChecked(['run', '--rm', '--entrypoint', 'node', 'migrate', 'dist-scripts/scripts/mark-database.js', '--purpose=demo'], tag);
+    composeChecked(['run', '--rm', '--entrypoint', 'node', 'migrate', 'dist-scripts/scripts/seed.js'], tag);
   }
 
-  compose(['up', '-d', '--no-deps', 'api'], tag);
+  composeChecked(['up', '-d', '--no-deps', 'api'], tag);
   await waitHealthy('api', tag);
-  compose(['up', '-d', '--no-deps', 'web'], tag);
+  composeChecked(['up', '-d', '--no-deps', 'web'], tag);
   await waitHealthy('web', tag);
 
   const m = readManifest();
   const entry = { tag, deployedAt: new Date().toISOString(), previous };
   writeManifest({ current: tag, previous, history: [entry, ...(m.history ?? [])].slice(0, 20) });
   ok(`staging running ${tag} at ${BASE}`);
+}
+
+/** Deploy + smoke; on any failure put the last good tag back (no schema rollback). */
+async function deployWithRollback(tag, { lastGood, smokeAfter }) {
+  try {
+    await deploy(tag, { previous: lastGood && lastGood !== tag ? lastGood : readManifest().previous });
+    if (smokeAfter) {
+      await sleep(1000);
+      if (!(await smoke())) throw new Error('smoke checks failed');
+    }
+    return true;
+  } catch (err) {
+    warn(`deploy of ${tag} failed: ${err.message}`);
+    if (lastGood && lastGood !== tag && imageExists(`employee-console/api:${lastGood}`) && imageExists(`employee-console/web:${lastGood}`)) {
+      warn(`rolling back to ${lastGood} (schema left as is; migrations are expand-compatible)`);
+      const before = readManifest();
+      await deploy(lastGood, { previous: before.previous });
+      writeManifest({ ...readManifest(), failed: { tag, at: new Date().toISOString(), reason: err.message } });
+      await smoke();
+    }
+    return false;
+  }
 }
 
 if (command === 'up') {
@@ -201,21 +242,9 @@ if (command === 'up') {
       process.exit(1);
     }
   }
-  const before = readManifest();
-  const previous = before.current && before.current !== tag ? before.current : before.previous;
-  await deploy(tag, { previous });
-  if (!flag('no-smoke')) {
-    await sleep(1000);
-    if (!(await smoke())) {
-      warn('smoke failed');
-      if (previous && imageExists(`employee-console/api:${previous}`)) {
-        warn(`rolling back to ${previous} (schema left as is; migrations are expand-compatible)`);
-        await deploy(previous, { previous: null });
-        writeManifest({ ...readManifest(), current: previous, failed: tag });
-      }
-      process.exit(1);
-    }
-  }
+  const lastGood = readManifest().current;
+  const okDeploy = await deployWithRollback(tag, { lastGood, smokeAfter: !flag('no-smoke') });
+  process.exit(okDeploy ? 0 : 1);
 } else if (command === 'restart') {
   // Redeploy the current image tag so .env.staging changes (e.g. REPORTS_ENABLED) take effect.
   requireEnv();
@@ -231,13 +260,15 @@ if (command === 'up') {
 } else if (command === 'rollback') {
   requireEnv();
   const m = readManifest();
+  // m.current is the last tag that deployed AND passed smoke (failed attempts are rolled back
+  // automatically and never become current), so the rollback target is the one before it.
   const target = flagValue('tag') ?? m.previous;
   if (!target) {
-    console.error('no previous deployment recorded in .deploy/staging-manifest.json');
+    console.error(`no previous deployment recorded in ${MANIFEST}`);
     process.exit(1);
   }
-  await deploy(target, { previous: m.current });
-  process.exit((await smoke()) ? 0 : 1);
+  const okRollback = await deployWithRollback(target, { lastGood: m.current, smokeAfter: true });
+  process.exit(okRollback ? 0 : 1);
 } else if (command === 'reset') {
   // Restores the 5 source records on staging (demo marker + APP_ENV=staging are checked by the script).
   requireEnv();
@@ -251,6 +282,39 @@ if (command === 'up') {
     process.exit(1);
   }
   compose(['run', '--rm', '--entrypoint', 'node', 'migrate', 'dist-scripts/scripts/demo-reset.js', '--confirm-reset'], tag);
+} else if (command === 'restore') {
+  // Explicit restore of a backup: stop writers, recreate the DB owned by the app role, load the dump
+  // as the app role (so every object is owned by it), then start the matching image tag.
+  requireEnv();
+  const file = flagValue('file');
+  if (!flag('confirm-restore') || !file || !existsSync(resolve(file))) {
+    console.error('usage: staging.mjs restore --file=<backup.sql> --confirm-restore [--tag=<sha>]  (backups: ' + BACKUP_DIR + ')');
+    process.exit(2);
+  }
+  const m = readManifest();
+  const tag = flagValue('tag') ?? m.current;
+  if (!tag) {
+    console.error('no image tag to start after the restore; pass --tag=<sha>');
+    process.exit(1);
+  }
+  const appUser = readEnvFile(ENV_FILE).get('APP_DB_USER') || 'employee_console_app';
+  composeChecked(['stop', 'web', 'api'], tag);
+  const psql = (db, sql) =>
+    compose(['exec', '-T', 'postgres', 'psql', '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', db, '-c', sql], tag, { allowFailure: false });
+  psql('postgres', 'DROP DATABASE IF EXISTS employee_console_staging WITH (FORCE)');
+  psql('postgres', `CREATE DATABASE employee_console_staging OWNER "${appUser}"`);
+  const status = run(
+    'docker',
+    ['compose', '-p', PROJECT, '-f', 'compose.staging.yaml', '--env-file', ENV_FILE, 'exec', '-T', 'postgres', 'psql', '-v', 'ON_ERROR_STOP=1', '-U', appUser, '-d', 'employee_console_staging'],
+    { env: { ...process.env, IMAGE_TAG: tag }, input: readFileSync(resolve(file)), stdio: ['pipe', 'inherit', 'inherit'], allowFailure: true },
+  );
+  if (status !== 0) {
+    console.error('restore failed; the database may be incomplete — rerun restore with a known-good backup');
+    process.exit(1);
+  }
+  ok(`restored ${file} as ${appUser}`);
+  const okDeploy = await deployWithRollback(tag, { lastGood: null, smokeAfter: true });
+  process.exit(okDeploy ? 0 : 1);
 } else if (command === 'down') {
   requireEnv();
   compose(['down'], readManifest().current ?? 'none');

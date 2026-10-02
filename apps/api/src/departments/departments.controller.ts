@@ -1,5 +1,6 @@
 import { Controller, Get, Module } from '@nestjs/common';
-import { ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiEnvelope, ApiErrors } from '../common/openapi.js';
 import { respond } from '../common/envelope.js';
 import { PrismaService } from '../database/prisma.service.js';
 
@@ -15,7 +16,8 @@ export class DepartmentsController {
   constructor(private readonly prisma: PrismaService) {}
 
   @Get()
-  @ApiOkResponse({ type: DepartmentDto, isArray: true })
+  @ApiEnvelope(DepartmentDto, { isArray: true })
+  @ApiErrors(401, 403, 429)
   async list() {
     const rows = await this.prisma.department.findMany({ orderBy: { sortOrder: 'asc' } });
     return respond(rows.map((d) => ({ id: d.id, name: d.name, sortOrder: d.sortOrder })));

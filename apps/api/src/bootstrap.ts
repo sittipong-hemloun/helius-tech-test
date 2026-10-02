@@ -19,6 +19,18 @@ import { requestContextMiddleware } from './common/request-id.middleware.js';
 import type { AppConfig } from './config/app-config.js';
 import { SESSION_POOL } from './database/session-pool.js';
 
+const PRIVATE_OR_LOOPBACK = /^(127\.|::1$|::ffff:127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|fc|fd|fe80:|::ffff:10\.|::ffff:192\.168\.|::ffff:172\.(1[6-9]|2\d|3[01])\.)/i;
+
+/**
+ * Express trust-proxy policy. Default "private-1hop": the socket peer (hop 0) is trusted only when it
+ * is loopback/private (our Next.js proxy), and nothing beyond it — so req.ip becomes the address the
+ * proxy saw, and extra X-Forwarded-For entries sent by a client are ignored (PRD §11.4).
+ */
+export function trustProxySetting(value: string): string | ((addr: string, hop: number) => boolean) {
+  if (value !== 'private-1hop') return value;
+  return (addr, hop) => hop === 0 && PRIVATE_OR_LOOPBACK.test(addr);
+}
+
 export interface CreateAppOptions {
   clock?: Clock;
   logger?: JsonLogger;
@@ -54,7 +66,7 @@ export async function createApp(config: AppConfig, options: CreateAppOptions = {
     abortOnError: false,
   });
 
-  app.set('trust proxy', config.trustProxy);
+  app.set('trust proxy', trustProxySetting(config.trustProxy));
   app.disable('x-powered-by');
   app.use(requestContextMiddleware(logger));
   app.use((_req: AppRequest, res: Response, next: NextFunction) => {

@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Headers, Param, Post, Query, Req, Res, UsePipes } from '@nestjs/common';
-import { ApiAcceptedResponse, ApiHeader, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { ApiEnvelope, ApiErrors, Headers as H, PageMetaDto } from '../common/openapi.js';
 import type { Response } from 'express';
 import { Errors } from '../common/api-exception.js';
 import { respond } from '../common/envelope.js';
@@ -24,7 +25,8 @@ export class ReportsController {
 
   @Get()
   @UsePipes(queryValidationPipe)
-  @ApiOkResponse({ type: ReportSummaryDto, isArray: true })
+  @ApiEnvelope(ReportSummaryDto, { isArray: true, meta: PageMetaDto, description: 'Newest first (createdAt desc, id desc)' })
+  @ApiErrors(400, 401, 403, 429)
   async list(@Query() q: ListReportsQueryDto) {
     const page = q.page ? Number(q.page) : 1;
     const pageSize = q.pageSize ? Number(q.pageSize) : 20;
@@ -33,7 +35,8 @@ export class ReportsController {
   }
 
   @Get(':id')
-  @ApiOkResponse({ type: ReportDetailDto })
+  @ApiEnvelope(ReportDetailDto)
+  @ApiErrors(401, 403, 404, 429)
   async get(@Param('id') id: string) {
     return respond(await this.reports.get(parseReportId(id)));
   }
@@ -43,7 +46,8 @@ export class ReportsController {
   @UsePipes(bodyValidationPipe)
   @ApiHeader({ name: 'Idempotency-Key', required: true })
   @ApiHeader({ name: 'X-CSRF-Token', required: true })
-  @ApiAcceptedResponse({ type: ReportSummaryDto })
+  @ApiEnvelope(ReportSummaryDto, { status: 202, description: 'Queued; poll GET /api/v1/reports/{id}', headers: { ...H.location, ...H.replayed } })
+  @ApiErrors(400, 401, 403, 409, 429, 503)
   async create(
     @Body() _body: CreateReportDto,
     @Headers('idempotency-key') keyHeader: string | undefined,

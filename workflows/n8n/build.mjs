@@ -196,10 +196,12 @@ const worker = {
   settings: {
     executionOrder: 'v1',
     timezone: 'Asia/Bangkok',
-    // Polling every 15 s: keep failures for debugging, skip storing every successful empty poll.
+    // Raw provider responses are not stored by default (PRD §13.4): execution data would contain the
+    // Gemini body. Failures are visible as report error codes in the API; for a debugging session set
+    // these to 'all' / true temporarily in the n8n UI and switch them back afterwards.
     saveDataSuccessExecution: 'none',
-    saveDataErrorExecution: 'all',
-    saveManualExecutions: true,
+    saveDataErrorExecution: 'none',
+    saveManualExecutions: false,
     executionTimeout: 110,
   },
   pinData: {},

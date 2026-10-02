@@ -21,6 +21,8 @@ describe('formatDateOnly (no timezone shift, AC-11)', () => {
   it('shows timestamps in Bangkok time', () => {
     expect(formatTimestamp('2026-10-01T03:00:00.000Z')).toBe('01 Oct 2026, 10:00');
     expect(formatTimestamp('2026-09-30T17:30:00.000Z')).toBe('01 Oct 2026, 00:30');
+    expect(formatTimestamp('2026-09-15T05:05:00.000Z')).toBe('15 Sep 2026, 12:05'); // not "Sept"
+    expect(formatTimestamp('2026-12-31T16:59:00.000Z')).toBe('31 Dec 2026, 23:59');
   });
 });
 
