@@ -5,7 +5,10 @@ ARG NODE_IMAGE=node:24.21.0-bookworm-slim
 
 FROM ${NODE_IMAGE} AS base
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH CI=true COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-RUN corepack enable && corepack prepare pnpm@12.8.1 --activate
+# OpenSSL must be present when Prisma installs its engines, otherwise it picks the openssl-1.1
+# engine and the runtime (with OpenSSL 3) tries to download another one as the non-root user.
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/* \
+ && corepack enable && corepack prepare pnpm@12.8.1 --activate
 WORKDIR /repo
 COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
 COPY apps/api/package.json apps/api/
