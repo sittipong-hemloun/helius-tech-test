@@ -23,7 +23,12 @@ RUN pnpm --filter @employee-console/api run build \
  && pnpm --filter @employee-console/api exec tsc -p tsconfig.scripts.json --outDir dist-scripts
 
 FROM base AS prod-deps
-RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --prod --filter @employee-console/api...
+# side-effects-cache=false: pnpm would otherwise reuse a cached Prisma postinstall from an image
+# built without OpenSSL (openssl-1.1 schema engine). `prisma version` then proves at build time that
+# the engine for this platform is installed, so `migrate deploy` never needs to download as non-root.
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --prod --filter @employee-console/api... --config.side-effects-cache=false \
+ && cd apps/api && ./node_modules/.bin/prisma version >/dev/null \
+ && ls /repo/node_modules/.pnpm/@prisma+engines@*/node_modules/@prisma/engines/ | grep -q 'openssl-3.0.x'
 
 FROM ${NODE_IMAGE} AS runtime
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=3001 TZ=UTC
