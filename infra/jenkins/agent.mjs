@@ -41,3 +41,6 @@ const child = spawn('java', ['-jar', jar, '-url', JENKINS, '-secret', secret, '-
   env: { ...process.env, PATH, COREPACK_ENABLE_DOWNLOAD_PROMPT: '0' },
 });
 child.on('exit', (code) => process.exit(code ?? 0));
+// Stop the JVM with the wrapper (`pnpm ci:up --stop` signals the wrapper): an orphaned agent would keep
+// reconnecting as the same node and make the new one flap.
+for (const sig of ['SIGTERM', 'SIGINT', 'SIGHUP']) process.on(sig, () => child.kill(sig));

@@ -13,7 +13,10 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run pnpm run setup}
       APP_DB_USER: ${APP_DB_USER:-employee_console_app}
       APP_DB_PASSWORD: ${APP_DB_PASSWORD:?run pnpm run setup}
-      APP_DATABASES: employee_console_dev,employee_console_perf
+      APP_DATABASES: employee_console_dev
+      # Separate CREATEDB role for test/perf runners; the app role cannot create databases.
+      TEST_DB_USER: ${TEST_DB_USER:-employee_console_test}
+      TEST_DB_PASSWORD: ${TEST_DB_PASSWORD:-}
       N8N_DB_PASSWORD: ${N8N_DB_PASSWORD:-}
       TZ: UTC
     ports:

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // CI-only PostgreSQL: Compose project employee-console-ci-<build> on a free loopback port.
 // `up` writes .env for this workspace (random secrets via setup); `down` removes only that project.
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import net from 'node:net';
 import { resolve } from 'node:path';
 import { readEnvFile, writeEnvFile } from './lib/env.mjs';
@@ -22,7 +22,8 @@ function freePort() {
 }
 
 if (cmd === 'up') {
-  if (!existsSync(resolve(ROOT, '.env'))) run('node', ['scripts/setup.mjs'], { allowFailure: true });
+  // setup keeps existing values and only fills missing ones (e.g. TEST_DB_PASSWORD on an older workspace .env).
+  run('node', ['scripts/setup.mjs'], { allowFailure: true });
   const port = await freePort();
   const envPath = resolve(ROOT, '.env');
   const env = readEnvFile(envPath);

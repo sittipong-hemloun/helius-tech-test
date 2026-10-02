@@ -1,0 +1,22 @@
+Started by user admin
+Lightweight checkout support not available, falling back to full checkout.
+Checking out git file:///Users/sittiponghemloun/Developer/my_project/chememan into /var/jenkins_home/jobs/employee-console/workspace@script/55cd701490899927904d73caf2a56c74afb43c3b160e7d0408ded519d6870967 to read Jenkinsfile
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository file:///Users/sittiponghemloun/Developer/my_project/chememan
+ > git init /var/jenkins_home/jobs/employee-console/workspace@script/55cd701490899927904d73caf2a56c74afb43c3b160e7d0408ded519d6870967 # timeout=10
+Fetching upstream changes from file:///Users/sittiponghemloun/Developer/my_project/chememan
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- file:///Users/sittiponghemloun/Developer/my_project/chememan +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url file:///Users/sittiponghemloun/Developer/my_project/chememan # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/^{commit} # timeout=10
+ > git rev-parse origin/^{commit} # timeout=10
+ERROR: Couldn't find any revision to build. Verify the repository and branch configuration for this job.
+ERROR: Maximum checkout retry attempts reached, aborting
+ERROR: Couldn't find any revision to build. Verify the repository and branch configuration for this job.
+ERROR: Maximum checkout retry attempts reached, aborting
+Finished: FAILURE

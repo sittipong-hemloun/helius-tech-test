@@ -39,7 +39,8 @@
 
 | Variable | ใช้โดย |
 | --- | --- |
-| `POSTGRES_PASSWORD`, `APP_DB_USER`, `APP_DB_PASSWORD`, `POSTGRES_HOST_PORT` | postgres container (role แอปแยกจาก superuser) |
+| `POSTGRES_PASSWORD`, `APP_DB_USER`, `APP_DB_PASSWORD`, `POSTGRES_HOST_PORT` | postgres container (role แอปแยกจาก superuser, `NOCREATEDB`) |
+| `TEST_DB_USER`, `TEST_DB_PASSWORD` | role แยกสำหรับ integration/E2E/Newman/perf (`CREATEDB`, เป็นเจ้าของเฉพาะ `employee_console_test_*` และ `employee_console_perf`) — setup สร้างรหัสให้, `pnpm dev:up` ปรับ role ของ volume เดิมให้ตรง |
 | `N8N_DB_PASSWORD`, `N8N_ENCRYPTION_KEY`, `N8N_INTERNAL_API_URL` | n8n (DB role แยก, ห้ามเปลี่ยน encryption key หลังสร้าง credentials) |
 | `GEMINI_API_KEY` | นำเข้า n8n credential และ Open WebUI เท่านั้น — ไม่ส่งเข้า API/เว็บ |
 | `WEBUI_SECRET_KEY`, `OPEN_WEBUI_ENABLE_SIGNUP` | Open WebUI |

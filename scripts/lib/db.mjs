@@ -38,6 +38,10 @@ export async function databaseState(connectionString) {
       .query(`SELECT last_worker_seen_at FROM integration_state WHERE key = 'report-worker'`)
       .then((r) => r.rows[0]?.last_worker_seen_at ?? null)
       .catch(() => null);
-    return { applied, purpose, employees, worker };
+    const canCreateDb = await c
+      .query('SELECT rolcreatedb FROM pg_roles WHERE rolname = current_user')
+      .then((r) => r.rows[0]?.rolcreatedb ?? null)
+      .catch(() => null);
+    return { applied, purpose, employees, worker, canCreateDb };
   });
 }

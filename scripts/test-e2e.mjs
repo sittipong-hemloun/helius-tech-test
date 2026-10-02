@@ -4,7 +4,7 @@
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import pg from 'pg';
-import { apiEnv, freshDatabase, localDb, startProcess, waitHttp } from './lib/test-env.mjs';
+import { appEnv, freshDatabase, localDb, startProcess, waitHttp } from './lib/test-env.mjs';
 import { ROOT, run } from './lib/sh.mjs';
 
 const WEB_PORT = Number(process.env.E2E_WEB_PORT ?? 3020);
@@ -14,7 +14,9 @@ const ORIGIN = `http://localhost:${WEB_PORT}`;
 const extraArgs = process.argv.slice(2);
 
 const url = await freshDatabase(DB, 'test');
-const env = apiEnv({ databaseUrl: url, port: API_PORT, origin: ORIGIN });
+// App variables only: env.json must not capture the developer's whole shell environment.
+const app = appEnv({ databaseUrl: url, port: API_PORT, origin: ORIGIN });
+const env = { ...process.env, ...app };
 
 if (!process.env.E2E_SKIP_BUILD) {
   run('pnpm', ['--filter', '@employee-console/api', 'run', 'build']);
@@ -43,7 +45,7 @@ try {
   const runtime = resolve(ROOT, 'tests/e2e/.auth');
   mkdirSync(runtime, { recursive: true });
   // Test-only values for this run; the directory is git-ignored and removed afterwards.
-  writeFileSync(resolve(runtime, 'env.json'), JSON.stringify({ apiEnv: env, baseURL: ORIGIN }), { mode: 0o600 });
+  writeFileSync(resolve(runtime, 'env.json'), JSON.stringify({ apiEnv: app, baseURL: ORIGIN }), { mode: 0o600 });
   status = run('pnpm', ['--filter', '@employee-console/e2e', 'exec', 'playwright', 'test', ...extraArgs], {
     allowFailure: true,
     env: { ...process.env, E2E_BASE_URL: ORIGIN },

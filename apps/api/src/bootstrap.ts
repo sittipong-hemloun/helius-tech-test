@@ -64,6 +64,9 @@ export async function createApp(config: AppConfig, options: CreateAppOptions = {
     bodyParser: false,
     logger,
     abortOnError: false,
+    // Graceful shutdown (PRD §13.4): once SIGTERM arrives, new requests get 503 + Connection: close;
+    // DB pools close only after the HTTP server stopped (onApplicationShutdown hooks).
+    return503OnClosing: true,
   });
 
   app.set('trust proxy', trustProxySetting(config.trustProxy));

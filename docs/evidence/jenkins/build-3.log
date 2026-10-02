@@ -1,0 +1,1843 @@
+Started by user admin
+Obtained Jenkinsfile from git file:///Users/sittiponghemloun/Developer/my_project/chememan
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on host-agent in /tmp/employee-console-jenkins-agent/workspace/employee-console
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Fetching changes from the remote Git repository
+Checking out Revision a346e09f77f8275fff3c7468237aa8bedd8a8845 (refs/remotes/origin/main)
+Commit message: "fix: PRD audit findings (security, delivery, UI, tests, OpenAPI)"
+ > git rev-parse --resolve-git-dir /tmp/employee-console-jenkins-agent/workspace/employee-console/.git # timeout=10
+ > git config remote.origin.url file:///Users/sittiponghemloun/Developer/my_project/chememan # timeout=10
+Fetching upstream changes from file:///Users/sittiponghemloun/Developer/my_project/chememan
+ > git --version # timeout=10
+ > git --version # 'git version 2.50.1 (Apple Git-155)'
+ > git fetch --tags --force --progress -- file:///Users/sittiponghemloun/Developer/my_project/chememan +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f a346e09f77f8275fff3c7468237aa8bedd8a8845 # timeout=10
+ > git rev-list --no-walk 72d6c9f4b5df1e8a4aa5f2f896c15826397690c4 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timestamps
+[Pipeline] {
+[Pipeline] timeout
+[2026-10-02T00:31:53.080Z] Timeout set to expire in 1 hr 15 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] checkout
+[2026-10-02T00:31:53.110Z] Selected Git installation does not exist. Using Default
+[2026-10-02T00:31:53.110Z] The recommended git tool is: NONE
+[2026-10-02T00:31:53.113Z] No credentials specified
+[2026-10-02T00:31:53.128Z] Fetching changes from the remote Git repository
+[2026-10-02T00:31:53.205Z] Checking out Revision a346e09f77f8275fff3c7468237aa8bedd8a8845 (refs/remotes/origin/main)
+[2026-10-02T00:31:53.241Z] Commit message: "fix: PRD audit findings (security, delivery, UI, tests, OpenAPI)"
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
+[2026-10-02T00:31:53.542Z] + git rev-parse --short=12 HEAD
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] sh
+[2026-10-02T00:31:53.882Z] ++ git rev-parse HEAD
+[2026-10-02T00:31:53.882Z] + echo 'commit a346e09f77f8275fff3c7468237aa8bedd8a8845'
+[2026-10-02T00:31:53.882Z] commit a346e09f77f8275fff3c7468237aa8bedd8a8845
+[2026-10-02T00:31:53.882Z] + node --version
+[2026-10-02T00:31:53.882Z] v24.21.0
+[2026-10-02T00:31:53.882Z] + corepack enable --install-directory /tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin pnpm
+[2026-10-02T00:31:53.882Z] + true
+[2026-10-02T00:31:53.882Z] + export 'PATH=/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:31:53.882Z] + PATH='/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:31:53.882Z] + pnpm --version
+[2026-10-02T00:31:53.882Z] 12.8.1
+[2026-10-02T00:31:53.882Z] + docker version --format 'docker {{.Server.Version}}'
+[2026-10-02T00:31:53.115Z]  > git rev-parse --resolve-git-dir /tmp/employee-console-jenkins-agent/workspace/employee-console/.git # timeout=10
+[2026-10-02T00:31:53.132Z]  > git config remote.origin.url file:///Users/sittiponghemloun/Developer/my_project/chememan # timeout=10
+[2026-10-02T00:31:53.147Z] Fetching upstream changes from file:///Users/sittiponghemloun/Developer/my_project/chememan
+[2026-10-02T00:31:53.147Z]  > git --version # timeout=10
+[2026-10-02T00:31:53.160Z]  > git --version # 'git version 2.50.1 (Apple Git-155)'
+[2026-10-02T00:31:53.160Z]  > git fetch --tags --force --progress -- file:///Users/sittiponghemloun/Developer/my_project/chememan +refs/heads/*:refs/remotes/origin/* # timeout=10
+[2026-10-02T00:31:53.191Z]  > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+[2026-10-02T00:31:53.207Z]  > git config core.sparsecheckout # timeout=10
+[2026-10-02T00:31:53.219Z]  > git checkout -f a346e09f77f8275fff3c7468237aa8bedd8a8845 # timeout=10
+[2026-10-02T00:31:54.150Z] docker 27.3.1
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Dependencies)
+[Pipeline] sh
+[2026-10-02T00:31:54.484Z] + export 'PATH=/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:31:54.484Z] + PATH='/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:31:54.484Z] + pnpm install --frozen-lockfile
+[2026-10-02T00:31:54.484Z] Scope: all 5 workspace projects
+[2026-10-02T00:31:54.484Z] ✓ Lockfile passes supply-chain policies (verified 8h ago)
+[2026-10-02T00:31:54.484Z] Lockfile is up to date, resolution step is skipped
+[2026-10-02T00:31:54.484Z] Done in 63ms using pnpm v12.8.1
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Static checks)
+[Pipeline] sh
+[2026-10-02T00:31:54.829Z] + export 'PATH=/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:31:54.829Z] + PATH='/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:31:54.829Z] + pnpm lint
+[2026-10-02T00:31:54.829Z] $ pnpm -r --if-present run lint
+[2026-10-02T00:31:54.829Z] Scope: 4 of 5 workspace projects
+[2026-10-02T00:31:54.829Z] apps/api lint$ eslint .
+[2026-10-02T00:31:54.829Z] apps/web lint$ eslint .
+[2026-10-02T00:31:56.226Z] apps/api lint: Done
+[2026-10-02T00:31:57.181Z] apps/web lint: Done
+[2026-10-02T00:31:57.181Z] + pnpm typecheck
+[2026-10-02T00:31:57.181Z] $ pnpm -r --if-present run typecheck
+[2026-10-02T00:31:57.181Z] Scope: 4 of 5 workspace projects
+[2026-10-02T00:31:57.181Z] packages/api-client typecheck$ tsc --noEmit -p tsconfig.json
+[2026-10-02T00:31:57.181Z] apps/api typecheck$ prisma generate && tsc -p tsconfig.json --noEmit
+[2026-10-02T00:31:57.445Z] packages/api-client typecheck: Done
+[2026-10-02T00:31:57.445Z] apps/web typecheck$ tsc --noEmit -p tsconfig.json
+[2026-10-02T00:31:57.712Z] apps/api typecheck: Loaded Prisma config from prisma.config.ts.
+[2026-10-02T00:31:57.712Z] apps/api typecheck: 
+[2026-10-02T00:31:57.983Z] apps/api typecheck: Prisma schema loaded from prisma/schema.prisma.
+[2026-10-02T00:31:57.983Z] apps/api typecheck: 
+[2026-10-02T00:31:57.983Z] apps/api typecheck: ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 42ms
+[2026-10-02T00:31:57.983Z] apps/api typecheck: 
+[2026-10-02T00:31:59.918Z] apps/web typecheck: Done
+[2026-10-02T00:31:59.918Z] apps/api typecheck: Done
+[2026-10-02T00:31:59.918Z] + pnpm secrets:scan
+[2026-10-02T00:31:59.918Z] $ node scripts/secret-scan.mjs
+[2026-10-02T00:31:59.918Z] secret scan: 293 tracked files, 15 local secret values, no matches
+[2026-10-02T00:31:59.918Z] + pnpm openapi:generate
+[2026-10-02T00:31:59.918Z] $ pnpm --filter @employee-console/api run openapi:generate && pnpm --filter @employee-console/api-client run generate
+[2026-10-02T00:31:59.918Z] $ prisma generate && tsc -p tsconfig.scripts.json && node .tmp/scripts/scripts/generate-openapi.js
+[2026-10-02T00:32:00.180Z] Loaded Prisma config from prisma.config.ts.
+[2026-10-02T00:32:00.180Z] 
+[2026-10-02T00:32:00.180Z] Prisma schema loaded from prisma/schema.prisma.
+[2026-10-02T00:32:00.444Z] 
+[2026-10-02T00:32:00.444Z] ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 36ms
+[2026-10-02T00:32:00.444Z] 
+[2026-10-02T00:32:01.843Z] OpenAPI written to /private/tmp/employee-console-jenkins-agent/workspace/employee-console/packages/api-client/openapi.json (13 paths)
+[2026-10-02T00:32:02.102Z] $ openapi-typescript openapi.json -o src/schema.d.ts
+[2026-10-02T00:32:02.364Z] ✨ openapi-typescript 7.13.0
+[2026-10-02T00:32:02.364Z] 🚀 openapi.json → src/schema.d.ts [66.8ms]
+[2026-10-02T00:32:02.364Z] + git diff --exit-code -- packages/api-client
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Unit)
+[Pipeline] sh
+[2026-10-02T00:32:02.713Z] + export 'PATH=/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:02.714Z] + PATH='/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:02.714Z] + pnpm test:unit
+[2026-10-02T00:32:02.714Z] $ pnpm --filter @employee-console/api run test:unit && pnpm --filter @employee-console/web run test:unit && pnpm run test:prompt
+[2026-10-02T00:32:02.714Z] $ vitest run --project unit --outputFile.junit=../../test-results/api-unit-junit.xml
+[2026-10-02T00:32:02.975Z] 
+[2026-10-02T00:32:02.975Z]  RUN  v5.0.3 /private/tmp/employee-console-jenkins-agent/workspace/employee-console/apps/api
+[2026-10-02T00:32:02.975Z] 
+[2026-10-02T00:32:03.246Z]  ✓ |unit| test/unit/report-rules.test.ts (4 tests) 3ms
+[2026-10-02T00:32:03.246Z]  ✓ |unit| test/unit/seed-mapping.test.ts (4 tests) 3ms
+[2026-10-02T00:32:03.246Z]  ✓ |unit| test/unit/employee-rules.test.ts (12 tests) 5ms
+[2026-10-02T00:32:03.515Z]  ✓ |unit| test/unit/dates-and-query.test.ts (8 tests) 4ms
+[2026-10-02T00:32:03.515Z]  ✓ |unit| test/unit/config-and-policy.test.ts (12 tests) 5ms
+[2026-10-02T00:32:03.515Z] 
+[2026-10-02T00:32:03.515Z]  Test Files  5 passed (5)
+[2026-10-02T00:32:03.515Z]       Tests  40 passed (40)
+[2026-10-02T00:32:03.515Z]    Start at  07:32:02
+[2026-10-02T00:32:03.515Z]    Duration  587ms (import 61%, transform 35%, tests 2%, worker 2%)
+[2026-10-02T00:32:03.515Z] 
+[2026-10-02T00:32:03.515Z] JUNIT report written to /private/tmp/employee-console-jenkins-agent/workspace/employee-console/test-results/api-unit-junit.xml
+[2026-10-02T00:32:03.777Z] $ vitest run
+[2026-10-02T00:32:03.777Z] 
+[2026-10-02T00:32:03.777Z]  RUN  v5.0.3 /private/tmp/employee-console-jenkins-agent/workspace/employee-console/apps/web
+[2026-10-02T00:32:03.777Z] 
+[2026-10-02T00:32:04.041Z]  ✓ src/lib/format.test.ts (7 tests) 3ms
+[2026-10-02T00:32:04.041Z] 
+[2026-10-02T00:32:04.041Z]  Test Files  1 passed (1)
+[2026-10-02T00:32:04.041Z]       Tests  7 passed (7)
+[2026-10-02T00:32:04.041Z]    Start at  07:32:03
+[2026-10-02T00:32:04.041Z]    Duration  111ms (transform 49%, import 39%, tests 7%, worker 4%)
+[2026-10-02T00:32:04.041Z] 
+[2026-10-02T00:32:04.041Z] JUNIT report written to /private/tmp/employee-console-jenkins-agent/workspace/employee-console/test-results/web-unit-junit.xml
+[2026-10-02T00:32:04.041Z] $ mkdir -p test-results && node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=test-results/prompt-junit.xml prompts/employee-summary-v1/validate.test.mjs
+[2026-10-02T00:32:04.308Z] ✔ PRD example narrative passes (0.977583ms)
+[2026-10-02T00:32:04.308Z] ✔ invented numbers are caught (0.499667ms)
+[2026-10-02T00:32:04.308Z] ✔ total must be stated and salary talk is forbidden (0.125625ms)
+[2026-10-02T00:32:04.308Z] ✔ template passes for the empty fixture (0.174083ms)
+[2026-10-02T00:32:04.308Z] ✔ provider errors map to worker codes (0.229333ms)
+[2026-10-02T00:32:04.308Z] ℹ tests 5
+[2026-10-02T00:32:04.308Z] ℹ suites 0
+[2026-10-02T00:32:04.308Z] ℹ pass 5
+[2026-10-02T00:32:04.308Z] ℹ fail 0
+[2026-10-02T00:32:04.308Z] ℹ cancelled 0
+[2026-10-02T00:32:04.308Z] ℹ skipped 0
+[2026-10-02T00:32:04.308Z] ℹ todo 0
+[2026-10-02T00:32:04.308Z] ℹ duration_ms 46.952166
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Test DB)
+[Pipeline] sh
+[2026-10-02T00:32:04.652Z] + export 'PATH=/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:04.652Z] + PATH='/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:04.652Z] + node scripts/ci-db.mjs up
+[2026-10-02T00:32:04.652Z]  Network employee-console-ci-3_default  Creating
+[2026-10-02T00:32:04.652Z]  Network employee-console-ci-3_default  Created
+[2026-10-02T00:32:04.652Z]  Volume "employee-console-ci-3_pgdata"  Creating
+[2026-10-02T00:32:04.652Z]  Volume "employee-console-ci-3_pgdata"  Created
+[2026-10-02T00:32:04.652Z]  Container employee-console-ci-3-postgres-1  Creating
+[2026-10-02T00:32:04.907Z]  Container employee-console-ci-3-postgres-1  Created
+[2026-10-02T00:32:04.907Z]  Container employee-console-ci-3-postgres-1  Starting
+[2026-10-02T00:32:04.907Z]  Container employee-console-ci-3-postgres-1  Started
+[2026-10-02T00:32:11.496Z] CI database ready on 127.0.0.1:60052 (project employee-console-ci-3)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (API / Postman)
+[Pipeline] sh
+[2026-10-02T00:32:11.853Z] + export 'PATH=/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:11.853Z] + PATH='/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:11.853Z] + pnpm test:api
+[2026-10-02T00:32:11.853Z] $ pnpm --filter @employee-console/api run test:api
+[2026-10-02T00:32:11.853Z] $ vitest run --project integration --outputFile.junit=../../test-results/api-integration-junit.xml
+[2026-10-02T00:32:12.117Z] 
+[2026-10-02T00:32:12.117Z]  RUN  v5.0.3 /private/tmp/employee-console-jenkins-agent/workspace/employee-console/apps/api
+[2026-10-02T00:32:12.117Z] 
+[2026-10-02T00:32:15.436Z]  ✓ |integration| test/integration/employees.test.ts (31 tests) 1040ms
+[2026-10-02T00:32:16.020Z] {"timestamp":"2026-10-02T00:32:15.919Z","level":"error","appEnv":"test","service":"api","message":"unhandled_error","requestId":"d9a9d86b-2f82-40e8-a6c4-c9837c88915a","errorName":"ApiException","errorCode":"AI_NOT_CONFIGURED","errorMessage":"AI reports are not configured on this server yet."}
+[2026-10-02T00:32:16.020Z] {"timestamp":"2026-10-02T00:32:15.920Z","level":"error","appEnv":"test","service":"api","message":"request","requestId":"d9a9d86b-2f82-40e8-a6c4-c9837c88915a","method":"POST","routeTemplate":"/api/v1/reports","status":503,"durationMs":6.7,"errorCode":"AI_NOT_CONFIGURED"}
+[2026-10-02T00:32:16.586Z]  ✓ |integration| test/integration/reports.test.ts (24 tests) 1187ms
+[2026-10-02T00:32:18.505Z] {"timestamp":"2026-10-02T00:32:18.323Z","level":"error","appEnv":"test","service":"api","message":"unhandled_error","requestId":"2ed65e6a-1ab9-4e2b-a4f5-5c4884cec381","errorName":"ApiException","errorCode":"AUTH_NOT_CONFIGURED","errorMessage":"Google sign-in is not configured on this server."}
+[2026-10-02T00:32:18.505Z] {"timestamp":"2026-10-02T00:32:18.324Z","level":"error","appEnv":"test","service":"api","message":"request","requestId":"2ed65e6a-1ab9-4e2b-a4f5-5c4884cec381","method":"GET","routeTemplate":"/api/auth/google","status":503,"durationMs":1.3,"errorCode":"AUTH_NOT_CONFIGURED"}
+[2026-10-02T00:32:18.505Z]  ✓ |integration| test/integration/auth.test.ts (32 tests) 1264ms
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.762Z","level":"info","appEnv":"test","service":"api","message":"Starting Nest application...","context":"NestFactory"}
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.769Z","level":"info","appEnv":"test","service":"api","message":"AppModule dependencies initialized","context":"InstanceLoader"}
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.769Z","level":"info","appEnv":"test","service":"api","message":"CoreModule dependencies initialized","context":"InstanceLoader"}
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.769Z","level":"info","appEnv":"test","service":"api","message":"DepartmentsModule dependencies initialized","context":"InstanceLoader"}
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.769Z","level":"info","appEnv":"test","service":"api","message":"HealthModule dependencies initialized","context":"InstanceLoader"}
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.769Z","level":"info","appEnv":"test","service":"api","message":"DatabaseModule dependencies initialized","context":"InstanceLoader"}
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.769Z","level":"info","appEnv":"test","service":"api","message":"IntegrationsModule dependencies initialized","context":"InstanceLoader"}
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.769Z","level":"info","appEnv":"test","service":"api","message":"AuthModule dependencies initialized","context":"InstanceLoader"}
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.769Z","level":"info","appEnv":"test","service":"api","message":"EmployeesModule dependencies initialized","context":"InstanceLoader"}
+[2026-10-02T00:32:18.772Z] {"timestamp":"2026-10-02T00:32:18.769Z","level":"info","appEnv":"test","service":"api","message":"ReportsModule dependencies initialized","context":"InstanceLoader"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.782Z","level":"info","appEnv":"test","service":"api","message":"AuthController {/api/auth}:","context":"RoutesResolver"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.783Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/auth/providers, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/auth/google, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/auth/google/callback, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/auth/session, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/auth/logout, POST} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"EmployeesController {/api/v1/employees}:","context":"RoutesResolver"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/employees, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/employees/:id, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/employees, POST} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/employees/:id, PATCH} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/employees/:id, DELETE} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"DepartmentsController {/api/v1/departments}:","context":"RoutesResolver"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/departments, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"ReportsController {/api/v1/reports}:","context":"RoutesResolver"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/reports, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/reports/:id, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/reports, POST} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.784Z","level":"info","appEnv":"test","service":"api","message":"InternalReportsController {/internal/v1}:","context":"RoutesResolver"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/internal/v1/report-jobs/claim, POST} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/internal/v1/report-jobs/:id/complete, POST} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/internal/v1/report-jobs/:id/fail, POST} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/internal/v1/reports/scheduled, POST} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"IntegrationsController {/api/v1/integrations}:","context":"RoutesResolver"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/v1/integrations/status, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"HealthController {/api/health}:","context":"RoutesResolver"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/health/live, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"Mapped {/api/health/ready, GET} route","context":"RouterExplorer"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.785Z","level":"info","appEnv":"test","service":"api","message":"Nest application successfully started","context":"NestApplication"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.963Z","level":"info","appEnv":"test","service":"api","message":"request","requestId":"0eb8c5a1-1627-4bf5-97c1-56b1509a2908","method":"POST","routeTemplate":"/api/v1/employees","status":201,"durationMs":45}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.971Z","level":"info","appEnv":"test","service":"api","message":"request","requestId":"361881bd-b0a4-4d07-8959-e59c965d74cd","method":"POST","routeTemplate":"/api/v1/employees","status":400,"durationMs":5.8,"errorCode":"VALIDATION_ERROR"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.978Z","level":"info","appEnv":"test","service":"api","message":"request","requestId":"f42fa402-3b63-490c-95b6-87da72e36aea","method":"GET","routeTemplate":"/api/v1/employees","status":200,"durationMs":5.5}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.987Z","level":"info","appEnv":"test","service":"api","message":"request","requestId":"6410f930-4987-445b-bba1-9a61c39e1ef9","method":"POST","routeTemplate":"/api/v1/reports","status":202,"durationMs":8.9}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.995Z","level":"info","appEnv":"test","service":"api","message":"report_job_claimed","reportId":"1448a4a2-b962-40d2-8c18-8105d3222d2f","attempt":1}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.995Z","level":"info","appEnv":"test","service":"api","message":"request","requestId":"8f25fc5a-9356-424e-92c6-3c0a89a49af9","method":"POST","routeTemplate":"/internal/v1/report-jobs/claim","status":200,"durationMs":5.8}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.998Z","level":"info","appEnv":"test","service":"api","message":"report_job_failed","reportId":"1448a4a2-b962-40d2-8c18-8105d3222d2f","attempt":1,"errorCode":"PROVIDER_AUTH_ERROR"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:18.999Z","level":"info","appEnv":"test","service":"api","message":"request","requestId":"e8077987-60dd-49e8-bddb-62e9edf2761b","method":"POST","routeTemplate":"/internal/v1/report-jobs/:id/fail","status":200,"durationMs":3.2}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:19.000Z","level":"info","appEnv":"test","service":"api","message":"request","requestId":"e54b35fe-38f5-4d30-8485-ab2533e0c031","method":"POST","routeTemplate":"/internal/v1/report-jobs/claim","status":401,"durationMs":0.3,"errorCode":"INVALID_SERVICE_TOKEN"}
+[2026-10-02T00:32:19.030Z] {"timestamp":"2026-10-02T00:32:19.003Z","level":"info","appEnv":"test","service":"api","message":"request","requestId":"31222002-be57-45db-a6af-b1ef5b619fa7","method":"POST","routeTemplate":"/api/auth/logout","status":204,"durationMs":1.9}
+[2026-10-02T00:32:19.030Z]  ✓ |integration| test/integration/logging.test.ts (1 test) 258ms
+[2026-10-02T00:32:19.030Z] 
+[2026-10-02T00:32:19.030Z]  Test Files  4 passed (4)
+[2026-10-02T00:32:19.030Z]       Tests  88 passed (88)
+[2026-10-02T00:32:19.030Z]    Start at  07:32:12
+[2026-10-02T00:32:19.030Z]    Duration  6.96s (tests 66%, import 30%, transform 4%)
+[2026-10-02T00:32:19.030Z] 
+[2026-10-02T00:32:19.030Z] JUNIT report written to /private/tmp/employee-console-jenkins-agent/workspace/employee-console/test-results/api-integration-junit.xml
+[2026-10-02T00:32:19.293Z] + pnpm test:postman
+[2026-10-02T00:32:19.293Z] $ node scripts/test-postman.mjs
+[2026-10-02T00:32:19.899Z] (node:33203) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+[2026-10-02T00:32:19.899Z] (Use `node --trace-deprecation ...` to show where the warning was created)
+[2026-10-02T00:32:19.899Z] $ prisma generate && tsc -p tsconfig.build.json
+[2026-10-02T00:32:20.483Z] Loaded Prisma config from prisma.config.ts.
+[2026-10-02T00:32:20.483Z] 
+[2026-10-02T00:32:20.483Z] Prisma schema loaded from prisma/schema.prisma.
+[2026-10-02T00:32:20.483Z] 
+[2026-10-02T00:32:20.483Z] ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 43ms
+[2026-10-02T00:32:20.483Z] 
+[2026-10-02T00:32:24.711Z] newman
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] Employee Console API
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ❏ Health
+[2026-10-02T00:32:24.711Z] ↳ Liveness
+[2026-10-02T00:32:24.711Z]   GET http://127.0.0.1:3031/api/health/live [200 OK, 389B, 10ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  status is 200
+[2026-10-02T00:32:24.711Z]   ✓  body is exactly { status: "ok" }
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ Readiness (database + migrations)
+[2026-10-02T00:32:24.711Z]   GET http://127.0.0.1:3031/api/health/ready [200 OK, 393B, 6ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  status is 200
+[2026-10-02T00:32:24.711Z]   ✓  body is exactly { status: "ready" } and reveals nothing internal
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ❏ Auth & session
+[2026-10-02T00:32:24.711Z] ↳ Providers endpoint is public and exposes no secrets
+[2026-10-02T00:32:24.711Z]   GET http://127.0.0.1:3031/api/auth/providers [200 OK, 476B, 2ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.711Z]   ✓  status is 200
+[2026-10-02T00:32:24.711Z]   ✓  only reports whether Google sign-in is configured
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ No cookie: GET session → 401 UNAUTHENTICATED
+[2026-10-02T00:32:24.711Z]   GET http://127.0.0.1:3031/api/auth/session [401 Unauthorized, 506B, 1ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.711Z]   ✓  status is 401
+[2026-10-02T00:32:24.711Z]   ✓  error.code is UNAUTHENTICATED
+[2026-10-02T00:32:24.711Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:24.711Z]   ✓  no session cookie is issued
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ No cookie: list employees → 401, no data leaked
+[2026-10-02T00:32:24.711Z]   GET http://127.0.0.1:3031/api/v1/employees [401 Unauthorized, 506B, 1ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.711Z]   ✓  status is 401
+[2026-10-02T00:32:24.711Z]   ✓  error.code is UNAUTHENTICATED
+[2026-10-02T00:32:24.711Z]   ✓  no employee data in the response
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ Forged session cookie → 401
+[2026-10-02T00:32:24.711Z]   GET http://127.0.0.1:3031/api/v1/employees [401 Unauthorized, 506B, 2ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.711Z]   ✓  status is 401
+[2026-10-02T00:32:24.711Z]   ✓  error.code is UNAUTHENTICATED
+[2026-10-02T00:32:24.711Z]   ✓  no session cookie is issued for a forged one
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ Worker bearer token cannot read employees → 401
+[2026-10-02T00:32:24.711Z]   GET http://127.0.0.1:3031/api/v1/employees [401 Unauthorized, 506B, 1ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.711Z]   ✓  status is 401
+[2026-10-02T00:32:24.711Z]   ✓  error.code is UNAUTHENTICATED
+[2026-10-02T00:32:24.711Z]   ✓  no employee data in the response
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ Admin session (role, permissions, CSRF token)
+[2026-10-02T00:32:24.711Z]   GET http://127.0.0.1:3031/api/auth/session [200 OK, 988B, 20ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.711Z]   ✓  status is 200
+[2026-10-02T00:32:24.711Z]   ✓  user is an ADMIN
+[2026-10-02T00:32:24.711Z]   ✓  admin has every permission
+[2026-10-02T00:32:24.711Z]   ✓  absolute session expiry is in the future
+[2026-10-02T00:32:24.711Z]   ✓  csrfToken is the one bound to this session
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ Viewer session (no write/salary/report permissions)
+[2026-10-02T00:32:24.711Z]   GET http://127.0.0.1:3031/api/auth/session [200 OK, 989B, 4ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.711Z]   ✓  status is 200
+[2026-10-02T00:32:24.711Z]   ✓  user is a VIEWER
+[2026-10-02T00:32:24.711Z]   ✓  viewer has no elevated permissions
+[2026-10-02T00:32:24.711Z]   ✓  csrfToken is the one bound to this session
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ Create without X-CSRF-Token → 403 CSRF_INVALID
+[2026-10-02T00:32:24.711Z]   POST http://127.0.0.1:3031/api/v1/employees [403 Forbidden, 742B, 8ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.711Z]   ✓  status is 403
+[2026-10-02T00:32:24.711Z]   ✓  error.code is CSRF_INVALID
+[2026-10-02T00:32:24.711Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ Create with a wrong X-CSRF-Token → 403 CSRF_INVALID
+[2026-10-02T00:32:24.711Z]   POST http://127.0.0.1:3031/api/v1/employees [403 Forbidden, 742B, 5ms]
+[2026-10-02T00:32:24.711Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.711Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.711Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.711Z]   ✓  status is 403
+[2026-10-02T00:32:24.711Z]   ✓  error.code is CSRF_INVALID
+[2026-10-02T00:32:24.711Z] 
+[2026-10-02T00:32:24.711Z] ↳ Create with another session's CSRF token → 403 CSRF_INVALID
+[2026-10-02T00:32:24.711Z]   POST http://127.0.0.1:3031/api/v1/employees [403 Forbidden, 742B, 4ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 403
+[2026-10-02T00:32:24.971Z]   ✓  error.code is CSRF_INVALID
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ Create from a foreign Origin → 403 CSRF_INVALID
+[2026-10-02T00:32:24.971Z]   POST http://127.0.0.1:3031/api/v1/employees [403 Forbidden, 742B, 4ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 403
+[2026-10-02T00:32:24.971Z]   ✓  error.code is CSRF_INVALID
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ PATCH without X-CSRF-Token → 403 CSRF_INVALID
+[2026-10-02T00:32:24.971Z]   PATCH http://127.0.0.1:3031/api/v1/employees/101 [403 Forbidden, 742B, 3ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 403
+[2026-10-02T00:32:24.971Z]   ✓  error.code is CSRF_INVALID
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ Logout without X-CSRF-Token → 403 (session kept)
+[2026-10-02T00:32:24.971Z]   POST http://127.0.0.1:3031/api/auth/logout [403 Forbidden, 742B, 4ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 403
+[2026-10-02T00:32:24.971Z]   ✓  error.code is CSRF_INVALID
+[2026-10-02T00:32:24.971Z]   ✓  the session cookie is not cleared
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ❏ Employees (admin happy path)
+[2026-10-02T00:32:24.971Z] ↳ List seed data (AC-01..AC-03)
+[2026-10-02T00:32:24.971Z]   GET http://127.0.0.1:3031/api/v1/employees [200 OK, 1.66kB, 14ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 200
+[2026-10-02T00:32:24.971Z]   ✓  seed baseline: 5 rows, ids 101..105, 4 active / 1 inactive
+[2026-10-02T00:32:24.971Z]   ✓  salary sum is exactly 290000.00 (decimal strings, summed in cents)
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ Departments
+[2026-10-02T00:32:24.971Z]   GET http://127.0.0.1:3031/api/v1/departments [200 OK, 834B, 14ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 200
+[2026-10-02T00:32:24.971Z]   ✓  four departments in display order
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ Get seed employee 101 (ETag = version)
+[2026-10-02T00:32:24.971Z]   GET http://127.0.0.1:3031/api/v1/employees/101 [200 OK, 802B, 8ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 200
+[2026-10-02T00:32:24.971Z]   ✓  John Doe matches the source data
+[2026-10-02T00:32:24.971Z]   ✓  ETag is "1"
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ Search q=john → John Doe (AC-21)
+[2026-10-02T00:32:24.971Z]   GET http://127.0.0.1:3031/api/v1/employees?q=john [200 OK, 916B, 11ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 200
+[2026-10-02T00:32:24.971Z]   ✓  returns ids [101] (total 1)
+[2026-10-02T00:32:24.971Z]   ✓  the match is John Doe
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ Search is case-insensitive (q=JOHN)
+[2026-10-02T00:32:24.971Z]   GET http://127.0.0.1:3031/api/v1/employees?q=JOHN [200 OK, 916B, 12ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 200
+[2026-10-02T00:32:24.971Z]   ✓  returns ids [101] (total 1)
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ Search q=% is a literal, not a wildcard → 0 (AC-23)
+[2026-10-02T00:32:24.971Z]   GET http://127.0.0.1:3031/api/v1/employees?q=%25 [200 OK, 724B, 11ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 200
+[2026-10-02T00:32:24.971Z]   ✓  no rows and totalPages 0
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ Search q=_ is a literal → 0 (AC-23)
+[2026-10-02T00:32:24.971Z]   GET http://127.0.0.1:3031/api/v1/employees?q=_ [200 OK, 724B, 13ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 200
+[2026-10-02T00:32:24.971Z]   ✓  returns ids [] (total 0)
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ Filter Engineering + inactive → Bob Brown (AC-22)
+[2026-10-02T00:32:24.971Z]   GET http://127.0.0.1:3031/api/v1/employees?departmentId=engineering&status=inactive [200 OK, 918B, 10ms]
+[2026-10-02T00:32:24.971Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:24.971Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:24.971Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:24.971Z]   ✓  status is 200
+[2026-10-02T00:32:24.971Z]   ✓  returns ids [104] (total 1)
+[2026-10-02T00:32:24.971Z]   ✓  Bob Brown is inactive in Engineering
+[2026-10-02T00:32:24.971Z] 
+[2026-10-02T00:32:24.971Z] ↳ PRD list example (Engineering, pageSize=1)
+[2026-10-02T00:32:25.233Z]   GET http://127.0.0.1:3031/api/v1/employees?departmentId=engineering&pageSize=1 [200 OK, 915B, 10ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 200
+[2026-10-02T00:32:25.233Z]   ✓  first page has exactly John Doe
+[2026-10-02T00:32:25.233Z]   ✓  pagination meta
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ Sort by salary desc (Admin only)
+[2026-10-02T00:32:25.233Z]   GET http://127.0.0.1:3031/api/v1/employees?sortBy=salary&sortOrder=desc [200 OK, 1.67kB, 8ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 200
+[2026-10-02T00:32:25.233Z]   ✓  returns ids [104,101,102,105,103] (total 5)
+[2026-10-02T00:32:25.233Z]   ✓  meta echoes the sort
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ Create Dana Lee (PRD example) → 201, id 106
+[2026-10-02T00:32:25.233Z]   POST http://127.0.0.1:3031/api/v1/employees [201 Created, 840B, 20ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 201
+[2026-10-02T00:32:25.233Z]   ✓  body is the created employee (id 106, version 1)
+[2026-10-02T00:32:25.233Z]   ✓  lastUpdatedDate is the server's Asia/Bangkok day
+[2026-10-02T00:32:25.233Z]   ✓  Location and ETag headers
+[2026-10-02T00:32:25.233Z]   ✓  first delivery is not marked as a replay
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ Replay: same Idempotency-Key + same payload → same record (AC-19)
+[2026-10-02T00:32:25.233Z]   POST http://127.0.0.1:3031/api/v1/employees [201 Created, 868B, 15ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 201
+[2026-10-02T00:32:25.233Z]   ✓  Idempotency-Replayed: true
+[2026-10-02T00:32:25.233Z]   ✓  replayed body equals the original record
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ Get the created employee
+[2026-10-02T00:32:25.233Z]   GET http://127.0.0.1:3031/api/v1/employees/106 [200 OK, 802B, 4ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 200
+[2026-10-02T00:32:25.233Z]   ✓  persisted record equals the create response
+[2026-10-02T00:32:25.233Z]   ✓  ETag is "1"
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ PATCH salary + isActive with If-Match "1" → version 2
+[2026-10-02T00:32:25.233Z]   PATCH http://127.0.0.1:3031/api/v1/employees/106 [200 OK, 818B, 8ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 200
+[2026-10-02T00:32:25.233Z]   ✓  values changed and version bumped to 2
+[2026-10-02T00:32:25.233Z]   ✓  meta.changed is true
+[2026-10-02T00:32:25.233Z]   ✓  ETag is "2"
+[2026-10-02T00:32:25.233Z]   ✓  lastUpdatedDate is the server's Asia/Bangkok day
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ No-op PATCH (same values after normalization) → changed false
+[2026-10-02T00:32:25.233Z]   PATCH http://127.0.0.1:3031/api/v1/employees/106 [200 OK, 819B, 5ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 200
+[2026-10-02T00:32:25.233Z]   ✓  meta.changed is false
+[2026-10-02T00:32:25.233Z]   ✓  record is untouched (still version 2)
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ Engineering now lists Dana too
+[2026-10-02T00:32:25.233Z]   GET http://127.0.0.1:3031/api/v1/employees?departmentId=engineering [200 OK, 1.3kB, 6ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 200
+[2026-10-02T00:32:25.233Z]   ✓  returns ids [101,104,106] (total 3)
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ❏ Employees (validation & concurrency negatives)
+[2026-10-02T00:32:25.233Z] ↳ Same Idempotency-Key + different payload → 409 IDEMPOTENCY_CONFLICT
+[2026-10-02T00:32:25.233Z]   POST http://127.0.0.1:3031/api/v1/employees [409 Conflict, 747B, 8ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 409
+[2026-10-02T00:32:25.233Z]   ✓  error.code is IDEMPOTENCY_CONFLICT
+[2026-10-02T00:32:25.233Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ Missing Idempotency-Key → 400 INVALID_IDEMPOTENCY_KEY
+[2026-10-02T00:32:25.233Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 728B, 4ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 400
+[2026-10-02T00:32:25.233Z]   ✓  error.code is INVALID_IDEMPOTENCY_KEY
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ Non-UUID Idempotency-Key → 400 INVALID_IDEMPOTENCY_KEY
+[2026-10-02T00:32:25.233Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 728B, 4ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 400
+[2026-10-02T00:32:25.233Z]   ✓  error.code is INVALID_IDEMPOTENCY_KEY
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ Salary as a JSON number → SALARY_TYPE_INVALID
+[2026-10-02T00:32:25.233Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 861B, 4ms]
+[2026-10-02T00:32:25.233Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.233Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.233Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.233Z]   ✓  status is 400
+[2026-10-02T00:32:25.233Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.233Z]   ✓  details[0] is salary / SALARY_TYPE_INVALID
+[2026-10-02T00:32:25.233Z] 
+[2026-10-02T00:32:25.233Z] ↳ Salary with 3 decimals "65000.999" → DECIMAL_SCALE_EXCEEDED
+[2026-10-02T00:32:25.233Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 840B, 6ms]
+[2026-10-02T00:32:25.497Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.497Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.497Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.497Z]   ✓  status is 400
+[2026-10-02T00:32:25.497Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.497Z]   ✓  details[0] is salary / DECIMAL_SCALE_EXCEEDED
+[2026-10-02T00:32:25.497Z]   ✓  the rejected input is not echoed back
+[2026-10-02T00:32:25.497Z] 
+[2026-10-02T00:32:25.497Z] ↳ Negative salary → SALARY_NEGATIVE
+[2026-10-02T00:32:25.497Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 816B, 3ms]
+[2026-10-02T00:32:25.497Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.497Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.497Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.497Z]   ✓  status is 400
+[2026-10-02T00:32:25.497Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.497Z]   ✓  details[0] is salary / SALARY_NEGATIVE
+[2026-10-02T00:32:25.497Z] 
+[2026-10-02T00:32:25.497Z] ↳ Salary with a thousands separator → SALARY_FORMAT_INVALID
+[2026-10-02T00:32:25.497Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 859B, 4ms]
+[2026-10-02T00:32:25.497Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.497Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.497Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.497Z]   ✓  status is 400
+[2026-10-02T00:32:25.497Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.497Z]   ✓  details[0] is salary / SALARY_FORMAT_INVALID
+[2026-10-02T00:32:25.497Z]   ✓  the rejected input is not echoed back
+[2026-10-02T00:32:25.497Z] 
+[2026-10-02T00:32:25.497Z] ↳ isActive as the string "false" → BOOLEAN_REQUIRED
+[2026-10-02T00:32:25.497Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 824B, 3ms]
+[2026-10-02T00:32:25.497Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.497Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.497Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.497Z]   ✓  status is 400
+[2026-10-02T00:32:25.497Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.497Z]   ✓  details[0] is isActive / BOOLEAN_REQUIRED
+[2026-10-02T00:32:25.497Z] 
+[2026-10-02T00:32:25.497Z] ↳ id in the body → READ_ONLY_FIELD (AC-05)
+[2026-10-02T00:32:25.497Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 834B, 9ms]
+[2026-10-02T00:32:25.497Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.497Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.497Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.497Z]   ✓  status is 400
+[2026-10-02T00:32:25.497Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.497Z]   ✓  details[0] is id / READ_ONLY_FIELD
+[2026-10-02T00:32:25.497Z] 
+[2026-10-02T00:32:25.497Z] ↳ lastUpdatedDate in the body → READ_ONLY_FIELD
+[2026-10-02T00:32:25.498Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 861B, 6ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 400
+[2026-10-02T00:32:25.498Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.498Z]   ✓  details[0] is lastUpdatedDate / READ_ONLY_FIELD
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ Unknown field → UNKNOWN_FIELD
+[2026-10-02T00:32:25.498Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 824B, 5ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 400
+[2026-10-02T00:32:25.498Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.498Z]   ✓  details[0] is nickname / UNKNOWN_FIELD
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ Unknown department → 400 on departmentId (AC-07)
+[2026-10-02T00:32:25.498Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 862B, 5ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 400
+[2026-10-02T00:32:25.498Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.498Z]   ✓  details[0].field is departmentId
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ Impossible joinDate 2026-02-30 → 400 on joinDate (AC-10)
+[2026-10-02T00:32:25.498Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 827B, 6ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 400
+[2026-10-02T00:32:25.498Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.498Z]   ✓  details[0].field is joinDate
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ Blank name → NAME_REQUIRED (AC-06)
+[2026-10-02T00:32:25.498Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 803B, 5ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 400
+[2026-10-02T00:32:25.498Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.498Z]   ✓  details[0] is name / NAME_REQUIRED
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ Malformed JSON → 400 MALFORMED_JSON
+[2026-10-02T00:32:25.498Z]   POST http://127.0.0.1:3031/api/v1/employees [400 Bad Request, 519B, 2ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 400
+[2026-10-02T00:32:25.498Z]   ✓  error.code is MALFORMED_JSON
+[2026-10-02T00:32:25.498Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:25.498Z]   ✓  parser internals are not leaked
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ Non-JSON body → 415 UNSUPPORTED_MEDIA_TYPE
+[2026-10-02T00:32:25.498Z]   POST http://127.0.0.1:3031/api/v1/employees [415 Unsupported Media Type, 537B, 1ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 415
+[2026-10-02T00:32:25.498Z]   ✓  error.code is UNSUPPORTED_MEDIA_TYPE
+[2026-10-02T00:32:25.498Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ Unknown query key → 400 INVALID_QUERY
+[2026-10-02T00:32:25.498Z]   GET http://127.0.0.1:3031/api/v1/employees?foo=1 [400 Bad Request, 808B, 8ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 400
+[2026-10-02T00:32:25.498Z]   ✓  error.code is INVALID_QUERY
+[2026-10-02T00:32:25.498Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:25.498Z]   ✓  details name the offending key
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ pageSize above 100 → 400 INVALID_QUERY
+[2026-10-02T00:32:25.498Z]   GET http://127.0.0.1:3031/api/v1/employees?pageSize=500 [400 Bad Request, 818B, 6ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 400
+[2026-10-02T00:32:25.498Z]   ✓  error.code is INVALID_QUERY
+[2026-10-02T00:32:25.498Z]   ✓  details[0].field is pageSize
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ Unsupported sortBy → 400 INVALID_QUERY
+[2026-10-02T00:32:25.498Z]   GET http://127.0.0.1:3031/api/v1/employees?sortBy=email [400 Bad Request, 876B, 5ms]
+[2026-10-02T00:32:25.498Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.498Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.498Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.498Z]   ✓  status is 400
+[2026-10-02T00:32:25.498Z]   ✓  error.code is INVALID_QUERY
+[2026-10-02T00:32:25.498Z]   ✓  details[0].field is sortBy
+[2026-10-02T00:32:25.498Z] 
+[2026-10-02T00:32:25.498Z] ↳ PATCH without If-Match → 428 PRECONDITION_REQUIRED (AC-16)
+[2026-10-02T00:32:25.761Z]   PATCH http://127.0.0.1:3031/api/v1/employees/106 [428 Precondition Required, 749B, 7ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 428
+[2026-10-02T00:32:25.761Z]   ✓  error.code is PRECONDITION_REQUIRED
+[2026-10-02T00:32:25.761Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ PATCH with stale If-Match "1" → 409 VERSION_CONFLICT (AC-16)
+[2026-10-02T00:32:25.761Z]   PATCH http://127.0.0.1:3031/api/v1/employees/106 [409 Conflict, 768B, 8ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 409
+[2026-10-02T00:32:25.761Z]   ✓  error.code is VERSION_CONFLICT
+[2026-10-02T00:32:25.761Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:25.761Z]   ✓  error.currentVersion is the latest version (2)
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ PATCH with a malformed If-Match → IF_MATCH_INVALID
+[2026-10-02T00:32:25.761Z]   PATCH http://127.0.0.1:3031/api/v1/employees/106 [400 Bad Request, 851B, 5ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 400
+[2026-10-02T00:32:25.761Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.761Z]   ✓  details[0] is If-Match / IF_MATCH_INVALID
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ Empty PATCH body → EMPTY_PATCH
+[2026-10-02T00:32:25.761Z]   PATCH http://127.0.0.1:3031/api/v1/employees/106 [400 Bad Request, 818B, 6ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 400
+[2026-10-02T00:32:25.761Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.761Z]   ✓  details[0] is body / EMPTY_PATCH
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ PATCH isActive as the string "true" → BOOLEAN_REQUIRED (AC-12)
+[2026-10-02T00:32:25.761Z]   PATCH http://127.0.0.1:3031/api/v1/employees/106 [400 Bad Request, 824B, 6ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 400
+[2026-10-02T00:32:25.761Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:25.761Z]   ✓  details[0] is isActive / BOOLEAN_REQUIRED
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ PATCH a missing id → 404 EMPLOYEE_NOT_FOUND
+[2026-10-02T00:32:25.761Z]   PATCH http://127.0.0.1:3031/api/v1/employees/999 [404 Not Found, 702B, 10ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 404
+[2026-10-02T00:32:25.761Z]   ✓  error.code is EMPLOYEE_NOT_FOUND
+[2026-10-02T00:32:25.761Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ Non-numeric id → 404 EMPLOYEE_NOT_FOUND
+[2026-10-02T00:32:25.761Z]   GET http://127.0.0.1:3031/api/v1/employees/abc [404 Not Found, 702B, 4ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 404
+[2026-10-02T00:32:25.761Z]   ✓  error.code is EMPLOYEE_NOT_FOUND
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ DELETE without If-Match → 428 PRECONDITION_REQUIRED
+[2026-10-02T00:32:25.761Z]   DELETE http://127.0.0.1:3031/api/v1/employees/106 [428 Precondition Required, 749B, 5ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 428
+[2026-10-02T00:32:25.761Z]   ✓  error.code is PRECONDITION_REQUIRED
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ DELETE with stale If-Match "1" → 409 VERSION_CONFLICT
+[2026-10-02T00:32:25.761Z]   DELETE http://127.0.0.1:3031/api/v1/employees/106 [409 Conflict, 768B, 8ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 409
+[2026-10-02T00:32:25.761Z]   ✓  error.code is VERSION_CONFLICT
+[2026-10-02T00:32:25.761Z]   ✓  error.currentVersion is 2
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ Rejected requests changed nothing (Dana still version 2)
+[2026-10-02T00:32:25.761Z]   GET http://127.0.0.1:3031/api/v1/employees/106 [200 OK, 803B, 5ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 200
+[2026-10-02T00:32:25.761Z]   ✓  record equals the last successful update
+[2026-10-02T00:32:25.761Z]   ✓  ETag is still "2"
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ Rejected creates inserted no rows (6 employees)
+[2026-10-02T00:32:25.761Z]   GET http://127.0.0.1:3031/api/v1/employees [200 OK, 1.85kB, 10ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 200
+[2026-10-02T00:32:25.761Z]   ✓  returns ids [101,102,103,104,105,106] (total 6)
+[2026-10-02T00:32:25.761Z]   ✓  exactly one Dana Lee
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ❏ Viewer permissions
+[2026-10-02T00:32:25.761Z] ↳ Viewer list has no salary key at all (AC-27)
+[2026-10-02T00:32:25.761Z]   GET http://127.0.0.1:3031/api/v1/employees [200 OK, 1.73kB, 11ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 200
+[2026-10-02T00:32:25.761Z]   ✓  returns ids [101,102,103,104,105,106] (total 6)
+[2026-10-02T00:32:25.761Z]   ✓  no employee object has a salary key
+[2026-10-02T00:32:25.761Z]   ✓  salary values do not appear anywhere in the response
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ Viewer detail has exactly the non-salary fields
+[2026-10-02T00:32:25.761Z]   GET http://127.0.0.1:3031/api/v1/employees/106 [200 OK, 777B, 4ms]
+[2026-10-02T00:32:25.761Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:25.761Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:25.761Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:25.761Z]   ✓  status is 200
+[2026-10-02T00:32:25.761Z]   ✓  keys are exactly departmentId, departmentName, id, isActive, joinDate, lastUpdatedDate, name, version
+[2026-10-02T00:32:25.761Z]   ✓  values match the Admin view minus salary
+[2026-10-02T00:32:25.761Z] 
+[2026-10-02T00:32:25.761Z] ↳ Viewer cannot sort by salary → 403 FORBIDDEN
+[2026-10-02T00:32:25.761Z]   GET http://127.0.0.1:3031/api/v1/employees?sortBy=salary [403 Forbidden, 710B, 4ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 403
+[2026-10-02T00:32:26.018Z]   ✓  error.code is FORBIDDEN
+[2026-10-02T00:32:26.018Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Viewer create → 403 FORBIDDEN (AC-28)
+[2026-10-02T00:32:26.018Z]   POST http://127.0.0.1:3031/api/v1/employees [403 Forbidden, 718B, 3ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 403
+[2026-10-02T00:32:26.018Z]   ✓  error.code is FORBIDDEN
+[2026-10-02T00:32:26.018Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Viewer PATCH → 403 FORBIDDEN
+[2026-10-02T00:32:26.018Z]   PATCH http://127.0.0.1:3031/api/v1/employees/101 [403 Forbidden, 718B, 3ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 403
+[2026-10-02T00:32:26.018Z]   ✓  error.code is FORBIDDEN
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Viewer DELETE → 403 FORBIDDEN
+[2026-10-02T00:32:26.018Z]   DELETE http://127.0.0.1:3031/api/v1/employees/101 [403 Forbidden, 718B, 7ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 403
+[2026-10-02T00:32:26.018Z]   ✓  error.code is FORBIDDEN
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Viewer cannot generate reports → 403 FORBIDDEN (AC-37)
+[2026-10-02T00:32:26.018Z]   POST http://127.0.0.1:3031/api/v1/reports [403 Forbidden, 718B, 7ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 403
+[2026-10-02T00:32:26.018Z]   ✓  error.code is FORBIDDEN
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Viewer cannot see integration status → 403
+[2026-10-02T00:32:26.018Z]   GET http://127.0.0.1:3031/api/v1/integrations/status [403 Forbidden, 718B, 4ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 403
+[2026-10-02T00:32:26.018Z]   ✓  error.code is FORBIDDEN
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Viewer cannot read the OpenAPI document → 403
+[2026-10-02T00:32:26.018Z]   GET http://127.0.0.1:3031/api/openapi.json [403 Forbidden, 688B, 4ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 403
+[2026-10-02T00:32:26.018Z]   ✓  error.code is FORBIDDEN
+[2026-10-02T00:32:26.018Z]   ✓  no OpenAPI content leaked
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Employee 101 unchanged after Viewer attempts
+[2026-10-02T00:32:26.018Z]   GET http://127.0.0.1:3031/api/v1/employees/101 [200 OK, 802B, 6ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 200
+[2026-10-02T00:32:26.018Z]   ✓  John Doe is still version 1 with the original values
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ❏ Reports & worker
+[2026-10-02T00:32:26.018Z] ↳ Integration status (Admin) exposes no secrets
+[2026-10-02T00:32:26.018Z]   GET http://127.0.0.1:3031/api/v1/integrations/status [200 OK, 834B, 10ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 200
+[2026-10-02T00:32:26.018Z]   ✓  reports are enabled and the model is named
+[2026-10-02T00:32:26.018Z]   ✓  no tokens, secrets or connection strings
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ No reports yet on a fresh database
+[2026-10-02T00:32:26.018Z]   GET http://127.0.0.1:3031/api/v1/reports [200 OK, 692B, 6ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 200
+[2026-10-02T00:32:26.018Z]   ✓  empty list with pagination meta
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Generate a report → 202 QUEUED (AC-36)
+[2026-10-02T00:32:26.018Z]   POST http://127.0.0.1:3031/api/v1/reports [202 Accepted, 1.02kB, 15ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 202
+[2026-10-02T00:32:26.018Z]   ✓  report is QUEUED from a manual request
+[2026-10-02T00:32:26.018Z]   ✓  Location points at the report
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Replay the same report key → same report
+[2026-10-02T00:32:26.018Z]   POST http://127.0.0.1:3031/api/v1/reports [202 Accepted, 1.05kB, 7ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 202
+[2026-10-02T00:32:26.018Z]   ✓  Idempotency-Replayed: true and the same id
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ New key while a job is active → 409 REPORT_IN_PROGRESS (AC-38)
+[2026-10-02T00:32:26.018Z]   POST http://127.0.0.1:3031/api/v1/reports [409 Conflict, 775B, 9ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 409
+[2026-10-02T00:32:26.018Z]   ✓  error.code is REPORT_IN_PROGRESS
+[2026-10-02T00:32:26.018Z]   ✓  error.currentReportId is the active report
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Report body with unknown fields → 400
+[2026-10-02T00:32:26.018Z]   POST http://127.0.0.1:3031/api/v1/reports [400 Bad Request, 820B, 4ms]
+[2026-10-02T00:32:26.018Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.018Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.018Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.018Z]   ✓  status is 400
+[2026-10-02T00:32:26.018Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:26.018Z]   ✓  details[0] is filter / UNKNOWN_FIELD
+[2026-10-02T00:32:26.018Z] 
+[2026-10-02T00:32:26.018Z] ↳ Report detail has an aggregate snapshot of the live data
+[2026-10-02T00:32:26.278Z]   GET http://127.0.0.1:3031/api/v1/reports/ec3ce73b-df7c-4cc0-8ad1-58e1790072f7 [200 OK, 1.46kB, 4ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 200
+[2026-10-02T00:32:26.278Z]   ✓  still QUEUED with no narrative and no attempts
+[2026-10-02T00:32:26.278Z]   ✓  snapshot counts the 6 current employees (Dana included)
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Invalid report id → 404 REPORT_NOT_FOUND
+[2026-10-02T00:32:26.278Z]   GET http://127.0.0.1:3031/api/v1/reports/not-a-uuid [404 Not Found, 698B, 7ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 404
+[2026-10-02T00:32:26.278Z]   ✓  error.code is REPORT_NOT_FOUND
+[2026-10-02T00:32:26.278Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Invalid report status filter → 400 INVALID_QUERY
+[2026-10-02T00:32:26.278Z]   GET http://127.0.0.1:3031/api/v1/reports?status=DONE [400 Bad Request, 835B, 3ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 400
+[2026-10-02T00:32:26.278Z]   ✓  error.code is INVALID_QUERY
+[2026-10-02T00:32:26.278Z]   ✓  details[0] is status / STATUS_INVALID
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Claim with a session cookie → 401 INVALID_SERVICE_TOKEN
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/claim [401 Unauthorized, 526B, 1ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 401
+[2026-10-02T00:32:26.278Z]   ✓  error.code is INVALID_SERVICE_TOKEN
+[2026-10-02T00:32:26.278Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Claim with a wrong bearer token → 401
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/claim [401 Unauthorized, 526B, 1ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 401
+[2026-10-02T00:32:26.278Z]   ✓  error.code is INVALID_SERVICE_TOKEN
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Worker token cannot use the scheduler route → 401
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/reports/scheduled [401 Unauthorized, 526B, 1ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 401
+[2026-10-02T00:32:26.278Z]   ✓  error.code is INVALID_SERVICE_TOKEN
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Worker claims the job (aggregate-only payload, AC-39/AC-48)
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/claim [200 OK, 1.15kB, 4ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 200
+[2026-10-02T00:32:26.278Z]   ✓  the queued report is claimed with a lease
+[2026-10-02T00:32:26.278Z]   ✓  snapshot carries aggregates only — no names, salaries or ids
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Nothing left to claim → data null
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/claim [200 OK, 448B, 5ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 200
+[2026-10-02T00:32:26.278Z]   ✓  data is null
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Complete with a malformed narrative → 400
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/ec3ce73b-df7c-4cc0-8ad1-58e1790072f7/complete [400 Bad Request, 632B, 7ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 400
+[2026-10-02T00:32:26.278Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:26.278Z]   ✓  details[0] is narrative / NARRATIVE_INVALID
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Complete with a different model → 400 MODEL_MISMATCH
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/ec3ce73b-df7c-4cc0-8ad1-58e1790072f7/complete [400 Bad Request, 620B, 4ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 400
+[2026-10-02T00:32:26.278Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:26.278Z]   ✓  details[0] is model / MODEL_MISMATCH
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Complete the job → SUCCEEDED (AC-40)
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/ec3ce73b-df7c-4cc0-8ad1-58e1790072f7/complete [200 OK, 517B, 5ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 200
+[2026-10-02T00:32:26.278Z]   ✓  body is { reportId, status: SUCCEEDED }
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Duplicate completion with the same result → 200 no-op (AC-45)
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/ec3ce73b-df7c-4cc0-8ad1-58e1790072f7/complete [200 OK, 517B, 4ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 200
+[2026-10-02T00:32:26.278Z]   ✓  still SUCCEEDED
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Different result for a completed report → 409 REPORT_ALREADY_COMPLETED
+[2026-10-02T00:32:26.278Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/ec3ce73b-df7c-4cc0-8ad1-58e1790072f7/complete [409 Conflict, 534B, 4ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 409
+[2026-10-02T00:32:26.278Z]   ✓  error.code is REPORT_ALREADY_COMPLETED
+[2026-10-02T00:32:26.278Z] 
+[2026-10-02T00:32:26.278Z] ↳ Viewer reads the finished report
+[2026-10-02T00:32:26.278Z]   GET http://127.0.0.1:3031/api/v1/reports/ec3ce73b-df7c-4cc0-8ad1-58e1790072f7 [200 OK, 2.02kB, 4ms]
+[2026-10-02T00:32:26.278Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.278Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.278Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.278Z]   ✓  status is 200
+[2026-10-02T00:32:26.278Z]   ✓  SUCCEEDED with generator metadata
+[2026-10-02T00:32:26.279Z]   ✓  narrative is the original result (not the rejected one)
+[2026-10-02T00:32:26.279Z] 
+[2026-10-02T00:32:26.279Z] ↳ Viewer lists reports (summaries only)
+[2026-10-02T00:32:26.279Z]   GET http://127.0.0.1:3031/api/v1/reports [200 OK, 1.03kB, 6ms]
+[2026-10-02T00:32:26.279Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.279Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.279Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.279Z]   ✓  status is 200
+[2026-10-02T00:32:26.279Z]   ✓  one report, the finished one
+[2026-10-02T00:32:26.279Z]   ✓  summaries carry no snapshot or narrative
+[2026-10-02T00:32:26.279Z] 
+[2026-10-02T00:32:26.279Z] ↳ A new report can start once the first one finished
+[2026-10-02T00:32:26.544Z]   POST http://127.0.0.1:3031/api/v1/reports [202 Accepted, 1.02kB, 17ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 202
+[2026-10-02T00:32:26.544Z]   ✓  a different, QUEUED report
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Worker claims the second job
+[2026-10-02T00:32:26.544Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/claim [200 OK, 1.15kB, 6ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 200
+[2026-10-02T00:32:26.544Z]   ✓  second report claimed on attempt 1
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Free-text worker error is rejected → 400 ERROR_CODE_INVALID (AC-42)
+[2026-10-02T00:32:26.544Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/7caf9d4b-7aa6-41b3-a1d0-b1b7a5269d1b/fail [400 Bad Request, 783B, 2ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 400
+[2026-10-02T00:32:26.544Z]   ✓  error.code is VALIDATION_ERROR
+[2026-10-02T00:32:26.544Z]   ✓  details[0] is errorCode / ERROR_CODE_INVALID
+[2026-10-02T00:32:26.544Z]   ✓  the rejected input is not echoed back
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Non-retryable failure → FAILED
+[2026-10-02T00:32:26.544Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/7caf9d4b-7aa6-41b3-a1d0-b1b7a5269d1b/fail [200 OK, 514B, 10ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 200
+[2026-10-02T00:32:26.544Z]   ✓  body is { reportId, status: FAILED }
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Late completion after failure → 409 STALE_LEASE
+[2026-10-02T00:32:26.544Z]   POST http://127.0.0.1:3031/internal/v1/report-jobs/7caf9d4b-7aa6-41b3-a1d0-b1b7a5269d1b/complete [409 Conflict, 523B, 5ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 409
+[2026-10-02T00:32:26.544Z]   ✓  error.code is STALE_LEASE
+[2026-10-02T00:32:26.544Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Failed report detail keeps only the error code
+[2026-10-02T00:32:26.544Z]   GET http://127.0.0.1:3031/api/v1/reports/7caf9d4b-7aa6-41b3-a1d0-b1b7a5269d1b [200 OK, 1.5kB, 6ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 200
+[2026-10-02T00:32:26.544Z]   ✓  FAILED with PROVIDER_AUTH_ERROR after one attempt
+[2026-10-02T00:32:26.544Z]   ✓  provider details are not stored
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Worker heartbeat is visible in integration status
+[2026-10-02T00:32:26.544Z]   GET http://127.0.0.1:3031/api/v1/integrations/status [200 OK, 855B, 5ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 200
+[2026-10-02T00:32:26.544Z]   ✓  workerLastSeenAt is set and the worker is available
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ❏ Cleanup
+[2026-10-02T00:32:26.544Z] ↳ Delete Dana with If-Match → 204 (AC-17)
+[2026-10-02T00:32:26.544Z]   DELETE http://127.0.0.1:3031/api/v1/employees/106 [204 No Content, 471B, 9ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] 204 has an empty body
+[2026-10-02T00:32:26.544Z]   ✓  status is 204
+[2026-10-02T00:32:26.544Z]   ✓  no body and no Content-Type
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Deleted employee → 404 EMPLOYEE_NOT_FOUND
+[2026-10-02T00:32:26.544Z]   GET http://127.0.0.1:3031/api/v1/employees/106 [404 Not Found, 702B, 6ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 404
+[2026-10-02T00:32:26.544Z]   ✓  error.code is EMPLOYEE_NOT_FOUND
+[2026-10-02T00:32:26.544Z]   ✓  error.message is the user-facing text
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Delete again → 404
+[2026-10-02T00:32:26.544Z]   DELETE http://127.0.0.1:3031/api/v1/employees/106 [404 Not Found, 702B, 13ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 404
+[2026-10-02T00:32:26.544Z]   ✓  error.code is EMPLOYEE_NOT_FOUND
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Seed baseline restored
+[2026-10-02T00:32:26.544Z]   GET http://127.0.0.1:3031/api/v1/employees [200 OK, 1.66kB, 12ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 200
+[2026-10-02T00:32:26.544Z]   ✓  seed baseline: 5 rows, ids 101..105, 4 active / 1 inactive
+[2026-10-02T00:32:26.544Z]   ✓  salary sum is exactly 290000.00 (decimal strings, summed in cents)
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Viewer logout → 204, cookie cleared
+[2026-10-02T00:32:26.544Z]   POST http://127.0.0.1:3031/api/auth/logout [204 No Content, 385B, 5ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] 204 has an empty body
+[2026-10-02T00:32:26.544Z]   ✓  status is 204
+[2026-10-02T00:32:26.544Z]   ✓  Set-Cookie clears the session cookie
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Viewer session is gone → 401
+[2026-10-02T00:32:26.544Z]   GET http://127.0.0.1:3031/api/auth/session [401 Unauthorized, 506B, 4ms]
+[2026-10-02T00:32:26.544Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.544Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.544Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.544Z]   ✓  status is 401
+[2026-10-02T00:32:26.544Z]   ✓  error.code is UNAUTHENTICATED
+[2026-10-02T00:32:26.544Z] 
+[2026-10-02T00:32:26.544Z] ↳ Admin logout → 204, cookie cleared
+[2026-10-02T00:32:26.544Z]   POST http://127.0.0.1:3031/api/auth/logout [204 No Content, 385B, 6ms]
+[2026-10-02T00:32:26.815Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.815Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.815Z]   ✓  [contract] 204 has an empty body
+[2026-10-02T00:32:26.815Z]   ✓  status is 204
+[2026-10-02T00:32:26.815Z]   ✓  Set-Cookie clears the session cookie
+[2026-10-02T00:32:26.815Z] 
+[2026-10-02T00:32:26.815Z] ↳ Admin session is gone → 401
+[2026-10-02T00:32:26.815Z]   GET http://127.0.0.1:3031/api/v1/employees [401 Unauthorized, 506B, 4ms]
+[2026-10-02T00:32:26.815Z]   ✓  [contract] X-Request-Id is a server-generated UUID
+[2026-10-02T00:32:26.815Z]   ✓  [contract] Cache-Control is no-store
+[2026-10-02T00:32:26.815Z]   ✓  [contract] JSON envelope with the same requestId
+[2026-10-02T00:32:26.815Z]   ✓  status is 401
+[2026-10-02T00:32:26.815Z]   ✓  error.code is UNAUTHENTICATED
+[2026-10-02T00:32:26.815Z] 
+[2026-10-02T00:32:26.815Z] ┌─────────────────────────┬─────────────────┬─────────────────┐
+[2026-10-02T00:32:26.815Z] │                         │        executed │          failed │
+[2026-10-02T00:32:26.815Z] ├─────────────────────────┼─────────────────┼─────────────────┤
+[2026-10-02T00:32:26.815Z] │              iterations │               1 │               0 │
+[2026-10-02T00:32:26.815Z] ├─────────────────────────┼─────────────────┼─────────────────┤
+[2026-10-02T00:32:26.815Z] │                requests │             107 │               0 │
+[2026-10-02T00:32:26.815Z] ├─────────────────────────┼─────────────────┼─────────────────┤
+[2026-10-02T00:32:26.815Z] │            test-scripts │             214 │               0 │
+[2026-10-02T00:32:26.815Z] ├─────────────────────────┼─────────────────┼─────────────────┤
+[2026-10-02T00:32:26.815Z] │      prerequest-scripts │               3 │               0 │
+[2026-10-02T00:32:26.815Z] ├─────────────────────────┼─────────────────┼─────────────────┤
+[2026-10-02T00:32:26.815Z] │              assertions │             616 │               0 │
+[2026-10-02T00:32:26.815Z] ├─────────────────────────┴─────────────────┴─────────────────┤
+[2026-10-02T00:32:26.815Z] │ total run duration: 2s                                      │
+[2026-10-02T00:32:26.815Z] ├─────────────────────────────────────────────────────────────┤
+[2026-10-02T00:32:26.815Z] │ total data received: 30.52kB (approx)                       │
+[2026-10-02T00:32:26.815Z] ├─────────────────────────────────────────────────────────────┤
+[2026-10-02T00:32:26.815Z] │ average response time: 6ms [min: 1ms, max: 20ms, s.d.: 3ms] │
+[2026-10-02T00:32:26.815Z] └─────────────────────────────────────────────────────────────┘
+[2026-10-02T00:32:26.815Z] 
+[2026-10-02T00:32:26.815Z] JUnit report: /private/tmp/employee-console-jenkins-agent/workspace/employee-console/test-results/newman-junit.xml
+[2026-10-02T00:32:26.815Z] 107 requests, 616 assertions, 0 failure(s)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] sh
+[2026-10-02T00:32:27.168Z] + export 'PATH=/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:27.168Z] + PATH='/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:27.168Z] + pnpm build
+[2026-10-02T00:32:27.168Z] $ pnpm --filter @employee-console/api --filter @employee-console/web run build
+[2026-10-02T00:32:27.168Z] Scope: 2 of 5 workspace projects
+[2026-10-02T00:32:27.168Z] apps/web build$ next build
+[2026-10-02T00:32:27.168Z] apps/api build$ prisma generate && tsc -p tsconfig.build.json
+[2026-10-02T00:32:27.744Z] apps/web build: ▲ Next.js 16.3.8 (Turbopack)
+[2026-10-02T00:32:27.744Z] apps/api build: Loaded Prisma config from prisma.config.ts.
+[2026-10-02T00:32:27.744Z] apps/api build: 
+[2026-10-02T00:32:27.744Z] apps/web build: ✓ Running next.config.ts took 133ms
+[2026-10-02T00:32:27.744Z] apps/api build: Prisma schema loaded from prisma/schema.prisma.
+[2026-10-02T00:32:27.744Z] apps/api build: 
+[2026-10-02T00:32:27.744Z] apps/api build: ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 43ms
+[2026-10-02T00:32:27.744Z] apps/api build: 
+[2026-10-02T00:32:28.005Z] apps/web build: 
+[2026-10-02T00:32:28.005Z] apps/web build:   Creating an optimized production build ...
+[2026-10-02T00:32:28.961Z] apps/api build: Done
+[2026-10-02T00:32:28.961Z] apps/web build: ✓ Compiled successfully in 882ms
+[2026-10-02T00:32:28.961Z] apps/web build:   Running TypeScript ...
+[2026-10-02T00:32:30.907Z] apps/web build:   Finished TypeScript in 1548ms ...
+[2026-10-02T00:32:30.907Z] apps/web build:   Collecting page data using 7 workers ...
+[2026-10-02T00:32:30.907Z] apps/web build:   Generating static pages using 7 workers (0/2) ...
+[2026-10-02T00:32:30.907Z] apps/web build: ✓ Generating static pages using 7 workers (2/2) in 55ms
+[2026-10-02T00:32:30.907Z] apps/web build:   Finalizing page optimization ...
+[2026-10-02T00:32:31.168Z] apps/web build: 
+[2026-10-02T00:32:31.168Z] apps/web build: Route (app)
+[2026-10-02T00:32:31.168Z] apps/web build: ┌ ƒ /
+[2026-10-02T00:32:31.168Z] apps/web build: ├ ○ /_not-found
+[2026-10-02T00:32:31.168Z] apps/web build: ├ ƒ /access-denied
+[2026-10-02T00:32:31.168Z] apps/web build: ├ ƒ /employees
+[2026-10-02T00:32:31.168Z] apps/web build: ├ ƒ /employees/[id]
+[2026-10-02T00:32:31.168Z] apps/web build: ├ ƒ /employees/[id]/edit
+[2026-10-02T00:32:31.168Z] apps/web build: ├ ƒ /employees/new
+[2026-10-02T00:32:31.168Z] apps/web build: ├ ƒ /login
+[2026-10-02T00:32:31.168Z] apps/web build: ├ ƒ /reports
+[2026-10-02T00:32:31.168Z] apps/web build: ├ ƒ /reports/[id]
+[2026-10-02T00:32:31.168Z] apps/web build: └ ƒ /settings/integrations
+[2026-10-02T00:32:31.168Z] apps/web build: 
+[2026-10-02T00:32:31.168Z] apps/web build: 
+[2026-10-02T00:32:31.168Z] apps/web build: ○  (Static)   prerendered as static content
+[2026-10-02T00:32:31.168Z] apps/web build: ƒ  (Dynamic)  server-rendered on demand
+[2026-10-02T00:32:31.168Z] apps/web build: 
+[2026-10-02T00:32:31.168Z] apps/web build: Done
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (E2E)
+[Pipeline] sh
+[2026-10-02T00:32:31.509Z] + export 'PATH=/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:31.509Z] + PATH='/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:32:31.509Z] + pnpm test:e2e
+[2026-10-02T00:32:31.509Z] $ node scripts/test-e2e.mjs
+[2026-10-02T00:32:33.436Z] $ prisma generate && tsc -p tsconfig.build.json
+[2026-10-02T00:32:33.436Z] Loaded Prisma config from prisma.config.ts.
+[2026-10-02T00:32:33.436Z] 
+[2026-10-02T00:32:33.436Z] Prisma schema loaded from prisma/schema.prisma.
+[2026-10-02T00:32:33.436Z] 
+[2026-10-02T00:32:33.436Z] ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 41ms
+[2026-10-02T00:32:33.436Z] 
+[2026-10-02T00:32:34.013Z] $ next build
+[2026-10-02T00:32:34.283Z] ▲ Next.js 16.3.8 (Turbopack)
+[2026-10-02T00:32:34.283Z] ✓ Running next.config.ts took 13ms
+[2026-10-02T00:32:34.545Z] 
+[2026-10-02T00:32:34.545Z]   Creating an optimized production build ...
+[2026-10-02T00:32:34.804Z] ✓ Compiled successfully in 148ms
+[2026-10-02T00:32:34.804Z]   Running TypeScript ...
+[2026-10-02T00:32:35.758Z]   Finished TypeScript in 925ms ...
+[2026-10-02T00:32:35.758Z]   Collecting page data using 7 workers ...
+[2026-10-02T00:32:36.037Z]   Generating static pages using 7 workers (0/2) ...
+[2026-10-02T00:32:36.304Z] ✓ Generating static pages using 7 workers (2/2) in 90ms
+[2026-10-02T00:32:36.304Z]   Finalizing page optimization ...
+[2026-10-02T00:32:36.575Z] 
+[2026-10-02T00:32:36.575Z] Route (app)
+[2026-10-02T00:32:36.575Z] ┌ ƒ /
+[2026-10-02T00:32:36.575Z] ├ ○ /_not-found
+[2026-10-02T00:32:36.575Z] ├ ƒ /access-denied
+[2026-10-02T00:32:36.575Z] ├ ƒ /employees
+[2026-10-02T00:32:36.575Z] ├ ƒ /employees/[id]
+[2026-10-02T00:32:36.575Z] ├ ƒ /employees/[id]/edit
+[2026-10-02T00:32:36.575Z] ├ ƒ /employees/new
+[2026-10-02T00:32:36.575Z] ├ ƒ /login
+[2026-10-02T00:32:36.575Z] ├ ƒ /reports
+[2026-10-02T00:32:36.575Z] ├ ƒ /reports/[id]
+[2026-10-02T00:32:36.575Z] └ ƒ /settings/integrations
+[2026-10-02T00:32:36.575Z] 
+[2026-10-02T00:32:36.575Z] 
+[2026-10-02T00:32:36.576Z] ○  (Static)   prerendered as static content
+[2026-10-02T00:32:36.576Z] ƒ  (Dynamic)  server-rendered on demand
+[2026-10-02T00:32:36.576Z] 
+[2026-10-02T00:32:38.527Z] 
+[2026-10-02T00:32:38.527Z] Running 23 tests using 1 worker
+[2026-10-02T00:32:38.527Z] 
+[2026-10-02T00:32:41.097Z]   ✓   1 [chromium] › specs/admin-crud.spec.ts:5:1 › seed data: 5 records with all 7 fields; Bob Brown is In Active (AC-01, AC-03, AC-26) (1.8s)
+[2026-10-02T00:32:43.124Z]   ✓   2 [chromium] › specs/admin-crud.spec.ts:22:1 › search and filters combine, live in the URL and clear back to 5 (AC-21, AC-22, AC-24) (2.4s)
+[2026-10-02T00:32:44.506Z]   ✓   3 [chromium] › specs/admin-crud.spec.ts:52:1 › sort, page size and page reset (AC-24, AC-25) (1.5s)
+[2026-10-02T00:32:46.432Z]   ✓   4 [chromium] › specs/admin-crud.spec.ts:70:1 › create → edit → delete journey (AC-04, AC-12, AC-13, AC-17) (1.7s)
+[2026-10-02T00:32:47.816Z]   ✓   5 [chromium] › specs/admin-crud.spec.ts:116:1 › Bob Brown checkbox from In Active to Active (AC-12) (1.3s)
+[2026-10-02T00:32:48.766Z]   ✓   6 [chromium] › specs/admin-crud.spec.ts:126:1 › saving without changes is a no-op (AC-14) (1.2s)
+[2026-10-02T00:32:50.155Z]   ✓   7 [chromium] › specs/admin-crud.spec.ts:132:1 › cancel delete and cancel a dirty edit leave data unchanged (AC-18) (1.5s)
+[2026-10-02T00:32:51.551Z]   ✓   8 [chromium] › specs/admin-crud.spec.ts:150:1 › two tabs editing the same record: the stale tab gets a conflict (AC-16) (1.4s)
+[2026-10-02T00:32:54.122Z]   ✓   9 [chromium] › specs/admin-crud.spec.ts:169:1 › lost create response: retry with the same key lands on the same record, no duplicate (AC-20) (2.1s)
+[2026-10-02T00:32:56.029Z]   ✓  10 [chromium] › specs/admin-crud.spec.ts:193:1 › pagination: page links, URL state and step-back after deleting the last row of a page (AC-24, AC-25) (2.0s)
+[2026-10-02T00:32:56.977Z]   ✓  11 [chromium] › specs/dates-and-layout.spec.ts:6:3 › dates do not shift in UTC (AC-11) (1.3s)
+[2026-10-02T00:32:58.376Z]   ✓  12 [chromium] › specs/dates-and-layout.spec.ts:6:3 › dates do not shift in Asia/Bangkok (AC-11) (1.4s)
+[2026-10-02T00:33:00.325Z]   ✓  13 [chromium] › specs/dates-and-layout.spec.ts:6:3 › dates do not shift in America/Los_Angeles (AC-11) (1.5s)
+[2026-10-02T00:33:01.719Z]   ✓  14 [chromium] › specs/dates-and-layout.spec.ts:6:3 › dates do not shift in Pacific/Kiritimati (AC-11) (1.5s)
+[2026-10-02T00:33:02.671Z]   ✓  15 [chromium] › specs/dates-and-layout.spec.ts:23:1 › mobile 375px: no page overflow, stacked filters, usable form (AC-35) (1.2s)
+[2026-10-02T00:33:05.227Z]   ✓  16 [chromium] › specs/dates-and-layout.spec.ts:51:1 › keyboard only: focus order, visible focus, checkbox, dialog Escape, submit with Enter (AC-35) (2.3s)
+[2026-10-02T00:33:05.541Z]   -  17 [chromium] › specs/dates-and-layout.spec.ts:110:1 › layout screenshots at 375 / 1024 / 1440 px for the manual review record (AC-35)
+[2026-10-02T00:33:06.933Z]   ✓  18 [chromium] › specs/session-and-reports.spec.ts:5:1 › logout ends the session and clears cached data (AC-31) (1.4s)
+[2026-10-02T00:33:07.518Z]   ✓  19 [chromium] › specs/session-and-reports.spec.ts:18:1 › an expired session sends the user to sign in (AC-31) (638ms)
+[2026-10-02T00:33:08.087Z]   ✓  20 [chromium] › specs/session-and-reports.spec.ts:28:1 › login page without Google configuration explains what is missing (586ms)
+[2026-10-02T00:33:12.320Z]   ✓  21 [chromium] › specs/session-and-reports.spec.ts:34:1 › Generate report → queued → worker result shown as AI summary with DB numbers (AC-36, AC-40) (3.5s)
+[2026-10-02T00:33:12.908Z]   ✓  22 [chromium] › specs/viewer.spec.ts:5:1 › Viewer: no Salary in UI or network, no CRUD actions (AC-27) (1.3s)
+[2026-10-02T00:33:13.848Z]   ✓  23 [chromium] › specs/viewer.spec.ts:32:1 › Viewer direct API mutation is rejected with 403 (AC-28) (879ms)
+[2026-10-02T00:33:13.848Z] 
+[2026-10-02T00:33:13.848Z]   1 skipped
+[2026-10-02T00:33:13.848Z]   22 passed (35.5s)
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Images)
+[Pipeline] sh
+[2026-10-02T00:33:14.185Z] + docker build -f infra/docker/api.Dockerfile --build-arg BUILD_COMMIT_SHA=a346e09f77f8 -t employee-console/api:a346e09f77f8 .
+[2026-10-02T00:33:14.756Z] #0 building with "desktop-linux" instance using docker driver
+[2026-10-02T00:33:14.756Z] 
+[2026-10-02T00:33:14.756Z] #1 [internal] load build definition from api.Dockerfile
+[2026-10-02T00:33:14.756Z] #1 transferring dockerfile: 2.43kB done
+[2026-10-02T00:33:14.756Z] #1 DONE 0.0s
+[2026-10-02T00:33:14.756Z] 
+[2026-10-02T00:33:14.756Z] #2 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+[2026-10-02T00:33:15.740Z] #2 ...
+[2026-10-02T00:33:15.740Z] 
+[2026-10-02T00:33:15.740Z] #3 [auth] docker/dockerfile:pull token for registry-1.docker.io
+[2026-10-02T00:33:15.740Z] #3 DONE 0.0s
+[2026-10-02T00:33:16.017Z] 
+[2026-10-02T00:33:16.017Z] #2 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+[2026-10-02T00:33:17.002Z] #2 DONE 2.5s
+[2026-10-02T00:33:17.267Z] 
+[2026-10-02T00:33:17.267Z] #4 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+[2026-10-02T00:33:17.267Z] #4 CACHED
+[2026-10-02T00:33:17.267Z] 
+[2026-10-02T00:33:17.267Z] #5 [internal] load metadata for docker.io/library/node:24.21.0-bookworm-slim
+[2026-10-02T00:33:17.525Z] #5 DONE 0.0s
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #6 [internal] load .dockerignore
+[2026-10-02T00:33:17.525Z] #6 transferring context: 290B done
+[2026-10-02T00:33:17.525Z] #6 DONE 0.0s
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #7 [runtime  1/10] FROM docker.io/library/node:24.21.0-bookworm-slim
+[2026-10-02T00:33:17.525Z] #7 CACHED
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #8 [internal] load build context
+[2026-10-02T00:33:17.525Z] #8 transferring context: 1.24MB 0.0s done
+[2026-10-02T00:33:17.525Z] #8 DONE 0.0s
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #9 [base 2/8] RUN corepack enable && corepack prepare pnpm@12.8.1 --activate
+[2026-10-02T00:33:17.525Z] #9 CACHED
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #10 [base 3/8] WORKDIR /repo
+[2026-10-02T00:33:17.525Z] #10 CACHED
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #11 [base 4/8] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
+[2026-10-02T00:33:17.525Z] #11 DONE 0.0s
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #12 [runtime  2/10] RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+[2026-10-02T00:33:17.525Z] #12 ...
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #13 [base 5/8] COPY apps/api/package.json apps/api/
+[2026-10-02T00:33:17.525Z] #13 DONE 0.1s
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #14 [base 6/8] COPY apps/web/package.json apps/web/
+[2026-10-02T00:33:17.525Z] #14 DONE 0.0s
+[2026-10-02T00:33:17.525Z] 
+[2026-10-02T00:33:17.525Z] #15 [base 7/8] COPY packages/api-client/package.json packages/api-client/
+[2026-10-02T00:33:17.525Z] #15 DONE 0.0s
+[2026-10-02T00:33:17.823Z] 
+[2026-10-02T00:33:17.823Z] #16 [base 8/8] COPY tests/e2e/package.json tests/e2e/
+[2026-10-02T00:33:17.823Z] #16 DONE 0.0s
+[2026-10-02T00:33:17.823Z] 
+[2026-10-02T00:33:17.823Z] #17 [prod-deps 1/1] RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --prod --filter @employee-console/api...
+[2026-10-02T00:33:17.823Z] #17 0.224 Downloading the pnpm 12.8.1 binary for linux-arm64...
+[2026-10-02T00:33:21.122Z] #17 3.150 ? Verifying lockfile against supply-chain policies (1112 entries)...
+[2026-10-02T00:33:23.665Z] #17 ...
+[2026-10-02T00:33:23.666Z] 
+[2026-10-02T00:33:23.666Z] #12 [runtime  2/10] RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+[2026-10-02T00:33:23.666Z] #12 0.488 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+[2026-10-02T00:33:23.666Z] #12 0.618 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+[2026-10-02T00:33:23.666Z] #12 0.804 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+[2026-10-02T00:33:23.666Z] #12 1.031 Get:4 http://deb.debian.org/debian bookworm/main arm64 Packages [8689 kB]
+[2026-10-02T00:33:23.666Z] #12 3.243 Get:5 http://deb.debian.org/debian bookworm-updates/main arm64 Packages [6936 B]
+[2026-10-02T00:33:23.666Z] #12 3.348 Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [341 kB]
+[2026-10-02T00:33:23.666Z] #12 4.055 Fetched 9279 kB in 4s (2444 kB/s)
+[2026-10-02T00:33:23.666Z] #12 4.055 Reading package lists...
+[2026-10-02T00:33:23.666Z] #12 4.572 Reading package lists...
+[2026-10-02T00:33:23.666Z] #12 5.185 Building dependency tree...
+[2026-10-02T00:33:23.666Z] #12 5.311 Reading state information...
+[2026-10-02T00:33:23.666Z] #12 5.475 The following additional packages will be installed:
+[2026-10-02T00:33:23.666Z] #12 5.475   libssl3
+[2026-10-02T00:33:23.666Z] #12 5.560 The following NEW packages will be installed:
+[2026-10-02T00:33:23.666Z] #12 5.561   ca-certificates libssl3 openssl
+[2026-10-02T00:33:26.223Z] #12 8.758 0 upgraded, 3 newly installed, 0 to remove and 1 not upgraded.
+[2026-10-02T00:33:26.223Z] #12 8.758 Need to get 3400 kB of archives.
+[2026-10-02T00:33:26.223Z] #12 8.758 After this operation, 8942 kB of additional disk space will be used.
+[2026-10-02T00:33:26.223Z] #12 8.758 Get:1 http://deb.debian.org/debian-security bookworm-security/main arm64 libssl3 arm64 3.0.22-1~deb12u1 [1828 kB]
+[2026-10-02T00:33:27.660Z] #12 ...
+[2026-10-02T00:33:27.660Z] 
+[2026-10-02T00:33:27.660Z] #18 [build 1/3] RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @employee-console/api...
+[2026-10-02T00:33:27.660Z] #18 0.224 Downloading the pnpm 12.8.1 binary for linux-arm64...
+[2026-10-02T00:33:27.660Z] #18 3.222 ? Verifying lockfile against supply-chain policies (1112 entries)...
+[2026-10-02T00:33:28.604Z] #18 ...
+[2026-10-02T00:33:28.604Z] 
+[2026-10-02T00:33:28.604Z] #12 [runtime  2/10] RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+[2026-10-02T00:33:28.604Z] #12 10.98 Get:2 http://deb.debian.org/debian-security bookworm-security/main arm64 openssl arm64 3.0.22-1~deb12u1 [1410 kB]
+[2026-10-02T00:33:28.604Z] #12 11.25 Get:3 http://deb.debian.org/debian-security bookworm-security/main arm64 ca-certificates all 20250419~deb12u1 [162 kB]
+[2026-10-02T00:33:28.862Z] #12 11.60 debconf: delaying package configuration, since apt-utils is not installed
+[2026-10-02T00:33:29.143Z] #12 11.63 Fetched 3400 kB in 6s (598 kB/s)
+[2026-10-02T00:33:29.144Z] #12 11.68 Selecting previously unselected package libssl3:arm64.
+[2026-10-02T00:33:29.144Z] #12 11.68 (Reading database ... [2026-10-02T00:33:29.144Z] (Reading database ... 5%[2026-10-02T00:33:29.144Z] (Reading database ... 10%[2026-10-02T00:33:29.144Z] (Reading database ... 15%[2026-10-02T00:33:29.144Z] (Reading database ... 20%[2026-10-02T00:33:29.144Z] (Reading database ... 25%[2026-10-02T00:33:29.144Z] (Reading database ... 30%[2026-10-02T00:33:29.144Z] (Reading database ... 35%[2026-10-02T00:33:29.144Z] (Reading database ... 40%[2026-10-02T00:33:29.144Z] (Reading database ... 45%[2026-10-02T00:33:29.144Z] (Reading database ... 50%[2026-10-02T00:33:29.144Z] (Reading database ... 55%[2026-10-02T00:33:29.144Z] (Reading database ... 60%[2026-10-02T00:33:29.144Z] (Reading database ... 65%[2026-10-02T00:33:29.412Z] (Reading database ... 70%[2026-10-02T00:33:29.412Z] (Reading database ... 75%[2026-10-02T00:33:29.412Z] (Reading database ... 80%[2026-10-02T00:33:29.412Z] (Reading database ... 85%[2026-10-02T00:33:29.412Z] (Reading database ... 90%[2026-10-02T00:33:29.412Z] (Reading database ... 95%[2026-10-02T00:33:29.412Z] (Reading database ... 100%[2026-10-02T00:33:29.412Z] (Reading database ... 6090 files and directories currently installed.)
+[2026-10-02T00:33:29.412Z] #12 11.78 Preparing to unpack .../libssl3_3.0.22-1~deb12u1_arm64.deb ...
+[2026-10-02T00:33:29.412Z] #12 11.79 Unpacking libssl3:arm64 (3.0.22-1~deb12u1) ...
+[2026-10-02T00:33:29.675Z] #12 12.17 Selecting previously unselected package openssl.
+[2026-10-02T00:33:29.675Z] #12 12.18 Preparing to unpack .../openssl_3.0.22-1~deb12u1_arm64.deb ...
+[2026-10-02T00:33:29.675Z] #12 12.18 Unpacking openssl (3.0.22-1~deb12u1) ...
+[2026-10-02T00:33:29.675Z] #12 12.38 Selecting previously unselected package ca-certificates.
+[2026-10-02T00:33:29.951Z] #12 12.38 Preparing to unpack .../ca-certificates_20250419~deb12u1_all.deb ...
+[2026-10-02T00:33:29.951Z] #12 12.38 Unpacking ca-certificates (20250419~deb12u1) ...
+[2026-10-02T00:33:29.951Z] #12 12.46 Setting up libssl3:arm64 (3.0.22-1~deb12u1) ...
+[2026-10-02T00:33:29.951Z] #12 12.46 Setting up openssl (3.0.22-1~deb12u1) ...
+[2026-10-02T00:33:29.951Z] #12 12.47 Setting up ca-certificates (20250419~deb12u1) ...
+[2026-10-02T00:33:30.215Z] #12 12.71 debconf: unable to initialize frontend: Dialog
+[2026-10-02T00:33:30.215Z] #12 12.71 debconf: (TERM is not set, so the dialog frontend is not usable.)
+[2026-10-02T00:33:30.215Z] #12 12.71 debconf: falling back to frontend: Readline
+[2026-10-02T00:33:30.215Z] #12 12.71 debconf: unable to initialize frontend: Readline
+[2026-10-02T00:33:30.215Z] #12 12.71 debconf: (Can't locate Term/ReadLine.pm in @INC (you may need to install the Term::ReadLine module) (@INC contains: /etc/perl /usr/local/lib/aarch64-linux-gnu/perl/5.36.0 /usr/local/share/perl/5.36.0 /usr/lib/aarch64-linux-gnu/perl5/5.36 /usr/share/perl5 /usr/lib/aarch64-linux-gnu/perl-base /usr/lib/aarch64-linux-gnu/perl/5.36 /usr/share/perl/5.36 /usr/local/lib/site_perl) at /usr/share/perl5/Debconf/FrontEnd/Readline.pm line 7.)
+[2026-10-02T00:33:30.215Z] #12 12.71 debconf: falling back to frontend: Teletype
+[2026-10-02T00:33:31.175Z] #12 13.85 Updating certificates in /etc/ssl/certs...
+[2026-10-02T00:33:32.208Z] #12 14.63 150 added, 0 removed; done.
+[2026-10-02T00:33:32.208Z] #12 14.78 Processing triggers for libc-bin (2.36-9+deb12u14) ...
+[2026-10-02T00:33:32.493Z] #12 15.11 Processing triggers for ca-certificates (20250419~deb12u1) ...
+[2026-10-02T00:33:32.757Z] #12 15.14 Updating certificates in /etc/ssl/certs...
+[2026-10-02T00:33:33.359Z] #12 15.81 0 added, 0 removed; done.
+[2026-10-02T00:33:33.359Z] #12 15.81 Running hooks in /etc/ca-certificates/update.d...
+[2026-10-02T00:33:33.359Z] #12 15.81 done.
+[2026-10-02T00:33:33.925Z] #12 ...
+[2026-10-02T00:33:33.925Z] 
+[2026-10-02T00:33:33.925Z] #17 [prod-deps 1/1] RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --prod --filter @employee-console/api...
+[2026-10-02T00:33:33.925Z] #17 16.43 [WARN] Request took 11453ms: https://registry.npmjs.org/@prisma%2Fclient
+[2026-10-02T00:33:34.499Z] #17 16.93 [WARN] Request took 11977ms: https://registry.npmjs.org/@prisma%2Fdebug
+[2026-10-02T00:33:34.758Z] #17 ...
+[2026-10-02T00:33:34.758Z] 
+[2026-10-02T00:33:34.758Z] #12 [runtime  2/10] RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+[2026-10-02T00:33:34.758Z] #12 DONE 17.4s
+[2026-10-02T00:33:35.016Z] 
+[2026-10-02T00:33:35.016Z] #19 [runtime  3/10] WORKDIR /repo
+[2026-10-02T00:33:35.016Z] #19 DONE 0.1s
+[2026-10-02T00:33:35.016Z] 
+[2026-10-02T00:33:35.016Z] #18 [build 1/3] RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @employee-console/api...
+[2026-10-02T00:33:35.016Z] #18 15.58 [WARN] Request took 10538ms: https://registry.npmjs.org/@prisma%2Fdebug
+[2026-10-02T00:33:35.016Z] #18 16.52 [WARN] Request took 11213ms: https://registry.npmjs.org/@prisma%2Ffetch-engine
+[2026-10-02T00:33:39.588Z] #18 21.72 ✓ Lockfile passes supply-chain policies (1112 entries in 18.5s)
+[2026-10-02T00:33:39.588Z] #18 21.72 Lockfile is up to date, resolution step is skipped
+[2026-10-02T00:33:39.588Z] #18 22.04 Packages are copied from the content-addressable store to the virtual store.
+[2026-10-02T00:33:39.588Z] #18 22.04   Content-addressable store is at: /pnpm/store/v11
+[2026-10-02T00:33:39.588Z] #18 22.04   Virtual store is at:             node_modules/.pnpm
+[2026-10-02T00:33:40.262Z] #18 ...
+[2026-10-02T00:33:40.262Z] 
+[2026-10-02T00:33:40.262Z] #17 [prod-deps 1/1] RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --prod --filter @employee-console/api...
+[2026-10-02T00:33:40.262Z] #17 22.64 ✓ Lockfile passes supply-chain policies (1112 entries in 19.5s)
+[2026-10-02T00:33:40.262Z] #17 22.64 Lockfile is up to date, resolution step is skipped
+[2026-10-02T00:33:40.608Z] #17 23.02 Packages are copied from the content-addressable store to the virtual store.
+[2026-10-02T00:33:40.608Z] #17 23.02   Content-addressable store is at: /pnpm/store/v11
+[2026-10-02T00:33:40.608Z] #17 23.02   Virtual store is at:             node_modules/.pnpm
+[2026-10-02T00:33:41.643Z] #17 24.03 Progress: resolved 87, reused 87, downloaded 0, added 71
+[2026-10-02T00:33:42.913Z] #17 25.03 Progress: resolved 132, reused 132, downloaded 0, added 117
+[2026-10-02T00:33:43.562Z] #17 26.04 Progress: resolved 161, reused 161, downloaded 0, added 147
+[2026-10-02T00:33:44.550Z] #17 27.04 Progress: resolved 223, reused 223, downloaded 0, added 212
+[2026-10-02T00:33:46.077Z] #17 28.07 Progress: resolved 275, reused 275, downloaded 0, added 266
+[2026-10-02T00:33:47.290Z] #17 29.60 Progress: resolved 280, reused 280, downloaded 0, added 275
+[2026-10-02T00:33:48.851Z] #17 31.19 Progress: resolved 280, reused 280, downloaded 0, added 276
+[2026-10-02T00:33:49.490Z] #17 31.92 Packages: +280
+[2026-10-02T00:33:49.780Z] #17 31.92 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[2026-10-02T00:33:49.780Z] #17 32.09 Progress: resolved 280, reused 280, downloaded 0, added 280, done
+[2026-10-02T00:33:50.413Z] #17 32.57 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+[2026-10-02T00:33:50.414Z] #17 32.79 .../node_modules/prisma preinstall: Done
+[2026-10-02T00:33:51.016Z] #17 ...
+[2026-10-02T00:33:51.016Z] 
+[2026-10-02T00:33:51.016Z] #18 [build 1/3] RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @employee-console/api...
+[2026-10-02T00:33:51.016Z] #18 23.20 Progress: resolved 158, reused 158, downloaded 0, added 143
+[2026-10-02T00:33:51.016Z] #18 24.17 Progress: resolved 203, reused 203, downloaded 0, added 188
+[2026-10-02T00:33:51.016Z] #18 25.20 Progress: resolved 231, reused 231, downloaded 0, added 216
+[2026-10-02T00:33:51.016Z] #18 26.23 Progress: resolved 268, reused 268, downloaded 0, added 253
+[2026-10-02T00:33:51.016Z] #18 27.24 Progress: resolved 328, reused 328, downloaded 0, added 313
+[2026-10-02T00:33:51.016Z] #18 28.24 Progress: resolved 419, reused 419, downloaded 0, added 404
+[2026-10-02T00:33:51.016Z] #18 29.25 Progress: resolved 510, reused 510, downloaded 0, added 495
+[2026-10-02T00:33:51.016Z] #18 30.25 Progress: resolved 600, reused 600, downloaded 0, added 585
+[2026-10-02T00:33:51.016Z] #18 31.53 Progress: resolved 719, reused 719, downloaded 0, added 710
+[2026-10-02T00:33:51.016Z] #18 32.54 Progress: resolved 723, reused 723, downloaded 0, added 721
+[2026-10-02T00:33:51.016Z] #18 33.07 Packages: +723
+[2026-10-02T00:33:51.016Z] #18 33.07 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[2026-10-02T00:33:51.016Z] #18 33.21 Progress: resolved 723, reused 723, downloaded 0, added 723, done
+[2026-10-02T00:33:51.016Z] #18 33.24 .../node_modules/@swc/core postinstall$ node postinstall.js
+[2026-10-02T00:33:51.016Z] #18 33.29 .../node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+[2026-10-02T00:33:51.016Z] #18 33.40 .../node_modules/prisma preinstall: Done
+[2026-10-02T00:33:51.337Z] #18 33.67 .../node_modules/@swc/core postinstall: Done
+[2026-10-02T00:33:51.920Z] #18 ...
+[2026-10-02T00:33:51.920Z] 
+[2026-10-02T00:33:51.920Z] #17 [prod-deps 1/1] RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --prod --filter @employee-console/api...
+[2026-10-02T00:33:51.920Z] #17 34.28 Done in 31.2s using pnpm v12.8.1
+[2026-10-02T00:33:53.436Z] #17 DONE 35.5s
+[2026-10-02T00:33:53.436Z] 
+[2026-10-02T00:33:53.437Z] #18 [build 1/3] RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @employee-console/api...
+[2026-10-02T00:33:53.437Z] #18 34.85 
+[2026-10-02T00:33:53.437Z] #18 34.85 devDependencies:
+[2026-10-02T00:33:53.437Z] #18 34.85 + lighthouse 13.5.0
+[2026-10-02T00:33:53.437Z] #18 34.85 + newman 6.2.2
+[2026-10-02T00:33:53.437Z] #18 34.85 + pg 8.23.1
+[2026-10-02T00:33:53.437Z] #18 34.85 
+[2026-10-02T00:33:53.437Z] #18 34.86 Done in 31.7s using pnpm v12.8.1
+[2026-10-02T00:33:53.437Z] #18 DONE 35.5s
+[2026-10-02T00:33:53.437Z] 
+[2026-10-02T00:33:53.437Z] #20 [build 2/3] COPY apps/api apps/api
+[2026-10-02T00:33:53.437Z] #20 DONE 0.1s
+[2026-10-02T00:33:53.437Z] 
+[2026-10-02T00:33:53.437Z] #21 [build 3/3] RUN pnpm --filter @employee-console/api run build  && pnpm --filter @employee-console/api exec tsc -p tsconfig.scripts.json --outDir dist-scripts
+[2026-10-02T00:33:54.303Z] #21 0.992 $ prisma generate && tsc -p tsconfig.build.json
+[2026-10-02T00:33:56.359Z] #21 2.905 Loaded Prisma config from prisma.config.ts.
+[2026-10-02T00:33:56.359Z] #21 2.905 
+[2026-10-02T00:33:56.359Z] #21 2.964 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+[2026-10-02T00:33:56.359Z] #21 2.964 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+[2026-10-02T00:33:56.359Z] #21 2.966 prisma:warn Prisma failed to detect the libssl/openssl version to use, and may not work as expected. Defaulting to "openssl-1.1.x".
+[2026-10-02T00:33:56.359Z] #21 2.966 Please manually install OpenSSL via `apt-get update -y && apt-get install -y openssl` and try installing Prisma again. If you're running Prisma on Docker, add this command to your Dockerfile, or switch to an image that already has OpenSSL installed.
+[2026-10-02T00:33:56.359Z] #21 2.990 Prisma schema loaded from prisma/schema.prisma.
+[2026-10-02T00:33:56.637Z] #21 3.443 
+[2026-10-02T00:33:56.637Z] #21 3.443 ✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 323ms
+[2026-10-02T00:33:56.637Z] #21 3.443 
+[2026-10-02T00:34:02.089Z] #21 ...
+[2026-10-02T00:34:02.089Z] 
+[2026-10-02T00:34:02.089Z] #22 [runtime  4/10] COPY --from=prod-deps /repo/node_modules ./node_modules
+[2026-10-02T00:34:02.089Z] #22 DONE 4.5s
+[2026-10-02T00:34:02.089Z] 
+[2026-10-02T00:34:02.089Z] #23 [runtime  5/10] COPY --from=prod-deps /repo/apps/api/node_modules ./apps/api/node_modules
+[2026-10-02T00:34:02.089Z] #23 DONE 0.1s
+[2026-10-02T00:34:02.089Z] 
+[2026-10-02T00:34:02.089Z] #21 [build 3/3] RUN pnpm --filter @employee-console/api run build  && pnpm --filter @employee-console/api exec tsc -p tsconfig.scripts.json --outDir dist-scripts
+[2026-10-02T00:34:03.488Z] #21 DONE 10.2s
+[2026-10-02T00:34:03.488Z] 
+[2026-10-02T00:34:03.488Z] #24 [runtime  6/10] COPY --from=build /repo/apps/api/package.json /repo/apps/api/prisma.config.ts ./apps/api/
+[2026-10-02T00:34:03.488Z] #24 DONE 0.0s
+[2026-10-02T00:34:03.488Z] 
+[2026-10-02T00:34:03.488Z] #25 [runtime  7/10] COPY --from=build /repo/apps/api/prisma ./apps/api/prisma
+[2026-10-02T00:34:03.488Z] #25 DONE 0.0s
+[2026-10-02T00:34:03.488Z] 
+[2026-10-02T00:34:03.488Z] #26 [runtime  8/10] COPY --from=build /repo/apps/api/dist ./apps/api/dist
+[2026-10-02T00:34:03.488Z] #26 DONE 0.0s
+[2026-10-02T00:34:03.754Z] 
+[2026-10-02T00:34:03.754Z] #27 [runtime  9/10] COPY --from=build /repo/apps/api/dist-scripts ./apps/api/dist-scripts
+[2026-10-02T00:34:03.754Z] #27 DONE 0.0s
+[2026-10-02T00:34:03.754Z] 
+[2026-10-02T00:34:03.754Z] #28 [runtime 10/10] WORKDIR /repo/apps/api
+[2026-10-02T00:34:03.754Z] #28 DONE 0.0s
+[2026-10-02T00:34:03.754Z] 
+[2026-10-02T00:34:03.754Z] #29 exporting to image
+[2026-10-02T00:34:03.754Z] #29 exporting layers
+[2026-10-02T00:34:05.704Z] #29 exporting layers 2.0s done
+[2026-10-02T00:34:05.704Z] #29 writing image sha256:b6665b755292a3eacb86ebb7dde86d3202377d909f8d146cf73c057436a1b5e7 done
+[2026-10-02T00:34:05.704Z] #29 naming to docker.io/employee-console/api:a346e09f77f8 done
+[2026-10-02T00:34:05.704Z] #29 DONE 2.0s
+[2026-10-02T00:34:05.704Z] + docker build -f infra/docker/web.Dockerfile --build-arg BUILD_COMMIT_SHA=a346e09f77f8 --build-arg API_INTERNAL_URL=http://api:3001 -t employee-console/web:a346e09f77f8 .
+[2026-10-02T00:34:05.983Z] #0 building with "desktop-linux" instance using docker driver
+[2026-10-02T00:34:05.983Z] 
+[2026-10-02T00:34:05.983Z] #1 [internal] load build definition from web.Dockerfile
+[2026-10-02T00:34:05.983Z] #1 transferring dockerfile: 1.74kB done
+[2026-10-02T00:34:05.983Z] #1 DONE 0.0s
+[2026-10-02T00:34:05.983Z] 
+[2026-10-02T00:34:05.983Z] #2 resolve image config for docker-image://docker.io/docker/dockerfile:1.7
+[2026-10-02T00:34:06.587Z] #2 DONE 0.6s
+[2026-10-02T00:34:06.587Z] 
+[2026-10-02T00:34:06.587Z] #3 docker-image://docker.io/docker/dockerfile:1.7@sha256:a57df69d0ea827fb7266491f2813635de6f17269be881f696fbfdf2d83dda33e
+[2026-10-02T00:34:06.855Z] #3 CACHED
+[2026-10-02T00:34:06.855Z] 
+[2026-10-02T00:34:06.855Z] #4 [internal] load metadata for docker.io/library/node:24.21.0-bookworm-slim
+[2026-10-02T00:34:06.855Z] #4 DONE 0.0s
+[2026-10-02T00:34:06.855Z] 
+[2026-10-02T00:34:06.855Z] #5 [internal] load .dockerignore
+[2026-10-02T00:34:06.855Z] #5 transferring context: 290B done
+[2026-10-02T00:34:06.855Z] #5 DONE 0.0s
+[2026-10-02T00:34:07.117Z] 
+[2026-10-02T00:34:07.117Z] #6 [runtime 1/4] FROM docker.io/library/node:24.21.0-bookworm-slim
+[2026-10-02T00:34:07.117Z] #6 DONE 0.0s
+[2026-10-02T00:34:07.117Z] 
+[2026-10-02T00:34:07.117Z] #7 [internal] load build context
+[2026-10-02T00:34:07.117Z] #7 transferring context: 535.09kB 0.0s done
+[2026-10-02T00:34:07.117Z] #7 DONE 0.1s
+[2026-10-02T00:34:07.117Z] 
+[2026-10-02T00:34:07.117Z] #8 [build  2/12] RUN corepack enable && corepack prepare pnpm@12.8.1 --activate
+[2026-10-02T00:34:07.117Z] #8 CACHED
+[2026-10-02T00:34:07.117Z] 
+[2026-10-02T00:34:07.117Z] #9 [build  3/12] WORKDIR /repo
+[2026-10-02T00:34:07.117Z] #9 CACHED
+[2026-10-02T00:34:07.117Z] 
+[2026-10-02T00:34:07.117Z] #10 [build  4/12] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json .npmrc ./
+[2026-10-02T00:34:07.117Z] #10 DONE 0.1s
+[2026-10-02T00:34:07.393Z] 
+[2026-10-02T00:34:07.394Z] #11 [build  5/12] COPY apps/api/package.json apps/api/
+[2026-10-02T00:34:07.394Z] #11 DONE 0.0s
+[2026-10-02T00:34:07.394Z] 
+[2026-10-02T00:34:07.394Z] #12 [build  6/12] COPY apps/web/package.json apps/web/
+[2026-10-02T00:34:07.394Z] #12 DONE 0.0s
+[2026-10-02T00:34:07.394Z] 
+[2026-10-02T00:34:07.394Z] #13 [build  7/12] COPY packages/api-client/package.json packages/api-client/
+[2026-10-02T00:34:07.394Z] #13 DONE 0.0s
+[2026-10-02T00:34:07.394Z] 
+[2026-10-02T00:34:07.394Z] #14 [build  8/12] COPY tests/e2e/package.json tests/e2e/
+[2026-10-02T00:34:07.394Z] #14 DONE 0.0s
+[2026-10-02T00:34:07.394Z] 
+[2026-10-02T00:34:07.394Z] #15 [build  9/12] RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store pnpm install --frozen-lockfile --filter @employee-console/web...
+[2026-10-02T00:34:07.668Z] #15 0.477 Downloading the pnpm 12.8.1 binary for linux-arm64...
+[2026-10-02T00:34:09.701Z] #15 2.141 Scope: 2 of 5 workspace projects
+[2026-10-02T00:34:09.701Z] #15 2.189 ? Verifying lockfile against supply-chain policies (1112 entries)...
+[2026-10-02T00:34:20.187Z] #15 12.98 ✓ Lockfile passes supply-chain policies (1112 entries in 10.8s)
+[2026-10-02T00:34:20.187Z] #15 12.98 Lockfile is up to date, resolution step is skipped
+[2026-10-02T00:34:20.806Z] #15 13.50 Packages are copied from the content-addressable store to the virtual store.
+[2026-10-02T00:34:20.806Z] #15 13.50   Content-addressable store is at: /pnpm/store/v11
+[2026-10-02T00:34:20.806Z] #15 13.50   Virtual store is at:             node_modules/.pnpm
+[2026-10-02T00:34:21.839Z] #15 14.51 Progress: resolved 242, reused 242, downloaded 0, added 227
+[2026-10-02T00:34:23.012Z] #15 15.55 Progress: resolved 354, reused 354, downloaded 0, added 339
+[2026-10-02T00:34:23.639Z] #15 16.56 Progress: resolved 409, reused 409, downloaded 0, added 394
+[2026-10-02T00:34:24.943Z] #15 17.57 Progress: resolved 486, reused 486, downloaded 0, added 471
+[2026-10-02T00:34:26.141Z] #15 18.73 Progress: resolved 526, reused 526, downloaded 0, added 512
+[2026-10-02T00:34:26.848Z] #15 19.75 Progress: resolved 619, reused 619, downloaded 0, added 603
+[2026-10-02T00:34:28.001Z] #15 20.75 Progress: resolved 671, reused 671, downloaded 0, added 662
+[2026-10-02T00:34:29.591Z] #15 22.13 Progress: resolved 671, reused 671, downloaded 0, added 665
+[2026-10-02T00:34:30.538Z] #15 23.31 Progress: resolved 671, reused 671, downloaded 0, added 671
+[2026-10-02T00:34:30.538Z] #15 23.47 Packages: +671
+[2026-10-02T00:34:30.538Z] #15 23.47 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[2026-10-02T00:34:30.800Z] #15 23.69 Progress: resolved 671, reused 671, downloaded 0, added 671, done
+[2026-10-02T00:34:31.060Z] #15 23.70 .../node_modules/unrs-resolver postinstall$ node postinstall.js
+[2026-10-02T00:34:31.060Z] #15 23.82 .../node_modules/unrs-resolver postinstall: Done
+[2026-10-02T00:34:31.336Z] #15 24.22 
+[2026-10-02T00:34:31.336Z] #15 24.22 devDependencies:
+[2026-10-02T00:34:31.336Z] #15 24.22 + lighthouse 13.5.0
+[2026-10-02T00:34:31.336Z] #15 24.22 + newman 6.2.2
+[2026-10-02T00:34:31.336Z] #15 24.22 + pg 8.23.1
+[2026-10-02T00:34:31.336Z] #15 24.22 
+[2026-10-02T00:34:31.624Z] #15 24.22 Done in 22.1s using pnpm v12.8.1
+[2026-10-02T00:34:32.584Z] #15 DONE 25.3s
+[2026-10-02T00:34:32.584Z] 
+[2026-10-02T00:34:32.584Z] #16 [build 10/12] COPY packages/api-client packages/api-client
+[2026-10-02T00:34:32.584Z] #16 DONE 0.0s
+[2026-10-02T00:34:32.584Z] 
+[2026-10-02T00:34:32.584Z] #17 [build 11/12] COPY apps/web apps/web
+[2026-10-02T00:34:32.584Z] #17 DONE 0.0s
+[2026-10-02T00:34:32.584Z] 
+[2026-10-02T00:34:32.584Z] #18 [build 12/12] RUN pnpm --filter @employee-console/web run build
+[2026-10-02T00:34:32.856Z] #18 0.254 $ next build
+[2026-10-02T00:34:33.119Z] #18 0.655 ▲ Next.js 16.3.8 (Turbopack)
+[2026-10-02T00:34:33.380Z] #18 0.702 ✓ Running next.config.ts took 47ms
+[2026-10-02T00:34:33.380Z] #18 0.703 ⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+[2026-10-02T00:34:33.380Z] #18 0.712 
+[2026-10-02T00:34:33.380Z] #18 0.740   Creating an optimized production build ...
+[2026-10-02T00:34:44.026Z] #18 10.28 ✓ Compiled successfully in 9.3s
+[2026-10-02T00:34:44.027Z] #18 10.29   Running TypeScript ...
+[2026-10-02T00:34:47.873Z] #18 14.83   Finished TypeScript in 4.5s ...
+[2026-10-02T00:34:47.873Z] #18 14.83   Collecting page data using 7 workers ...
+[2026-10-02T00:34:48.547Z] #18 15.85   Generating static pages using 7 workers (0/2) ...
+[2026-10-02T00:34:48.547Z] #18 15.96 ✓ Generating static pages using 7 workers (2/2) in 112ms
+[2026-10-02T00:34:48.812Z] #18 15.96   Finalizing page optimization ...
+[2026-10-02T00:34:49.087Z] #18 16.40 
+[2026-10-02T00:34:49.087Z] #18 16.40 Route (app)
+[2026-10-02T00:34:49.087Z] #18 16.40 ┌ ƒ /
+[2026-10-02T00:34:49.087Z] #18 16.40 ├ ○ /_not-found
+[2026-10-02T00:34:49.087Z] #18 16.40 ├ ƒ /access-denied
+[2026-10-02T00:34:49.087Z] #18 16.40 ├ ƒ /employees
+[2026-10-02T00:34:49.087Z] #18 16.40 ├ ƒ /employees/[id]
+[2026-10-02T00:34:49.087Z] #18 16.40 ├ ƒ /employees/[id]/edit
+[2026-10-02T00:34:49.087Z] #18 16.40 ├ ƒ /employees/new
+[2026-10-02T00:34:49.087Z] #18 16.40 ├ ƒ /login
+[2026-10-02T00:34:49.087Z] #18 16.40 ├ ƒ /reports
+[2026-10-02T00:34:49.087Z] #18 16.40 ├ ƒ /reports/[id]
+[2026-10-02T00:34:49.087Z] #18 16.40 └ ƒ /settings/integrations
+[2026-10-02T00:34:49.087Z] #18 16.40 
+[2026-10-02T00:34:49.087Z] #18 16.40 
+[2026-10-02T00:34:49.087Z] #18 16.40 ○  (Static)   prerendered as static content
+[2026-10-02T00:34:49.087Z] #18 16.40 ƒ  (Dynamic)  server-rendered on demand
+[2026-10-02T00:34:49.087Z] #18 16.40 
+[2026-10-02T00:34:49.355Z] #18 DONE 16.8s
+[2026-10-02T00:34:49.838Z] 
+[2026-10-02T00:34:49.838Z] #19 [runtime 2/4] WORKDIR /app
+[2026-10-02T00:34:50.108Z] #19 CACHED
+[2026-10-02T00:34:50.108Z] 
+[2026-10-02T00:34:50.108Z] #20 [runtime 3/4] COPY --from=build --chown=node:node /repo/apps/web/.next/standalone ./
+[2026-10-02T00:34:51.957Z] #20 DONE 1.8s
+[2026-10-02T00:34:51.957Z] 
+[2026-10-02T00:34:51.957Z] #21 [runtime 4/4] COPY --from=build --chown=node:node /repo/apps/web/.next/static ./apps/web/.next/static
+[2026-10-02T00:34:51.957Z] #21 DONE 0.0s
+[2026-10-02T00:34:51.957Z] 
+[2026-10-02T00:34:51.957Z] #22 exporting to image
+[2026-10-02T00:34:51.957Z] #22 exporting layers 0.1s done
+[2026-10-02T00:34:51.957Z] #22 writing image sha256:e6026a130ba80dc666eb8fed3c25b96812e31ed2b1bdc4631c1793be8ce8c617
+[2026-10-02T00:34:51.957Z] #22 writing image sha256:e6026a130ba80dc666eb8fed3c25b96812e31ed2b1bdc4631c1793be8ce8c617 done
+[2026-10-02T00:34:51.957Z] #22 naming to docker.io/employee-console/web:a346e09f77f8 done
+[2026-10-02T00:34:51.957Z] #22 DONE 0.1s
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy staging)
+[Pipeline] lock
+[2026-10-02T00:34:52.281Z] Trying to acquire lock on [Resource: employee-console-staging]
+[2026-10-02T00:34:52.290Z] Lock acquired on [Resource: employee-console-staging]
+[Pipeline] {
+[Pipeline] withCredentials
+[2026-10-02T00:34:52.458Z] Masking supported pattern matches of $STAGING_ENV_FILE
+[Pipeline] {
+[Pipeline] sh
+[2026-10-02T00:34:53.064Z] + export 'PATH=/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:34:53.064Z] + PATH='/tmp/employee-console-jenkins-agent/workspace/employee-console/.ci-bin:/opt/homebrew/opt/node@24/bin:/private/tmp/claude-501/-Users-sittiponghemloun-Developer-my-project-chememan/2ae4ed77-ad56-4bf8-b6ab-faceffce3458/scratchpad/bin:/opt/homebrew/opt/node@24/bin:/Users/sittiponghemloun/.local/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity-ide/antigravity-ide/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.antigravity/antigravity/bin:/Users/sittiponghemloun/.npm-global/bin:/opt/homebrew/opt/openjdk@21/bin:/Users/sittiponghemloun/Library/pnpm:/Users/sittiponghemloun/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.13/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/share/dotnet:~/.dotnet/tools:/Users/sittiponghemloun/.claude/plugins/cache/caveman/caveman/25d22f864ad6/bin:/Users/sittiponghemloun/.claude/plugins/cache/gsd-plugin/gsd/3.5.0/bin'
+[2026-10-02T00:34:53.065Z] + node scripts/staging.mjs up --tag=a346e09f77f8
+[2026-10-02T00:34:53.664Z]  Container employee-console-staging-postgres-1  Recreate
+[2026-10-02T00:34:53.942Z]  Container employee-console-staging-postgres-1  Recreated
+[2026-10-02T00:34:53.942Z]  Container employee-console-staging-postgres-1  Starting
+[2026-10-02T00:34:54.216Z]  Container employee-console-staging-postgres-1  Started
+[2026-10-02T00:35:02.382Z] • backup written to /Users/sittiponghemloun/.employee-console/staging/backups/staging-2026-10-02T00-35-00-781Z-before-a346e09f77f8.sql
+[2026-10-02T00:35:02.382Z]  Container employee-console-staging-postgres-1  Running
+[2026-10-02T00:35:02.638Z] Loaded Prisma config from prisma.config.ts.
+[2026-10-02T00:35:02.638Z] 
+[2026-10-02T00:35:02.638Z] Error: Can't write to /repo/node_modules/.pnpm/@prisma+engines@7.10.0/node_modules/@prisma/engines please make sure you install "prisma" with the right permissions.
+[2026-10-02T00:35:02.638Z] ⚠ deploy of a346e09f77f8 failed: docker compose run --rm migrate exited with 1
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[2026-10-02T00:35:02.684Z] Lock released on resource [Resource: employee-console-staging]
+[Pipeline] // lock
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Smoke)
+Stage "Smoke" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Performance)
+Stage "Performance" skipped due to earlier failure(s)
+[Pipeline] getContext
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] junit
+[2026-10-02T00:35:02.804Z] Recording test results
+[2026-10-02T00:35:02.881Z] [Checks API] No suitable checks publisher found.
+[Pipeline] archiveArtifacts
+[2026-10-02T00:35:02.897Z] Archiving artifacts
+[Pipeline] sh
+[2026-10-02T00:35:03.422Z] + node scripts/ci-db.mjs down
+[2026-10-02T00:35:03.422Z]  Container employee-console-ci-3-postgres-1  Stopping
+[2026-10-02T00:35:03.682Z]  Container employee-console-ci-3-postgres-1  Stopped
+[2026-10-02T00:35:03.682Z]  Container employee-console-ci-3-postgres-1  Removing
+[2026-10-02T00:35:03.682Z]  Container employee-console-ci-3-postgres-1  Removed
+[2026-10-02T00:35:03.682Z]  Volume employee-console-ci-3_pgdata  Removing
+[2026-10-02T00:35:03.682Z]  Network employee-console-ci-3_default  Removing
+[2026-10-02T00:35:03.682Z]  Volume employee-console-ci-3_pgdata  Removed
+[2026-10-02T00:35:03.682Z]  Network employee-console-ci-3_default  Removed
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // timestamps
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+ERROR: script returned exit code 1
+Finished: FAILURE

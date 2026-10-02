@@ -84,7 +84,7 @@ node scripts/staging.mjs restore --file=$HOME/.employee-console/staging/backups/
 ## 6. AI reports (n8n + Gemini)
 
 1. ใส่ `GEMINI_API_KEY` ใน `.env`
-2. เลือกปลายทาง: staging (ค่าเริ่มต้น `N8N_INTERNAL_API_URL=http://api-staging:3001/internal/v1`) หรือ dev (`http://host.docker.internal:<PORT>/internal/v1` และ API ต้องฟัง `HOST=0.0.0.0`)
+2. เลือกปลายทาง: staging (ค่าเริ่มต้น `N8N_INTERNAL_API_URL=http://api-staging:3001/internal/v1`) หรือ dev (`http://host.docker.internal:<PORT>/internal/v1`) — บน Docker Desktop (macOS/Windows) container เข้าถึง loopback ของ host ผ่าน `host.docker.internal` ได้ จึงให้ API ฟัง `HOST=127.0.0.1` ตามเดิม **อย่าเปลี่ยนเป็น `0.0.0.0`** (จะเปิด dev API ให้ทั้ง LAN); บน Linux ให้ใช้ปลายทาง staging แทน
 3. ```bash
    pnpm ai:up
    ```

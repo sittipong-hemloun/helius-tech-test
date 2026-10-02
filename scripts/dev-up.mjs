@@ -22,6 +22,11 @@ await waitFor(() => capture('docker', ['compose', 'ps', 'postgres', '--format', 
   label: 'postgres healthy',
 });
 ok('PostgreSQL is healthy');
+// Same idempotent script as first boot: brings an existing volume to the current role layout
+// (app role NOCREATEDB, separate CREATEDB test role). Output is SQL tags only, never passwords.
+if (!env.get('TEST_DB_PASSWORD')) warn('TEST_DB_PASSWORD missing in .env — run `pnpm run setup` (tests and perf need the test role)');
+run('docker', ['compose', 'exec', '-T', 'postgres', 'bash', '/docker-entrypoint-initdb.d/10-init-databases.sh'], { stdio: ['ignore', 'ignore', 'inherit'] });
+ok('database roles reconciled (app role NOCREATEDB, test role for test/perf)');
 
 run('pnpm', ['--filter', '@employee-console/api', 'exec', 'prisma', 'migrate', 'deploy']);
 const before = await databaseState(env.get('DATABASE_URL'));

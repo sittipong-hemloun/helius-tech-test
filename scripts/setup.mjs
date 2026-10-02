@@ -54,6 +54,7 @@ const local = prepare('.env', '.env.example', {
   ...common,
   DATABASE_URL: (u) =>
     `postgresql://${u.get('APP_DB_USER') || 'employee_console_app'}:${u.get('APP_DB_PASSWORD')}@localhost:${u.get('POSTGRES_HOST_PORT') || 5432}/employee_console_dev`,
+  TEST_DB_PASSWORD: () => dbPassword(),
   N8N_DB_PASSWORD: () => dbPassword(),
   N8N_ENCRYPTION_KEY: () => secret(32),
   WEBUI_SECRET_KEY: () => secret(32),

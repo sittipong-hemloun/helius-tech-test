@@ -40,7 +40,7 @@ const env = apiEnv({
   port: API_PORT,
   origin: `http://localhost:${WEB_PORT}`,
   appEnv: 'performance',
-  extra: { PERF_RATE_LIMIT_OVERRIDE: 'true', DB_POOL_MAX: '10', HOST: '0.0.0.0', REPORT_MAINTENANCE_ENABLED: 'false', LOG_LEVEL: 'error' },
+  extra: { PERF_RATE_LIMIT_OVERRIDE: 'true', DB_POOL_MAX: '10', REPORT_MAINTENANCE_ENABLED: 'false', LOG_LEVEL: 'error' },
 });
 run('pnpm', ['--filter', '@employee-console/api', 'run', 'perf:seed', '--count=10000', '--seed=42'], { env });
 
@@ -82,7 +82,7 @@ try {
     apiInstances: 1,
     k6: K6,
     rateLimitOverride: 'PERF_RATE_LIMIT_OVERRIDE=true (performance env only)',
-    target: `API direct http://host.docker.internal:${API_PORT} from the k6 container`,
+    target: `API direct http://host.docker.internal:${API_PORT} from the k6 container (API bound to 127.0.0.1; Docker Desktop routes host-gateway to host loopback)`,
   };
 
   // ---- query plans

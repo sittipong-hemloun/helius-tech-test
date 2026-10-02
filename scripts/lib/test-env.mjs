@@ -1,6 +1,7 @@
 // Shared helpers for E2E/Postman/perf runs: an isolated database marked with its purpose,
 // an API process in APP_ENV=test|performance, and session fixtures via the CLI (no HTTP route).
 import { spawn } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import pg from 'pg';
@@ -10,12 +11,13 @@ import { capture, ROOT, waitFor } from './sh.mjs';
 export const TEST_ADMIN = 'admin@example.test';
 export const TEST_VIEWER = 'viewer@example.test';
 
+/** Connection base for the test role (CREATEDB, owns only throwaway test/perf databases). */
 export function localDb() {
   const env = readEnvFile(resolve(ROOT, '.env'));
-  const user = env.get('APP_DB_USER') || 'employee_console_app';
-  const password = env.get('APP_DB_PASSWORD');
+  const user = env.get('TEST_DB_USER') || 'employee_console_test';
+  const password = env.get('TEST_DB_PASSWORD');
   const port = env.get('POSTGRES_HOST_PORT') || '5432';
-  if (!password) throw new Error('APP_DB_PASSWORD missing — run `pnpm run setup` and `pnpm dev:up`');
+  if (!password) throw new Error('TEST_DB_PASSWORD missing — run `pnpm run setup` and `pnpm dev:up`');
   const base = `postgresql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@localhost:${port}`;
   return { base, admin: `${base}/postgres` };
 }
@@ -43,9 +45,13 @@ function runApi(args, env) {
   return out;
 }
 
-export function apiEnv({ databaseUrl, port, origin, appEnv = 'test', extra = {} }) {
+// Secrets are random per run: nothing reusable is baked into the repo, and a token from one run is
+// worthless against the next.
+const runSecret = () => randomBytes(32).toString('base64url');
+
+/** App variables for a test/performance API process (no inherited shell environment). */
+export function appEnv({ databaseUrl, port, origin, appEnv = 'test', extra = {} }) {
   return {
-    ...process.env,
     ENV_FILE: '/dev/null',
     APP_ENV: appEnv,
     NODE_ENV: 'production',
@@ -53,16 +59,21 @@ export function apiEnv({ databaseUrl, port, origin, appEnv = 'test', extra = {} 
     HOST: '127.0.0.1',
     DATABASE_URL: databaseUrl,
     PUBLIC_APP_ORIGIN: origin,
-    SESSION_SECRET: `${appEnv}-session-secret-${'x'.repeat(32)}`,
+    SESSION_SECRET: runSecret(),
     ADMIN_EMAILS: TEST_ADMIN,
     VIEWER_EMAILS: TEST_VIEWER,
     AUTH_FIXTURES_ENABLED: 'true',
     REPORTS_ENABLED: 'true',
-    WORKER_SERVICE_TOKEN: `${appEnv}-worker-token-${'w'.repeat(32)}`,
-    SCHEDULER_SERVICE_TOKEN: `${appEnv}-scheduler-token-${'s'.repeat(32)}`,
+    WORKER_SERVICE_TOKEN: runSecret(),
+    SCHEDULER_SERVICE_TOKEN: runSecret(),
     LOG_LEVEL: 'warn',
     ...extra,
   };
+}
+
+/** Full process environment for spawning the API: the shell environment plus `appEnv(...)`. */
+export function apiEnv(options) {
+  return { ...process.env, ...appEnv(options) };
 }
 
 export function startProcess(cmd, args, { cwd, env, logFile }) {

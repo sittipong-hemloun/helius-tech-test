@@ -3,14 +3,17 @@ import { resolve } from 'node:path';
 import pg from 'pg';
 import { loadEnvFile } from '../../src/config/env-file.js';
 
-/** Builds connection strings for a throwaway test database on the dev PostgreSQL container. */
+/**
+ * Builds connection strings for a throwaway test database on the dev PostgreSQL container, as the
+ * test role (CREATEDB). The app role used by dev/staging cannot create or drop databases.
+ */
 export function testDatabaseUrls(runId: string) {
   loadEnvFile();
-  const user = process.env.APP_DB_USER ?? 'employee_console_app';
-  const password = process.env.APP_DB_PASSWORD;
+  const user = process.env.TEST_DB_USER ?? 'employee_console_test';
+  const password = process.env.TEST_DB_PASSWORD;
   const port = process.env.POSTGRES_HOST_PORT ?? '5432';
   const host = process.env.TEST_DB_HOST ?? 'localhost';
-  if (!password) throw new Error('APP_DB_PASSWORD missing: run `pnpm run setup` and `pnpm dev:up` first');
+  if (!password) throw new Error('TEST_DB_PASSWORD missing: run `pnpm run setup` and `pnpm dev:up` first');
   const name = `employee_console_test_${runId}`;
   const base = `postgresql://${encodeURIComponent(user)}:${encodeURIComponent(password)}@${host}:${port}`;
   return { name, adminUrl: `${base}/postgres`, url: `${base}/${name}` };

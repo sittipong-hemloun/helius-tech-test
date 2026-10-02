@@ -187,6 +187,8 @@ async function smoke() {
 async function deploy(tag, { previous }) {
   composeChecked(['up', '-d', 'postgres'], tag);
   await waitHealthy('postgres', tag);
+  // Idempotent role layout (also on volumes created before the app role lost CREATEDB).
+  composeChecked(['exec', '-T', 'postgres', 'bash', '/docker-entrypoint-initdb.d/10-init-databases.sh'], tag);
   const backupFile = backup(tag);
   if (backupFile) info(`backup written to ${backupFile}`);
   composeChecked(['run', '--rm', 'migrate'], tag);

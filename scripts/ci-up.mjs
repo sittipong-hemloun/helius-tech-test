@@ -44,6 +44,35 @@ await waitFor(
 );
 ok('Jenkins controller is up at http://localhost:8080');
 
+// The login page only proves Jenkins started. Check that JCasC was applied (admin login works, the
+// job and the agent node exist) and that every pinned plugin is installed and active.
+const auth = `Basic ${Buffer.from(`${cfg.get('JENKINS_ADMIN_ID') || 'admin'}:${cfg.get('JENKINS_ADMIN_PASSWORD')}`).toString('base64')}`;
+const jenkinsJson = async (path) => {
+  const r = await fetch(`http://127.0.0.1:8080${path}`, { headers: { Authorization: auth }, signal: AbortSignal.timeout(5000) });
+  if (!r.ok) throw new Error(`GET ${path} → ${r.status}`);
+  return r.json();
+};
+try {
+  await waitFor(async () => (await jenkinsJson('/job/employee-console/api/json?tree=name').catch(() => null))?.name === 'employee-console', {
+    timeoutMs: 120_000,
+    intervalMs: 3000,
+    label: 'JCasC job employee-console',
+  });
+  const nodes = await jenkinsJson('/computer/api/json?tree=computer%5BdisplayName%5D');
+  if (!nodes.computer.some((c) => c.displayName === 'host-agent')) throw new Error('agent node host-agent not configured');
+  const installed = new Map((await jenkinsJson('/pluginManager/api/json?depth=1&tree=plugins%5BshortName,version,active%5D')).plugins.map((p) => [p.shortName, p]));
+  const pinned = readFileSync(resolve(ROOT, 'infra/jenkins/plugins.txt'), 'utf8')
+    .split('\n')
+    .filter((l) => l && !l.startsWith('#'))
+    .map((l) => l.split(':'));
+  const wrong = pinned.filter(([name, version]) => installed.get(name)?.version !== version || !installed.get(name)?.active);
+  if (wrong.length) throw new Error(`plugins not at pinned version/active: ${wrong.map(([n, v]) => `${n}:${v} (have ${installed.get(n)?.version ?? 'none'})`).join(', ')}`);
+  ok(`JCasC applied (job employee-console, node host-agent); ${pinned.length} pinned plugins active`);
+} catch (err) {
+  console.error(`✖ Jenkins configuration check failed: ${err.message}`);
+  process.exit(1);
+}
+
 mkdirSync(resolve(ROOT, '.tmp'), { recursive: true });
 if (existsSync(pidFile)) {
   try {

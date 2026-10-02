@@ -45,6 +45,8 @@ if (env.get('DATABASE_URL') && pgHealth === 'healthy') {
     add('database', 'migrations', missing.length ? 'fail' : 'ok', missing.length ? `pending: ${missing.join(', ')}` : bundledMigrations().at(-1));
     add('database', 'purpose marker', s.purpose ? 'ok' : 'warn', s.purpose ?? 'unmarked');
     add('database', 'employees', s.employees === null ? 'fail' : 'ok', String(s.employees));
+    add('database', 'app role least privilege', s.canCreateDb === false ? 'ok' : 'warn', s.canCreateDb ? 'app role has CREATEDB — run pnpm dev:up' : 'NOCREATEDB');
+    add('database', 'test role password', env.get('TEST_DB_PASSWORD') ? 'ok' : 'warn', env.get('TEST_DB_PASSWORD') ? 'set' : 'missing — run pnpm run setup');
     const age = s.worker ? Math.round((Date.now() - new Date(s.worker).getTime()) / 1000) : null;
     add('reports', 'worker heartbeat (dev DB)', age !== null && age <= 60 ? 'ok' : 'info', age === null ? 'never seen' : `${age}s ago`);
   } catch (err) {
