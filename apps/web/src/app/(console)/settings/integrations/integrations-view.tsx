@@ -46,10 +46,10 @@ export function IntegrationsView() {
       <dl className="max-w-3xl divide-y divide-rule overflow-hidden rounded-[var(--radius-sheet)] border border-rule bg-sheet">
         <Row label="Core API and database" state={ready.data === undefined ? null : ready.data ? 'ok' : 'bad'} value={ready.data === undefined ? <Skeleton className="h-4 w-24" /> : ready.data ? 'Ready' : 'Not ready'} />
         <Row
-          label="Google sign-in"
-          state={s ? (s.google.configured ? 'ok' : 'off') : null}
-          value={s ? (s.google.configured ? 'Configured' : 'Not configured') : <Skeleton className="h-4 w-24" />}
-          note="Configured means the client ID and secret are present; it does not prove a live sign-in."
+          label="Authentication"
+          state="ok"
+          value="Role-Based (Local)"
+          note="Admin and Viewer roles are managed directly without external OAuth dependencies."
         />
         <Row
           label="AI reports"

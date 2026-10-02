@@ -18,13 +18,13 @@ pnpm dev:up
 
 แล้วเติมค่าภายนอกใน `.env` (ดู README "ค่าที่ต้องเติมเอง") และรัน `pnpm run setup` อีกครั้งเพื่อคัดลอกค่า Google/allowlist ไป `.env.staging`
 
-## 2. Google OAuth client
+## 2. การล็อกอินและสิทธิ์ (Role-Based Authentication)
 
-1. Google Cloud Console → APIs & Services → OAuth consent screen: User type External (หรือ Internal ถ้ามี Workspace), เพิ่มอีเมลของคุณเป็น test user, scopes `openid email profile`
-2. Credentials → Create credentials → OAuth client ID → Web application
-3. Authorized redirect URIs: `http://localhost:3000/api/auth/google/callback` และ `http://localhost:3100/api/auth/google/callback`
-4. ใส่ `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `ADMIN_EMAILS` ใน `.env` → `pnpm run setup` → restart `pnpm dev` (และ `pnpm staging:restart` สำหรับ staging)
-5. Smoke จริง: เปิด http://localhost:3000 → Sign in with Google → ต้องไปหน้า Employees; Sign out → กลับ Login; บัญชีที่ไม่อยู่ใน allowlist → หน้า Access denied
+ระบบใช้งานแบบ Local 1-Click Role Login โดยไม่ต้องพึ่งพา External OAuth:
+1. เปิด http://localhost:3000/login
+2. เลือก **Sign in as Admin** เพื่อเข้าใช้งานสิทธิ์ Admin (จัดการพนักงาน, ดูเงินเดือน, ขอรายงาน AI)
+3. หรือเลือก **Sign in as Viewer** เพื่อทดสอบสิทธิ์ Viewer (ดูรายการพนักงาน, ซ่อนเงินเดือน, ป้องกันการแก้ไข)
+4. (ตัวเลือกเสริม) สามารถระบุ `ADMIN_EMAILS` และ `VIEWER_EMAILS` ใน `.env` เพื่อกำหนดบัญชีเฉพาะได้ (มีค่าเริ่มต้นพร้อมใช้งาน)
 
 ## 3. Dev
 
@@ -61,13 +61,13 @@ pnpm staging:up
 pnpm staging:smoke
 ```
 
-ตรวจ liveness, readiness (DB + migration), หน้า Login, static asset, API บังคับ auth (401), `/internal` ไม่ถูกเปิดผ่านเว็บ (404), และสถานะ Google config (presence เท่านั้น — login จริงต้องตรวจมือ)
+ตรวจ liveness, readiness (DB + migration), หน้า Login, static asset, API บังคับ auth (401), `/internal` ไม่ถูกเปิดผ่านเว็บ (404), และสถานะ authentication provider
 
 ```bash
 pnpm staging:restart
 ```
 
-redeploy tag ปัจจุบันเพื่อให้ค่าใน `.env.staging` ที่แก้ (เช่น `REPORTS_ENABLED`, Google client) มีผล
+redeploy tag ปัจจุบันเพื่อให้ค่าใน `.env.staging` ที่แก้ (เช่น `REPORTS_ENABLED`) มีผล
 
 ```bash
 pnpm staging:rollback

@@ -20,10 +20,7 @@
 | `LOG_LEVEL` | `info` | JSON logs; debug ไม่พิมพ์ body/secret |
 | `SESSION_SECRET` | สุ่ม 48 bytes | ≥ 32 ตัวอักษร, ห้ามเป็น placeholder, แยกต่อ environment |
 | `SESSION_COOKIE_NAME` | `employee_console.<APP_ENV>.sid` | แยก local/staging เพราะ cookie ไม่แยกตามพอร์ต |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | ว่าง | ว่าง → `/api/auth/google` ตอบ 503 `AUTH_NOT_CONFIGURED` |
-| `GOOGLE_REDIRECT_URI` | `${PUBLIC_APP_ORIGIN}/api/auth/google/callback` | ต้องอยู่บน PUBLIC_APP_ORIGIN |
-| `GOOGLE_ISSUER` | `https://accounts.google.com` | override ได้เฉพาะ `APP_ENV=test` (mock OIDC) |
-| `ADMIN_EMAILS` / `VIEWER_EMAILS` | ว่าง | comma-separated, normalize เป็นตัวเล็ก; อีเมลซ้ำกันสองกลุ่ม → start ไม่ได้ |
+| `ADMIN_EMAILS` / `VIEWER_EMAILS` | `admin@chememan.com` / `viewer@chememan.com` | comma-separated, normalize เป็นตัวเล็ก; หากไม่ระบุจะใช้ค่าเริ่มต้นของ Chememan |
 | `REPORTS_ENABLED` | `false` | `true` ต้องมี `WORKER_SERVICE_TOKEN`; `false` → POST reports ตอบ 503 `AI_NOT_CONFIGURED` |
 | `GEMINI_MODEL` | `gemini-flash-lite-latest` | model ที่ส่งให้ worker ใน job |
 | `WORKER_SERVICE_TOKEN` / `SCHEDULER_SERVICE_TOKEN` | สุ่ม | ≥ 32 ตัวอักษร และต้องต่างกัน; ใช้กับ `/internal/v1` เท่านั้น |
@@ -33,7 +30,7 @@
 | `PERF_RATE_LIMIT_OVERRIDE` | `false` | `true` ได้เฉพาะ performance |
 | `BUILD_COMMIT_SHA` / `APP_VERSION` | `unknown` / `1.0.0` | แสดงใน Integrations; image ตั้งจาก build arg |
 
-ค่าคงที่ตาม PRD ที่อยู่ใน config: idle session 30 นาที, absolute 8 ชั่วโมง, login state 10 นาที, lease 120 วินาที, attempts 3, backoff 30/60 วินาที, deadline 10 นาที, manual report 10/ชั่วโมง, worker ถือว่า unavailable หลัง 60 วินาที, rate limit read 300 / write 60 ต่อนาทีต่อ session, Google start 10/นาที/IP, claim 10/นาที/token, body 32 KB (callback 8 KB), idempotency key 24 ชั่วโมง
+ค่าคงที่ตาม PRD ที่อยู่ใน config: idle session 30 นาที, absolute 8 ชั่วโมง, login state 10 นาที, lease 120 วินาที, attempts 3, backoff 30/60 วินาที, deadline 10 นาที, manual report 10/ชั่วโมง, worker ถือว่า unavailable หลัง 60 วินาที, rate limit read 300 / write 60 ต่อนาทีต่อ session, login start 10/นาที/IP, claim 10/นาที/token, body 32 KB (callback 8 KB), idempotency key 24 ชั่วโมง
 
 ## Docker / tools (อยู่ใน `.env`)
 

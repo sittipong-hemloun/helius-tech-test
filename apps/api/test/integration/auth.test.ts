@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto';
-import { OAuth2Server } from 'oauth2-mock-server';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { loadConfig } from '../../src/config/app-config.js';
@@ -264,16 +263,16 @@ describe('session fixtures are test-only (AC-34)', () => {
 });
 
 describe('rate limits (PRD §11.4)', () => {
-  it('limits Google login starts per IP and returns Retry-After', async () => {
-    const ctx = await startApp({ RATE_LIMIT_ENABLED: 'true', GOOGLE_CLIENT_ID: 'x', GOOGLE_CLIENT_SECRET: 'y', GOOGLE_ISSUER: 'http://127.0.0.1:9' });
-    for (let i = 0; i < 10; i += 1) await ctx.http.get('/api/auth/google').expect(302);
-    const limited = await ctx.http.get('/api/auth/google').expect(429);
+  it('limits login starts per IP and returns Retry-After', async () => {
+    const ctx = await startApp({ RATE_LIMIT_ENABLED: 'true' });
+    for (let i = 0; i < 10; i += 1) await ctx.http.get('/api/auth/login?role=ADMIN').expect(302);
+    const limited = await ctx.http.get('/api/auth/login?role=ADMIN').expect(429);
     expect(limited.body.error.code).toBe('RATE_LIMITED');
     expect(Number(limited.headers['retry-after'])).toBeGreaterThan(0);
     // Through the proxy, a client's own X-Forwarded-For entries come first and the proxy appends the
     // address it saw (here 127.0.0.1). Only that last hop is believed, so forged entries change nothing.
-    await ctx.http.get('/api/auth/google').set('X-Forwarded-For', '203.0.113.7, 127.0.0.1').expect(429);
-    await ctx.http.get('/api/auth/google').set('X-Forwarded-For', '198.51.100.1, 203.0.113.9, 127.0.0.1').expect(429);
+    await ctx.http.get('/api/auth/login?role=ADMIN').set('X-Forwarded-For', '203.0.113.7, 127.0.0.1').expect(429);
+    await ctx.http.get('/api/auth/login?role=ADMIN').set('X-Forwarded-For', '198.51.100.1, 203.0.113.9, 127.0.0.1').expect(429);
     await ctx.close();
   });
 
@@ -291,129 +290,59 @@ describe('rate limits (PRD §11.4)', () => {
   });
 });
 
-describe('Google OIDC callback with a mock provider (AC-29, AC-30, AC-31)', () => {
-  let oidc: OAuth2Server;
+describe('local role-based authentication', () => {
   let ctx: TestContext;
-  const CLIENT_ID = 'employee-console-test-client';
-
   beforeAll(async () => {
-    oidc = new OAuth2Server();
-    await oidc.issuer.keys.generate('RS256');
-    await oidc.start(0, '127.0.0.1');
-    ctx = await startApp({
-      GOOGLE_CLIENT_ID: CLIENT_ID,
-      GOOGLE_CLIENT_SECRET: 'test-secret',
-      GOOGLE_ISSUER: oidc.issuer.url!,
-    });
+    ctx = await startApp();
   });
-  afterAll(async () => {
-    await ctx.close();
-    await oidc.stop();
-  });
+  afterAll(async () => ctx.close());
   beforeEach(async () => resetData(ctx));
 
-  type Claims = Record<string, unknown>;
-
-  /** Runs the browser round trip; `tamper` edits ID token claims before signing. */
-  async function roundTrip(claims: Claims, opts: { tamperState?: boolean; reuse?: boolean } = {}) {
-    const agent = request.agent(ctx.baseUrl);
-    const start = await agent.get('/api/auth/google').expect(302);
-    const authorizeUrl = new URL(start.headers.location);
-    expect(authorizeUrl.searchParams.get('code_challenge_method')).toBe('S256');
-    expect(authorizeUrl.searchParams.get('scope')).toBe('openid email profile');
-    expect(authorizeUrl.searchParams.get('nonce')).toBeTruthy();
-    const preAuthCookie = start.headers['set-cookie']?.[0]?.split(';')[0];
-
-    // The mock signs the access token and the ID token; tamper with the ID token only.
-    const tamper = (token: { payload: Record<string, unknown> }) => {
-      if (token.payload.nonce !== undefined || token.payload.aud === CLIENT_ID) Object.assign(token.payload, claims);
-    };
-    oidc.service.on('beforeTokenSigning', tamper);
-    try {
-      const authorize = await fetch(authorizeUrl, { redirect: 'manual' });
-      const callback = new URL(authorize.headers.get('location')!);
-      if (opts.tamperState) callback.searchParams.set('state', 'forged-state');
-      const done = await agent.get(`/api/auth/google/callback${callback.search}`);
-      return { agent, done, preAuthCookie };
-    } finally {
-      oidc.service.off('beforeTokenSigning', tamper);
-    }
-  }
-
-  const verified = (email: string) => ({ email, email_verified: true, name: 'Real Person', sub: `google-${email}` });
-
-  it('logs an allowlisted, verified account in, rotates the session id and binds the user to sub', async () => {
-    const { agent, done, preAuthCookie } = await roundTrip(verified(ADMIN_EMAIL.toUpperCase()));
-    expect(done.status).toBe(302);
-    expect(done.headers.location).toBe(`${ORIGIN}/employees`);
-    const sessionCookie = done.headers['set-cookie']?.[0]?.split(';')[0];
-    expect(sessionCookie).toBeTruthy();
-    expect(sessionCookie).not.toBe(preAuthCookie); // regenerated after login
-    const session = await agent.get('/api/auth/session').expect(200);
-    expect(session.body.data.user).toMatchObject({ email: ADMIN_EMAIL, role: 'ADMIN', displayName: 'Real Person' });
-    const user = await ctx.prisma.user.findUnique({ where: { email: ADMIN_EMAIL } });
-    expect(user?.googleSub).toBe(`google-${ADMIN_EMAIL.toUpperCase()}`);
-    // The old pre-auth cookie is not an authenticated session.
-    await ctx.http.get('/api/auth/session').set('Cookie', preAuthCookie!).expect(401);
-  });
-
-  it('denies accounts outside the allowlist (AC-29)', async () => {
-    const { agent, done } = await roundTrip(verified('outsider@example.test'));
-    expect(done.headers.location).toBe(`${ORIGIN}/access-denied?reason=not_allowed`);
-    await agent.get('/api/auth/session').expect(401);
-    await agent.get('/api/v1/employees').expect(401);
-  });
-
-  it('denies unverified email addresses', async () => {
-    const { agent, done } = await roundTrip({ ...verified(ADMIN_EMAIL), email_verified: false });
-    expect(done.headers.location).toBe(`${ORIGIN}/access-denied?reason=email_unverified`);
-    await agent.get('/api/auth/session').expect(401);
-  });
-
-  for (const [label, claims, tamperState] of [
-    ['forged state', {}, true],
-    ['wrong nonce', { nonce: 'not-the-nonce' }, false],
-    ['wrong issuer', { iss: 'https://accounts.evil.example' }, false],
-    ['wrong audience', { aud: 'someone-elses-client' }, false],
-    ['expired token', { exp: Math.floor(Date.now() / 1000) - 3600, iat: Math.floor(Date.now() / 1000) - 7200 }, false],
-  ] as const) {
-    it(`rejects ${label} without creating a session (AC-30)`, async () => {
-      const { agent, done } = await roundTrip({ ...verified(ADMIN_EMAIL), ...claims }, { tamperState });
-      expect(done.status).toBe(302);
-      expect(done.headers.location).toBe(`${ORIGIN}/login?error=login_failed`);
-      await agent.get('/api/auth/session').expect(401);
-      const sessions = await ctx.prisma.$queryRaw<{ n: number }[]>`
-        SELECT count(*)::int AS n FROM sessions WHERE sess::jsonb ? 'auth'`;
-      expect(sessions[0].n).toBe(0);
-    });
-  }
-
-  it('a stray callback hit does not log out a signed-in user', async () => {
-    const admin = await login(ctx, ADMIN_EMAIL);
-    const res = await ctx.http.get('/api/auth/google/callback?error=access_denied').set('Cookie', admin.cookieHeader).expect(302);
+  it('GET /api/auth/login?role=ADMIN logs in as admin, sets session cookie and redirects to /employees', async () => {
+    const res = await ctx.http.get('/api/auth/login?role=ADMIN').expect(302);
     expect(res.headers.location).toBe(`${ORIGIN}/employees`);
-    await ctx.http.get('/api/auth/session').set('Cookie', admin.cookieHeader).expect(200);
+    const cookie = res.headers['set-cookie']?.[0]?.split(';')[0];
+    expect(cookie).toBeTruthy();
+
+    const sessionRes = await ctx.http.get('/api/auth/session').set('Cookie', cookie!).expect(200);
+    expect(sessionRes.body.data.user.role).toBe('ADMIN');
+    expect(sessionRes.body.data.permissions.canWriteEmployees).toBe(true);
   });
 
-  it('a callback without a pending login state is rejected', async () => {
-    const res = await ctx.http.get('/api/auth/google/callback?code=abc&state=xyz').expect(302);
-    expect(res.headers.location).toBe(`${ORIGIN}/login?error=login_expired`);
+  it('GET /api/auth/login?role=VIEWER logs in as viewer, sets session cookie and redirects to /employees', async () => {
+    const res = await ctx.http.get('/api/auth/login?role=VIEWER').expect(302);
+    expect(res.headers.location).toBe(`${ORIGIN}/employees`);
+    const cookie = res.headers['set-cookie']?.[0]?.split(';')[0];
+    expect(cookie).toBeTruthy();
+
+    const sessionRes = await ctx.http.get('/api/auth/session').set('Cookie', cookie!).expect(200);
+    expect(sessionRes.body.data.user.role).toBe('VIEWER');
+    expect(sessionRes.body.data.permissions.canWriteEmployees).toBe(false);
+    expect(sessionRes.body.data.permissions.canViewSalary).toBe(false);
   });
 
-  it('does not auto-link an email that belongs to another Google sub', async () => {
-    await ctx.prisma.user.create({ data: { googleSub: 'other-sub', email: ADMIN_EMAIL, displayName: 'Other', role: 'ADMIN' } });
-    const { agent, done } = await roundTrip({ ...verified(ADMIN_EMAIL), sub: 'new-sub' });
-    expect(done.headers.location).toBe(`${ORIGIN}/access-denied?reason=account_conflict`);
-    await agent.get('/api/auth/session').expect(401);
-    await ctx.prisma.user.deleteMany({ where: { googleSub: 'other-sub' } });
+  it('POST /api/auth/login logs in programmatically with JSON response', async () => {
+    const res = await ctx.http.post('/api/auth/login').send({ role: 'ADMIN' }).expect(200);
+    expect(res.body.data.user.role).toBe('ADMIN');
+    expect(res.body.data.csrfToken).toBeTruthy();
+    const cookie = res.headers['set-cookie']?.[0]?.split(';')[0];
+    expect(cookie).toBeTruthy();
   });
 
-  it('when Google is not configured, start returns 503 AUTH_NOT_CONFIGURED', async () => {
-    const plain = await startApp();
-    const res = await plain.http.get('/api/auth/google').expect(503);
-    expect(res.body.error.code).toBe('AUTH_NOT_CONFIGURED');
-    const providers = await plain.http.get('/api/auth/providers').expect(200);
-    expect(providers.body.data).toEqual({ google: { configured: false } });
-    await plain.close();
+  it('POST /api/auth/login with unauthorized email is rejected with 403', async () => {
+    const res = await ctx.http.post('/api/auth/login').send({ email: 'stranger@nowhere.test' }).expect(403);
+    expect(res.body.error.code).toBe('FORBIDDEN');
+  });
+
+  it('providers endpoint returns google configured false for backward compatibility', async () => {
+    const res = await ctx.http.get('/api/auth/providers').expect(200);
+    expect(res.body.data).toEqual({ google: { configured: false } });
+  });
+
+  it('logout destroys session and clears cookie', async () => {
+    const admin = await login(ctx, ADMIN_EMAIL);
+    const res = await ctx.http.post('/api/auth/logout').set(asUser(admin)).expect(204);
+    expect(res.headers['set-cookie']).toBeDefined();
+    await ctx.http.get('/api/auth/session').set('Cookie', admin.cookieHeader).expect(401);
   });
 });

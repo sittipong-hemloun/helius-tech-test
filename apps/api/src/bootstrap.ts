@@ -47,7 +47,7 @@ export function buildOpenApiDocument(app: NestExpressApplication, config: AppCon
   const builder = new DocumentBuilder()
     .setTitle('Employee Console API')
     .setDescription(
-      'NestJS API for Employee Console. Browser clients authenticate with the session cookie (Google OIDC) ' +
+      'NestJS API for Employee Console. Browser clients authenticate with the session cookie ' +
         'and send X-CSRF-Token on mutations. /internal/v1 is for the n8n worker/scheduler (bearer tokens).',
     )
     .setVersion(config.build.appVersion)

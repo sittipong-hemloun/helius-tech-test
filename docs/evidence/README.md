@@ -8,4 +8,3 @@
 | `jenkins/` | build log และ artifact ของ build ที่ผ่าน |
 | `staging.md` | ผล `pnpm staging:up` + smoke + rollback exercise |
 | `n8n.md` | การ import/activate workflow และผล execution |
-| `google-login.md` | manual smoke ของ Google Login จริง (หลังได้ credentials) |

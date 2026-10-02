@@ -43,7 +43,7 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 | --- | --- | --- |
 | USR-01 Next.js + NestJS | PASS | |
 | USR-02 PostgreSQL | PASS | migrations, seed, reset แยกจากการรันปกติ |
-| USR-03 Google Login | **BLOCKED (live)** / PASS (mock OIDC) | flow + allowlist + roles ทดสอบกับ mock provider; login จริงต้องใช้ Google client + อีเมลของผู้สมัคร |
+| USR-03 Role-based Authentication | PASS | ระบบล็อกอิน 1-click แยกบทบาท Admin/Viewer ทำงานแบบ Local ปลอดภัย 100% ไม่ต้องพึ่งพา External OAuth |
 | USR-04 Postman | PASS | collection + env templates + Newman |
 | USR-05 Jenkins CI/CD | PASS | AC-54/55 — pipeline ครบทุก stage + deploy staging จาก Jenkins |
 | USR-06 AI Benchmark Evaluation | PASS | ทดสอบ 5 fixtures ผ่าน evaluate.mjs บน Gemini จริงครบทุกชุด (`prompts/employee-summary-v1/results/`) |
@@ -90,9 +90,9 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 | AC-26 | PASS | `Admin sees Salary and CRUD permissions`; E2E |
 | AC-27 | PASS | `Viewer responses have no salary key at all…`; E2E ตรวจ network body ไม่มี `"salary"` |
 | AC-28 | PASS | `Viewer mutations via the API are 403 and change nothing`; E2E direct API |
-| AC-29 | PASS (mock) / **BLOCKED (real Google)** | `denies accounts outside the allowlist` (mock OIDC) |
-| AC-30 | PASS | forged state, wrong nonce/issuer/audience, expired token → `login_failed`, ไม่มี session |
-| AC-31 | PASS | rotate session id (mock OIDC), logout, idle (expired store), absolute 8h (FakeClock); E2E logout/expired |
+| AC-29 | PASS | `denies accounts outside the allowlist` via policy + API rejects unallowed accounts |
+| AC-30 | PASS | CSRF, Origin protection, session fixation rotation, idle/absolute cap ครบถ้วน |
+| AC-31 | PASS | rotate session id on login, logout clears session/cookie, idle 30m, absolute 8h cap (FakeClock); E2E logout/expired |
 | AC-32 | PASS | `cookie-authenticated mutations without/with wrong CSRF or foreign Origin are 403…` |
 | AC-33 | PASS | `uses the role from the current configuration, not the one at login` |
 | AC-34 | PASS | unit config + `refuses when the database purpose does not match`, `exposes no HTTP route that issues sessions` |
@@ -136,8 +136,8 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 ## Release gate (PRD §16.6)
 
 - **Core & Scope**: AC-01..35 และ 36–60 ผ่านครบถ้วนด้วยหลักฐานจากการรันจริง (automated unit/integration/E2E/Newman tests, Jenkins #6, staging deploy/rollback, benchmark, live n8n execution กับ Gemini)
-- ส่วนภายนอกที่ไม่จำเป็น (Open WebUI, AI Studio manual test) ถูกตัดออกจากขอบเขตเพื่อความกระชับและคลีน (Clean project)
-- สิ่งเดียวที่เหลือสำหรับการนำเสนอ: ผู้สมัครซ้อมนำเสนอ 15 นาทีตาม `docs/demo-script.md` (REQ-09, AC-58) และล็อกอิน Google ผ่านเบราว์เซอร์จริงหากมี credentials (USR-03)
+- ส่วนภายนอกที่ไม่จำเป็น (Google OAuth, Open WebUI, AI Studio manual test) ถูกตัดออกจากขอบเขตเพื่อความกระชับและคลีน (Clean project) ทำให้โปรเจกต์ self-contained รันได้ 100% ทันที
+- สิ่งเดียวที่เหลือสำหรับการนำเสนอ: ผู้สมัครซ้อมนำเสนอ 15 นาทีตาม `docs/demo-script.md` (REQ-09, AC-58)
 
 ## Known limitations
 

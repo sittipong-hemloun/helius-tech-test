@@ -2,7 +2,7 @@ import 'express-session';
 
 declare module 'express-session' {
   interface SessionData {
-    /** Present only after a successful Google login (PRD §11.1 step 7). */
+    /** Present only after a successful login. */
     auth?: {
       userId: string;
       email: string;
@@ -11,13 +11,6 @@ declare module 'express-session' {
       absoluteExpiresAt: string;
     };
     csrfToken?: string;
-    /** Pre-auth state for one OIDC round trip; single use, 10 minutes. */
-    oidc?: {
-      state: string;
-      nonce: string;
-      codeVerifier: string;
-      expiresAt: string;
-    };
   }
 }
 

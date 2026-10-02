@@ -67,7 +67,7 @@ const staging = prepare('.env.staging', '.env.staging.example', {
 
 // Staging shares the external values (Google client, allowlist, Gemini model) with local
 // unless they were set explicitly in .env.staging.
-const shared = ['GOOGLE_CLIENT_ID', 'GOOGLE_CLIENT_SECRET', 'ADMIN_EMAILS', 'VIEWER_EMAILS', 'GEMINI_MODEL'];
+const shared = ['ADMIN_EMAILS', 'VIEWER_EMAILS', 'GEMINI_MODEL'];
 const stagingUpdates = new Map(staging);
 let copied = 0;
 for (const key of shared) {
@@ -98,9 +98,7 @@ for (const [port, label] of ports) {
 
 // ---- external inputs
 const external = [
-  ['GOOGLE_CLIENT_ID', 'Google OAuth client ID'],
-  ['GOOGLE_CLIENT_SECRET', 'Google OAuth client secret'],
-  ['ADMIN_EMAILS', 'your Google account email(s) for the Admin role'],
+  ['ADMIN_EMAILS', 'admin email(s) for the Admin role (optional; defaults to admin@chememan.com)'],
   ['GEMINI_API_KEY', 'Gemini API key (only needed for AI reports via n8n)'],
 ];
 const missing = external.filter(([k]) => !local.get(k));

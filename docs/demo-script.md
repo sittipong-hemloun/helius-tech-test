@@ -3,8 +3,8 @@
 ## เตรียมก่อนวันสัมภาษณ์ (PRD §18.1)
 
 1. `pnpm install` และ `pnpm staging:up` ให้ images build เสร็จล่วงหน้า (ไม่ดาวน์โหลดใหญ่ระหว่าง demo)
-2. ตั้ง Google client + redirect ทั้ง :3000/:3100, ใส่อีเมลตัวเองใน `ADMIN_EMAILS` — ทดลอง Login/Logout ทั้งสอง origin
-3. ถ้ามีบัญชีที่สอง ใส่ `VIEWER_EMAILS` และทดลอง; ถ้าไม่มีให้บอกว่าหลักฐาน Viewer มาจาก automated tests
+2. ทดลอง Login เป็น Admin และ Viewer ผ่านหน้า Login ทั้ง :3000/:3100 — ทดลอง Login/Logout ทั้งสอง origin
+3. สลับบทบาท Admin (ดูเงินเดือน/CRUD) และ Viewer (ซ่อนเงินเดือน/read-only) เพื่อแสดงความปลอดภัยของสิทธิ์ (RBAC)
 4. `pnpm staging:smoke` → ทุกข้อ ✔; `node scripts/staging.mjs reset --confirm-reset` ให้กลับเป็น 5 records
 5. `pnpm ai:up --activate` → Integrations แสดง worker Available → สร้างรายงานจริงหนึ่งงาน
 6. เปิด Jenkins build ล่าสุดที่ผ่าน + `docs/performance.md` ไว้ในแท็บ (ไม่รัน load test ระหว่าง demo)
@@ -14,7 +14,7 @@
 
 | เวลา | สิ่งที่ทำ | พูดถึง |
 | --- | --- | --- |
-| 0–1 | หน้า Login :3100 | โจทย์ = Excel 5 แถว + 7 ฟิลด์ / ส่วนที่เพิ่มคือ Google Login, roles, AI report, CI/CD (แยกเป็น USR-*) |
+| 0–1 | หน้า Login :3100 | โจทย์ = Excel 5 แถว + 7 ฟิลด์ / ส่วนที่เพิ่มคือ Role-based Login (Admin & Viewer), AI report, CI/CD (แยกเป็น USR-*) |
 | 1–5 | Sign in → Employees | ข้อมูลตรง Excel (Bob Brown = In Active, วันที่เดิม), ค้น `john`, Engineering + In Active → Bob, Clear → 5, Add **Dana Lee** (engineering, 62000, 2026-09-01) → ID 106 + วันนี้, Edit salary 63000 + uncheck Active → 63,000.00 / In Active / version 2, เปิดสองแท็บแก้ record เดียวกัน → แท็บเก่าได้ conflict, ลบ Dana → กลับเป็น 5 |
 | 5–7 | เปิดโค้ด | Next (UI) / Nest (API) / Postgres, `employee-rules.ts` (decimal string, date-only, `In Active` → false), `employees.service.ts` (If-Match, no-op), guards (Viewer ไม่ได้ salary key) |
 | 7–9 | Reports | Generate → Queued → Ready (2 วินาที poll), ตัวเลขจาก DB เป็นหลัก, AI ได้แค่ snapshot ตัวเลขรวม, n8n worker + lease/retry/deadline, `docs/ai-usage.md` (ปัญหาจริงที่ AI ทำพลาดและวิธีจับ) |
@@ -38,7 +38,7 @@
 
 | ปัญหา | ทำอย่างไร |
 | --- | --- |
-| Google/เน็ตใช้ไม่ได้ | ถ้ามี session ค้างอยู่ใช้ต่อได้ตามอายุจริง; ไม่มีก็เปิดหลักฐาน login ที่บันทึกไว้ — ไม่มี bypass |
+| เน็ตใช้ไม่ได้ | ระบบ Login และ Database เป็น Local 100% สามารถใช้งานและเดโมได้ตามปกติ |
 | Gemini/n8n ล่ม | demo CRUD ต่อ, เปิดรายงานที่สร้างไว้แล้ว, ชี้ว่ารายงานใหม่จะ FAILED ตาม deadline จริง |
 | Jenkins ไม่ขึ้น | เปิด build log/artifacts ที่เก็บไว้ (`docs/evidence/jenkins/`) พร้อม SHA |
 | DB ไม่พร้อม | `pnpm run doctor`, `docker compose ps`; reset demo เฉพาะเมื่อจำเป็นและบอกว่า reset |

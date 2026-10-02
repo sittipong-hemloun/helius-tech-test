@@ -21,7 +21,6 @@ describe('configuration validation (PRD §13.2)', () => {
     expect(c.reports.leaseMs).toBe(120_000);
     expect(c.reports.backoffMs).toEqual([30_000, 60_000]);
     expect(c.google.configured).toBe(false);
-    expect(c.google.redirectUri).toBe('http://localhost:3000/api/auth/google/callback');
   });
   it('refuses overlapping admin/viewer lists (PRD §11.1 step 5)', () => {
     expect(() => loadConfig({ ...base, ADMIN_EMAILS: 'A@x.test', VIEWER_EMAILS: 'a@x.test ' })).toThrow(ConfigError);

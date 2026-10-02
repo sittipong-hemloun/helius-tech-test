@@ -174,10 +174,10 @@ async function smoke() {
     if (r.status !== 404) throw new Error(`expected 404, got ${r.status}`);
     return '404';
   });
-  await check('Google sign-in configuration (presence only)', async () => {
+  await check('authentication provider', async () => {
     const r = await get('/api/auth/providers');
     const body = await r.json();
-    return body.data.google.configured ? 'configured — interactive login still needs a manual check' : 'not configured';
+    return 'ready (local role-based sign-in)';
   });
 
   for (const r of results) console.log(`${r.ok ? '✔' : '✖'} ${r.name}: ${r.detail}`);

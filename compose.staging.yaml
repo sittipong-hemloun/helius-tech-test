@@ -16,9 +16,6 @@ x-api-env: &api-env
   TRUST_PROXY: loopback, linklocal, uniquelocal
   SESSION_SECRET: ${SESSION_SECRET:?run pnpm run setup}
   SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-employee_console.staging.sid}
-  GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
-  GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
-  GOOGLE_REDIRECT_URI: ${GOOGLE_REDIRECT_URI:-http://localhost:3100/api/auth/google/callback}
   ADMIN_EMAILS: ${ADMIN_EMAILS:-}
   VIEWER_EMAILS: ${VIEWER_EMAILS:-}
   REPORTS_ENABLED: ${REPORTS_ENABLED:-false}

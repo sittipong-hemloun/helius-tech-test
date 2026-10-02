@@ -27,8 +27,6 @@ add('tooling', 'Docker daemon', docker ? 'ok' : 'fail', docker ?? 'not reachable
 add('config', '.env present', existsSync(envPath) ? 'ok' : 'fail', existsSync(envPath) ? '' : 'run pnpm run setup');
 
 for (const [key, label] of [
-  ['GOOGLE_CLIENT_ID', 'Google client ID'],
-  ['GOOGLE_CLIENT_SECRET', 'Google client secret'],
   ['ADMIN_EMAILS', 'Admin allowlist'],
   ['GEMINI_API_KEY', 'Gemini API key (n8n worker)'],
 ]) {

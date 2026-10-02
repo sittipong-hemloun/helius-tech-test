@@ -7,16 +7,16 @@ export const dynamic = 'force-dynamic';
 
 const REASONS: Record<string, { title: string; body: string }> = {
   not_allowed: {
-    title: "This Google account isn't on the access list.",
+    title: "This account isn't on the access list.",
     body: 'Ask an Employee Console admin to add your email address, then sign in again.',
   },
   email_unverified: {
-    title: 'Your Google email address is not verified.',
-    body: 'Verify the address in your Google account, then sign in again.',
+    title: 'Your email address is not verified.',
+    body: 'Verify the address in your account, then sign in again.',
   },
   account_conflict: {
-    title: 'This email is already linked to a different Google account.',
-    body: 'Sign in with the Google account that was used before, or ask an admin to review the access list.',
+    title: 'This account has a conflicting role binding.',
+    body: 'Sign in with your assigned account, or ask an admin to review the access list.',
   },
   role: {
     title: "Your role doesn't include this page.",

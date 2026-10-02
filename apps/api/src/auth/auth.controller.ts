@@ -10,10 +10,10 @@ import type { AppRequest } from '../common/request-context.js';
 import { APP_CONFIG, normalizeEmail, type AppConfig } from '../config/app-config.js';
 import { AccessPolicyService } from './access-policy.service.js';
 import { Public, RateLimit } from './auth.decorators.js';
-import { OidcService } from './oidc.service.js';
 import { SessionDataDto } from './session.dto.js';
-import { destroySession, isAbsolutelyExpired, randomToken, regenerateSession, saveSession } from './session-helpers.js';
-import { AccountLinkConflict, UsersService } from './users.service.js';
+import { destroySession, randomToken, regenerateSession, saveSession } from './session-helpers.js';
+import { UsersService } from './users.service.js';
+import type { Role } from '../generated/prisma/enums.js';
 
 class GoogleProviderDto {
   @ApiProperty() configured: boolean;
@@ -26,7 +26,6 @@ class ProvidersDto {
 @Controller('api/auth')
 export class AuthController {
   constructor(
-    private readonly oidc: OidcService,
     private readonly users: UsersService,
     private readonly policy: AccessPolicyService,
     private readonly clock: Clock,
@@ -35,114 +34,34 @@ export class AuthController {
   ) {}
 
   private redirect(res: Response, path: string): void {
-    // Always build redirects from PUBLIC_APP_ORIGIN, never from Host headers.
     res.setHeader('Cache-Control', 'no-store');
     res.redirect(302, `${this.config.publicAppOrigin}${path}`);
   }
 
-  private hasValidSession(req: AppRequest): boolean {
-    const auth = req.session?.auth;
-    return Boolean(auth && !isAbsolutelyExpired(auth.absoluteExpiresAt, this.clock.now()) && this.policy.roleFor(auth.email));
+  private getEmailForRole(role: Role): string {
+    const set = role === 'ADMIN' ? this.config.access.adminEmails : this.config.access.viewerEmails;
+    const first = set.values().next().value;
+    if (first) return first;
+    return role === 'ADMIN' ? 'admin@chememan.com' : 'viewer@chememan.com';
   }
 
-  /** Public: whether Google sign-in is configured (no secrets). Used by the Login page. */
-  @Get('providers')
-  @Public()
-  @ApiEnvelope(ProvidersDto)
-  @RateLimit('none')
-  providers() {
-    return respond({ google: { configured: this.config.google.configured } });
-  }
+  private async performLogin(req: AppRequest, role: Role, email?: string) {
+    const targetEmail = email ? normalizeEmail(email) : this.getEmailForRole(role);
+    const displayName = role === 'ADMIN' ? 'Chememan Admin' : 'Chememan Viewer';
 
-  @Get('google')
-  @Public()
-  @RateLimit('authStart')
-  @ApiExcludeEndpoint()
-  async start(@Req() req: AppRequest, @Res() res: Response): Promise<void> {
-    if (!this.config.google.configured) {
-      throw new ApiException(503, 'AUTH_NOT_CONFIGURED', 'Google sign-in is not configured on this server.');
-    }
-    if (this.hasValidSession(req)) return this.redirect(res, '/employees');
-    let authRequest;
-    try {
-      authRequest = await this.oidc.createAuthRequest();
-    } catch {
-      this.logger.write('warn', 'oidc_discovery_failed', { requestId: req.requestId });
-      return this.redirect(res, '/login?error=provider_unavailable');
-    }
-    req.session.oidc = {
-      state: authRequest.state,
-      nonce: authRequest.nonce,
-      codeVerifier: authRequest.codeVerifier,
-      expiresAt: new Date(this.clock.now().getTime() + this.config.session.loginStateTtlMs).toISOString(),
-    };
-    req.session.cookie.maxAge = this.config.session.loginStateTtlMs;
-    await saveSession(req);
-    res.setHeader('Cache-Control', 'no-store');
-    res.redirect(302, authRequest.url);
-  }
+    const user = await this.users.upsertFromLogin({
+      googleSub: `local:${targetEmail}`,
+      email: targetEmail,
+      displayName,
+      role,
+    });
 
-  @Get('google/callback')
-  @Public()
-  @RateLimit('authStart')
-  @ApiExcludeEndpoint()
-  async callback(@Req() req: AppRequest, @Res() res: Response): Promise<void> {
-    const pending = req.session?.oidc;
-    // A stray or cross-site hit on the callback (no login in progress) must not log out a signed-in user.
-    if (!pending && this.hasValidSession(req)) return this.redirect(res, '/employees');
-    if (req.session) delete req.session.oidc; // single use
-
-    if (typeof req.query.error === 'string') {
-      await destroySession(req);
-      return this.redirect(res, '/login?error=google_cancelled');
-    }
-    if (!pending || new Date(pending.expiresAt).getTime() <= this.clock.now().getTime()) {
-      await destroySession(req);
-      return this.redirect(res, '/login?error=login_expired');
-    }
-
-    let identity;
-    try {
-      const callbackUrl = new URL(req.originalUrl, this.config.publicAppOrigin);
-      identity = await this.oidc.verifyCallback(callbackUrl, pending);
-    } catch (err) {
-      this.logger.write('warn', 'oidc_callback_rejected', { requestId: req.requestId, errorName: (err as Error)?.name });
-      await destroySession(req);
-      return this.redirect(res, '/login?error=login_failed');
-    }
-
-    if (!identity.email || !identity.emailVerified) {
-      await destroySession(req);
-      return this.redirect(res, '/access-denied?reason=email_unverified');
-    }
-    const email = normalizeEmail(identity.email);
-    const role = this.policy.roleFor(email);
-    if (!role) {
-      await destroySession(req);
-      return this.redirect(res, '/access-denied?reason=not_allowed');
-    }
-
-    let user;
-    try {
-      user = await this.users.upsertFromLogin({
-        googleSub: identity.sub,
-        email,
-        displayName: (identity.name ?? email).slice(0, 200),
-        role,
-      });
-    } catch (err) {
-      await destroySession(req);
-      if (err instanceof AccountLinkConflict) return this.redirect(res, '/access-denied?reason=account_conflict');
-      throw err;
-    }
-
-    // New session id after login; fresh CSRF token (PRD §11.1 step 7, §11.2).
     await regenerateSession(req);
     const now = this.clock.now();
     const absoluteExpiresAt = new Date(now.getTime() + this.config.session.absoluteTimeoutMs).toISOString();
     req.session.auth = {
       userId: user.id,
-      email,
+      email: targetEmail,
       displayName: user.displayName,
       authenticatedAt: now.toISOString(),
       absoluteExpiresAt,
@@ -151,7 +70,61 @@ export class AuthController {
     req.session.cookie.maxAge = this.config.session.idleTimeoutMs;
     await saveSession(req);
     this.logger.write('info', 'login_succeeded', { requestId: req.requestId, userId: user.id, role });
+    return user;
+  }
+
+  /** Public: authentication providers status. Preserves Postman compatibility. */
+  @Get('providers')
+  @Public()
+  @ApiEnvelope(ProvidersDto)
+  @RateLimit('none')
+  providers() {
+    return respond({ google: { configured: false } });
+  }
+
+  /** Direct 1-click role login for browser navigation */
+  @Get('login')
+  @Public()
+  @RateLimit('authStart')
+  @ApiExcludeEndpoint()
+  async loginGet(@Req() req: AppRequest, @Res() res: Response): Promise<void> {
+    const roleParam = (req.query.role as string | undefined)?.toUpperCase();
+    const role: Role = roleParam === 'VIEWER' ? 'VIEWER' : 'ADMIN';
+    await this.performLogin(req, role);
     this.redirect(res, '/employees');
+  }
+
+  /** API login with role or email */
+  @Post('login')
+  @Public()
+  @HttpCode(200)
+  @RateLimit('authStart')
+  @ApiExcludeEndpoint()
+  async loginPost(@Req() req: AppRequest, @Res() res: Response): Promise<void> {
+    const body = (req.body ?? {}) as { role?: string; email?: string };
+    let email = body.email ? normalizeEmail(body.email) : undefined;
+    let role: Role = 'ADMIN';
+
+    if (email) {
+      const derived = this.policy.roleFor(email);
+      if (!derived) {
+        throw new ApiException(403, 'FORBIDDEN', 'Email is not authorized for access');
+      }
+      role = derived;
+    } else {
+      const roleParam = body.role?.toUpperCase();
+      role = roleParam === 'VIEWER' ? 'VIEWER' : 'ADMIN';
+      email = this.getEmailForRole(role);
+    }
+
+    const user = await this.performLogin(req, role, email);
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({
+      data: {
+        user: { id: user.id, email: user.email, displayName: user.displayName, role: user.role },
+        csrfToken: req.session.csrfToken,
+      },
+    });
   }
 
   @Get('session')

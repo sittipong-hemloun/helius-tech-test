@@ -32,7 +32,6 @@ async function main(): Promise<void> {
   logger.write('info', 'api_started', {
     port: config.port,
     host: config.host,
-    googleConfigured: config.google.configured,
     reportsEnabled: config.reports.enabled,
     commitSha: config.build.commitSha,
   });

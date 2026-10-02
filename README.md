@@ -1,6 +1,6 @@
 # Employee Console
 
-เว็บจัดการข้อมูลพนักงานจากไฟล์ `Test Exam Data.xlsx` สำหรับแบบทดสอบ AI-Augmented Developer — Next.js 16 (UI) + NestJS 12 (API) + PostgreSQL 17, Google Login, สิทธิ์ Admin/Viewer, รายงาน Workforce Snapshot ด้วย n8n + Gemini, CI/CD ด้วย Jenkins ไป local staging
+เว็บจัดการข้อมูลพนักงานจากไฟล์ `Test Exam Data.xlsx` สำหรับแบบทดสอบ AI-Augmented Developer — Next.js 16 (UI) + NestJS 12 (API) + PostgreSQL 17, ระบบล็อกอิน Role-based (Admin/Viewer), รายงาน Workforce Snapshot ด้วย n8n + Gemini, CI/CD ด้วย Jenkins ไป local staging
 
 สเปกทั้งหมดอยู่ใน [PRD](PRD-Implementation-Specification-AI-Augmented–Developer-Test.md) · สถานะตรวจรับแต่ละข้ออยู่ใน [docs/acceptance.md](docs/acceptance.md)
 
@@ -8,7 +8,7 @@
 
 - **Employees** — ดูรายการ 5 records จาก Excel (ID, Name, Department, Salary `#,##0.00`, Join Date, Status, Last Updated Date), ค้นหาชื่อ (debounce 300 ms), กรอง Department/Status, เรียงลำดับ, แบ่งหน้า, สถานะทั้งหมดอยู่ใน URL
 - **CRUD** — เพิ่ม/แก้/ลบ (Admin), ID และ Last Updated Date กำหนดโดยระบบ, ป้องกันการเขียนทับด้วย `version` + `If-Match`, ป้องกันสร้างซ้ำด้วย `Idempotency-Key`
-- **สิทธิ์** — Google OIDC + allowlist; Viewer ไม่ได้รับ field `salary` จาก API เลย และแก้ข้อมูลไม่ได้
+- **สิทธิ์** — Role-Based Access Control (RBAC); Admin มีสิทธิ์ CRUD + ดูเงินเดือน, Viewer ค้นหาได้อย่างเดียว (ซ่อน field salary และป้องกันการแก้ไขข้อมูล)
 - **Reports** — Workforce Snapshot: ตัวเลขจาก DB + สรุปภาษาไทยโดย Gemini ผ่าน n8n worker (ส่งเฉพาะตัวเลขรวม ไม่มีชื่อ/เงินเดือน)
 - **Delivery** — Docker images (tag = commit SHA), local staging :3100, Jenkinsfile, Postman/Newman, Playwright, k6/Lighthouse
 
@@ -69,14 +69,12 @@ pnpm dev
 
 | ค่า | ใช้ทำอะไร | ได้จากไหน |
 | --- | --- | --- |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google Login | Google Cloud Console → APIs & Services → Credentials → OAuth client ID (Web application) |
-| Authorized redirect URIs | ต้องลงทะเบียนทั้งสองค่า | `http://localhost:3000/api/auth/google/callback` และ `http://localhost:3100/api/auth/google/callback` |
-| `ADMIN_EMAILS` | อีเมล Google ที่เป็น Admin (คั่นด้วย comma) | บัญชีของคุณ |
-| `VIEWER_EMAILS` | (ไม่บังคับ) บัญชีสำหรับทดสอบ Viewer | บัญชีที่สอง |
+| `ADMIN_EMAILS` | (ไม่บังคับ) อีเมล Admin (คั่นด้วย comma) | ค่าเริ่มต้น: `admin@chememan.com` |
+| `VIEWER_EMAILS` | (ไม่บังคับ) อีเมล Viewer (คั่นด้วย comma) | ค่าเริ่มต้น: `viewer@chememan.com` |
 | `GEMINI_API_KEY` | รายงาน AI (n8n worker) | https://aistudio.google.com/apikey |
 | `JENKINS_GIT_URL` | (ไม่บังคับ) Git remote ที่มีอยู่แล้ว | ถ้าว่าง Jenkins ใช้ repo ในเครื่อง |
 
-ใส่ค่าใน `.env` (dev) — `pnpm run setup` จะคัดลอกค่า Google/allowlist ไป `.env.staging` ให้ถ้าฝั่ง staging ยังว่าง จากนั้น restart API ไม่มี password login หรือ demo bypass: ถ้ายังไม่ตั้ง Google หน้า Login จะแจ้งว่า "Google sign-in isn't set up" และเข้า Employees ไม่ได้
+ระบบล็อกอินทำงานแบบ 1-Click Role Login โดยตรงผ่านหน้า `/login` เลือกเข้าใช้งานเป็น Admin หรือ Viewer ได้ทันทีโดยไม่ต้องพึ่งพา Google OAuth
 
 ## คำสั่งทั้งหมด
 

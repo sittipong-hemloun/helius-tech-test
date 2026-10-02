@@ -25,10 +25,11 @@ test('an expired session sends the user to sign in (AC-31)', async ({ browser })
   await context.close();
 });
 
-test('login page without Google configuration explains what is missing', async ({ page }) => {
+test('login page shows direct role-based sign in options', async ({ page }) => {
   await page.goto('/login');
-  await expect(page.getByText("Google sign-in isn't set up on this server yet.")).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Sign in with Google' })).toBeDisabled();
+  await expect(page.getByRole('heading', { name: 'Sign in' })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Sign in as Admin/i })).toBeVisible();
+  await expect(page.getByRole('link', { name: /Sign in as Viewer/i })).toBeVisible();
 });
 
 test('Generate report → queued → worker result shown as AI summary with DB numbers (AC-36, AC-40)', async ({ admin: page, request }) => {

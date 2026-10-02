@@ -30,10 +30,6 @@ export interface AppConfig {
     loginStateTtlMs: number;
   };
   google: {
-    clientId: string | null;
-    clientSecret: string | null;
-    redirectUri: string;
-    issuer: string;
     configured: boolean;
   };
   access: {
@@ -113,10 +109,6 @@ const envSchema = z.object({
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
   SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters'),
   SESSION_COOKIE_NAME: z.string().optional(),
-  GOOGLE_CLIENT_ID: optionalSecret,
-  GOOGLE_CLIENT_SECRET: optionalSecret,
-  GOOGLE_REDIRECT_URI: z.string().optional(),
-  GOOGLE_ISSUER: z.string().optional(),
   ADMIN_EMAILS: emailList,
   VIEWER_EMAILS: emailList,
   REPORTS_ENABLED: bool(false),
@@ -171,8 +163,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     // Intl.supportedValuesOf is available on Node 24; ignore on exotic runtimes.
   }
 
-  const admins = new Set(e.ADMIN_EMAILS);
-  const viewers = new Set(e.VIEWER_EMAILS);
+  const defaultAdmins = ['admin@chememan.com'];
+  const defaultViewers = ['viewer@chememan.com'];
+  const admins = new Set(e.ADMIN_EMAILS.length > 0 ? e.ADMIN_EMAILS : defaultAdmins);
+  const viewers = new Set(e.VIEWER_EMAILS.length > 0 ? e.VIEWER_EMAILS : defaultViewers);
   const overlap = [...admins].filter((m) => viewers.has(m));
   if (overlap.length > 0) {
     // PRD §11.1 step 5: never guess which role wins.
@@ -187,9 +181,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   }
   if (e.PERF_RATE_LIMIT_OVERRIDE && e.APP_ENV !== 'performance') {
     problems.push('PERF_RATE_LIMIT_OVERRIDE=true is only allowed when APP_ENV=performance');
-  }
-  if (e.GOOGLE_ISSUER && e.APP_ENV !== 'test') {
-    problems.push('GOOGLE_ISSUER override is only allowed when APP_ENV=test (mock OIDC provider)');
   }
 
   for (const [name, value] of [
@@ -206,11 +197,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   }
   if (e.SESSION_SECRET.length >= 32 && /change-me|example|placeholder/i.test(e.SESSION_SECRET) && e.APP_ENV !== 'test') {
     problems.push('SESSION_SECRET still contains a placeholder value; run `pnpm run setup` to generate one');
-  }
-
-  const redirectUri = e.GOOGLE_REDIRECT_URI?.trim() || `${publicAppOrigin}/api/auth/google/callback`;
-  if (!redirectUri.startsWith(`${publicAppOrigin}/`)) {
-    problems.push('GOOGLE_REDIRECT_URI must be on PUBLIC_APP_ORIGIN (the browser reaches the API through the web origin)');
   }
 
   if (problems.length > 0) throw new ConfigError(problems);
@@ -237,11 +223,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
       loginStateTtlMs: 10 * MINUTE,
     },
     google: {
-      clientId: e.GOOGLE_CLIENT_ID,
-      clientSecret: e.GOOGLE_CLIENT_SECRET,
-      redirectUri,
-      issuer: e.GOOGLE_ISSUER?.trim() || 'https://accounts.google.com',
-      configured: Boolean(e.GOOGLE_CLIENT_ID && e.GOOGLE_CLIENT_SECRET),
+      configured: false,
     },
     access: { adminEmails: admins, viewerEmails: viewers },
     reports: {
