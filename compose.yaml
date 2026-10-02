@@ -108,7 +108,7 @@ services:
       ENABLE_OPENAI_API: "true"
       OPENAI_API_BASE_URL: https://generativelanguage.googleapis.com/v1beta/openai
       OPENAI_API_KEY: ${GEMINI_API_KEY:-}
-      DEFAULT_MODELS: ${GEMINI_MODEL:-gemini-3.8-flash}
+      DEFAULT_MODELS: ${GEMINI_MODEL:-gemini-flash-lite-latest}
       ENABLE_WEB_SEARCH: "false"
       ENABLE_RAG_WEB_SEARCH: "false"
       ENABLE_CODE_EXECUTION: "false"

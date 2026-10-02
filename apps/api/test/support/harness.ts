@@ -34,7 +34,7 @@ export function testEnv(overrides: Record<string, string> = {}): NodeJS.ProcessE
     RATE_LIMIT_ENABLED: 'false',
     WORKER_SERVICE_TOKEN: WORKER_TOKEN,
     SCHEDULER_SERVICE_TOKEN: SCHEDULER_TOKEN,
-    GEMINI_MODEL: 'gemini-3.8-flash',
+    GEMINI_MODEL: 'gemini-flash-lite-latest',
     LOG_LEVEL: 'error',
     ...overrides,
   };

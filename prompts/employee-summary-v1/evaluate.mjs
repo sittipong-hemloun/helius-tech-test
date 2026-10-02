@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { EMPTY_TEMPLATE, checkNarrative, geminiRequest, interpretGemini } from './validate.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const model = process.argv.find((a) => a.startsWith('--model='))?.split('=')[1] ?? process.env.GEMINI_MODEL ?? 'gemini-3.8-flash';
+const model = process.argv.find((a) => a.startsWith('--model='))?.split('=')[1] ?? process.env.GEMINI_MODEL ?? 'gemini-flash-lite-latest';
 const key = process.env.GEMINI_API_KEY;
 if (!key) {
   console.error('GEMINI_API_KEY is not set; nothing was sent. (Fixtures with 0 employees never call the model.)');

@@ -120,7 +120,7 @@ const envSchema = z.object({
   ADMIN_EMAILS: emailList,
   VIEWER_EMAILS: emailList,
   REPORTS_ENABLED: bool(false),
-  GEMINI_MODEL: z.string().default('gemini-3.8-flash'),
+  GEMINI_MODEL: z.string().default('gemini-flash-lite-latest'),
   WORKER_SERVICE_TOKEN: optionalSecret,
   SCHEDULER_SERVICE_TOKEN: optionalSecret,
   REPORT_MAINTENANCE_ENABLED: bool(true),

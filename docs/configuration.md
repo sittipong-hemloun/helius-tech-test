@@ -25,7 +25,7 @@
 | `GOOGLE_ISSUER` | `https://accounts.google.com` | override ได้เฉพาะ `APP_ENV=test` (mock OIDC) |
 | `ADMIN_EMAILS` / `VIEWER_EMAILS` | ว่าง | comma-separated, normalize เป็นตัวเล็ก; อีเมลซ้ำกันสองกลุ่ม → start ไม่ได้ |
 | `REPORTS_ENABLED` | `false` | `true` ต้องมี `WORKER_SERVICE_TOKEN`; `false` → POST reports ตอบ 503 `AI_NOT_CONFIGURED` |
-| `GEMINI_MODEL` | `gemini-3.8-flash` | model ที่ส่งให้ worker ใน job |
+| `GEMINI_MODEL` | `gemini-flash-lite-latest` | model ที่ส่งให้ worker ใน job |
 | `WORKER_SERVICE_TOKEN` / `SCHEDULER_SERVICE_TOKEN` | สุ่ม | ≥ 32 ตัวอักษร และต้องต่างกัน; ใช้กับ `/internal/v1` เท่านั้น |
 | `REPORT_MAINTENANCE_ENABLED` | `true` | loop 30 วินาที (lease หมด/deadline) — test ปิดแล้วเรียกเองด้วย FakeClock |
 | `RATE_LIMIT_ENABLED` | `true` | ปิดได้ใน test |
