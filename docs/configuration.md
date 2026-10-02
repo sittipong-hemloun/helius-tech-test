@@ -2,7 +2,7 @@
 
 ค่าทั้งหมดถูกตรวจตอน API start (`apps/api/src/config/app-config.ts`, zod) — ถ้าผิด process จะหยุดพร้อมรายการปัญหา (ไม่แสดงค่า secret) ค่า timeout/limit ทั้งหมดเป็น typed config ตาม PRD ไม่กระจายเป็น magic number
 
-ไฟล์: `.env` (dev) และ `.env.staging` (staging) สร้างโดย `pnpm run setup` จาก `.env.example` / `.env.staging.example` — ทั้งคู่อยู่ใน `.gitignore` ค่า secret ที่ต้องสุ่มจะถูกสร้างให้อัตโนมัติ ค่าภายนอก (Google, Gemini, อีเมล) ต้องกรอกเอง
+ไฟล์: `.env` (dev) และ `.env.staging` (staging) สร้างโดย `pnpm run setup` จาก `.env.example` / `.env.staging.example` — ทั้งคู่อยู่ใน `.gitignore` ค่า secret ที่ต้องสุ่มจะถูกสร้างให้อัตโนมัติ ไม่มีค่าภายนอกที่ต้องกรอก
 
 ## API / runtime
 

@@ -16,8 +16,6 @@ pnpm run setup
 pnpm dev:up
 ```
 
-แล้วเติมค่าภายนอกใน `.env` (ดู README "ค่าที่ต้องเติมเอง") และรัน `pnpm run setup` อีกครั้งเพื่อคัดลอกค่า Google/allowlist ไป `.env.staging`
-
 ## 2. Dev
 
 ```bash
@@ -100,7 +98,6 @@ pnpm perf:run --label=baseline
 | อาการ | ตรวจ / แก้ |
 | --- | --- |
 | หน้า Employees แสดง error ตอนโหลด | `pnpm run doctor` → API ไม่รันหรือพอร์ตชน; ตรวจ `API_INTERNAL_URL` |
-| Login แล้วกลับมาหน้า Login ด้วย `login_failed` | redirect URI ไม่ตรง, นาฬิกาเครื่องเพี้ยน, หรือ client secret ผิด (ดู log `oidc_callback_rejected`) |
 | API start ไม่ได้ "Invalid configuration" | อ่านรายการปัญหาที่พิมพ์ออกมา (เช่น `PUBLIC_APP_ORIGIN` เป็น HTTP นอก loopback) |
 | `ERR_PNPM_IGNORED_BUILDS` | `pnpm approve-builds` |
 | Test ล้มด้วย `TEST_DB_PASSWORD missing` หรือ `permission denied to create database` | `.env` สร้างก่อนมี test role → `pnpm run setup` (เติมค่าที่ขาด) แล้ว `pnpm dev:up` (ปรับ role ของ volume เดิม, D-43) |

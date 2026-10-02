@@ -47,4 +47,4 @@
 1. **Filter Join Date ช่วงเริ่ม/จบ** — `employee-query.ts` เพิ่ม `joinDateFrom/To` rule (ใช้ `joinDateRule`) → `ListEmployeesQueryDto` → `EmployeesService.list` เพิ่มเงื่อนไข `e.join_date >= $from::date` → `list-params.ts` + `employee-filters.tsx` เพิ่ม `<input type="date">` สองช่อง → test ใน `employees.test.ts`
 2. **Validation เพิ่มหนึ่งข้อ** (เช่น Join Date ห้ามเกินวันนี้ + 1 ปี) — แก้ `joinDateRule` + `employeeSchema` ฝั่งเว็บ + unit test + ข้อความ error ใต้ช่อง
 
-คำถามที่ควรตอบได้: ทำไมแยก Next/Nest, ทำไมเงินเป็น decimal string, Google Login ต่างจากสิทธิ์อย่างไร, ทำไม seed ไม่ stamp วันที่ใหม่, ป้องกัน lost update อย่างไร, ใช้หลักฐานอะไรตัดสินใจเพิ่ม index, AI ทำอะไรผิดจริงบ้าง (ดู `docs/ai-usage.md`)
+คำถามที่ควรตอบได้: ทำไมแยก Next/Nest, ทำไมเงินเป็น decimal string, ทำไมตัด Login และ AI report ออก (D-46), ทำไม seed ไม่ stamp วันที่ใหม่, ป้องกัน lost update อย่างไร, ใช้หลักฐานอะไรตัดสินใจเพิ่ม index, AI ทำอะไรผิดจริงบ้าง (ดู `docs/ai-usage.md`)

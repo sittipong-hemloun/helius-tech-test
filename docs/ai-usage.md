@@ -47,5 +47,7 @@
 
 ## สิ่งที่ AI ไม่ได้ทำแทน (ต้องใช้ข้อมูลจริงของผู้สมัคร)
 
+> ช่วงที่ยังมี Google OAuth และ AI reports — ทั้งสองส่วนถูกตัดออกภายหลัง (D-46)
+
 - Google OAuth client/secret, อีเมล Admin/Viewer, Gemini API key, Git remote — ไม่สร้างหรือเดาค่า
 - การ login Google จริง, การรันรายงานกับ Gemini จริง และการทดลองใน Google AI Studio ต้องทำด้วยบัญชีผู้สมัคร

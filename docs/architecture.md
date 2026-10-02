@@ -7,7 +7,6 @@ flowchart TD
     B["Browser"] -->|"same origin: pages + /api/*"| W["Next.js :3000 / :3100<br/>UI, /api rewrite"]
     W -->|"/api/*"| A["NestJS :3001<br/>Employees · Departments · Health"]
     A --> DB[("PostgreSQL 17<br/>employees, departments, idempotency_keys")]
-    A <-->|"OIDC code + PKCE"| G["Google"]
     J["Jenkins controller :8080"] --> JA["Host agent: lint · tests · build · images"]
     JA -->|"compose up (SHA tag)"| ST["local staging :3100"]
 ```
@@ -21,7 +20,7 @@ flowchart TD
 | Module | หน้าที่ |
 | --- | --- |
 | `config` | โหลด + ตรวจ env (zod), ค่าคงที่ตาม PRD |
-| `auth` | Google OIDC (`openid-client`), session (`express-session` + `connect-pg-simple`), guards: Authentication → Roles → CSRF → RateLimit, AccessPolicy (allowlist → role ทุก request) |
+| `rate-limit` | global guard: fixed window ในหน่วยความจำต่อ IP (read 300 / write 60 ต่อนาที) |
 | `employees` | list/search/filter/sort/pagination (SQL whitelist + LIKE escape), CRUD, version/If-Match, idempotency |
 | `departments` | master list 4 ค่า |
 | `health` | `live` (process), `ready` (DB + migration ล่าสุด) |
@@ -44,7 +43,6 @@ flowchart TD
 | --- | --- |
 | `employees` | `id` identity (seed 101–105, sequence ต่อที่ 106), `salary numeric(12,2)`, `join_date`/`last_updated_date` เป็น `date`, `version` |
 | `departments` | 4 ค่าคงที่, FK RESTRICT |
-| `users` | ผูกด้วย `google_sub`, email unique (lowercase), role/is_enabled reconcile กับ allowlist ตอน start |
 | `idempotency_keys` | unique (scope, key), เก็บ response 24 ชั่วโมง |
 | `app_meta` | `database_purpose` = demo/test/performance |
 
@@ -52,4 +50,4 @@ flowchart TD
 
 - CORS ไม่เปิด (same-origin เท่านั้น); API port ของ staging ไม่ publish ออก host
 - SQL parameterized ทั้งหมด, sort whitelist, LIKE escape; ชื่อ render เป็น text
-- Logs redact cookie/authorization/salary/body/token; ไม่เก็บ Google tokens หลังตรวจ
+- Logs redact cookie/authorization/salary/body/token

@@ -20,11 +20,10 @@
 | @nestjs/swagger | 12.0.2 | OpenAPI → `packages/api-client/openapi.json` |
 | express | 5.2.1 | มากับ platform-express 12 |
 | prisma / @prisma/client / @prisma/adapter-pg | 7.10.0 | dist-tag `latest` ชี้ 8.0.0-rc.19 จึง pin 7.10.0 (D-14); generator `prisma-client`, `importFileExtension = "js"` |
-| openid-client | 6.8.8 | Authorization Code + PKCE + nonce; `enableNonRepudiationChecks` ตรวจลายเซ็น ID token |
 | class-validator / class-transformer | 0.15.1 / 0.5.1 | ValidationPipe + custom `@Rule()` |
 | zod | 4.6.5 | ตรวจ environment ตอน startup |
 | vitest / unplugin-swc / @swc/core | 5.0.3 / 2.0.0 / 1.16.13 | Nest 12 ESM ใช้ Vitest เป็นค่าเริ่มต้น; SWC จำเป็นเพื่อ emit decorator metadata (D-13) |
-| supertest / oauth2-mock-server | 7.3.0 / 9.2.0 | integration + mock OIDC provider |
+| supertest | 7.3.0 | integration (HTTP จริงผ่าน Nest app) |
 | eslint / typescript-eslint | 9.39.5 / 8.71.0 | ESLint 10 ยังไม่รองรับใน plugin ของ eslint-config-next จึงใช้ 9 ทั้ง repo (D-16) |
 
 ## Frontend (apps/web)
