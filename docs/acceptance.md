@@ -3,15 +3,16 @@
 สถานะตาม PRD §16: **PASS** = มีหลักฐานจากการรันจริง · **FAIL** · **BLOCKED** = ต้องใช้ข้อมูลภายนอกที่ยังไม่มี (ระบุสิ่งที่ขาด) · **NOT RUN** = ยังไม่ได้รัน
 Mock/fixture ใช้ได้เฉพาะใน test environment และ **ไม่นับเป็นหลักฐาน** ของ Google/Gemini/AI Studio/Open WebUI จริง
 
-หลักฐานอ้างอิง (รันบนเครื่องพัฒนา, 1 ต.ค. 2026, commit ล่าสุดใน `git log`):
+หลักฐานอ้างอิง (รันบนเครื่องพัฒนา 1–2 ต.ค. 2026; รอบสุดท้ายและ commit อยู่ใน `docs/evidence/test-runs.md`):
 
 | ชุด | คำสั่ง | ผล |
 | --- | --- | --- |
-| Unit | `pnpm test:unit` | API 37 + Web 7 + prompt validator 5 = 49 ผ่าน |
-| Integration (PostgreSQL จริง) | `pnpm test:api` | 85 ผ่าน (`employees.test.ts` 31, `auth.test.ts` 31, `reports.test.ts` 23) |
-| E2E (production build) | `pnpm test:e2e` | ดู `docs/evidence/test-runs.md` |
+| Unit | `pnpm test:unit` | API 40 + Web 7 + prompt validator 5 = 52 ผ่าน |
+| Integration (PostgreSQL จริง) | `pnpm test:api` | 88 ผ่าน (`auth.test.ts` 32, `employees.test.ts` 31, `reports.test.ts` 24, `logging.test.ts` 1) |
+| E2E (production build) | `pnpm test:e2e` | 22 ผ่าน + 1 skipped (test ถ่าย screenshot รันเมื่อตั้ง `E2E_SCREENSHOT_DIR`) |
 | Newman | `pnpm test:postman` | 107 requests, 616 assertions, 0 failed |
-| Staging | `pnpm staging:up` | image `c0e9d918585d`, smoke 7/7 ✔ (`docs/evidence/staging.md`) |
+| Staging | `pnpm staging:up` / Jenkins | deploy จาก Jenkins + auto-rollback + rollback exercise, smoke 7/7 ✔ (`docs/evidence/staging.md`) |
+| Jenkins | job `employee-console` | ดู `docs/evidence/jenkins/README.md` |
 | n8n live | `pnpm ai:up --activate` + daily run | error path + template path ✔ (`docs/evidence/n8n.md`) |
 
 ## Requirements จากโจทย์ (REQ)
@@ -44,11 +45,11 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 | USR-02 PostgreSQL | PASS | migrations, seed, reset แยกจากการรันปกติ |
 | USR-03 Google Login | **BLOCKED (live)** / PASS (mock OIDC) | flow + allowlist + roles ทดสอบกับ mock provider; login จริงต้องใช้ Google client + อีเมลของผู้สมัคร |
 | USR-04 Postman | PASS | collection + env templates + Newman |
-| USR-05 Jenkins CI/CD | ดูด้านล่าง AC-54/55 | |
+| USR-05 Jenkins CI/CD | PASS | AC-54/55 — pipeline ครบทุก stage + deploy staging จาก Jenkins |
 | USR-06 Google AI Studio | **BLOCKED** | ต้องใช้บัญชี Google + Gemini access; ขั้นตอน/ตารางใน `prompts/employee-summary-v1/ai-studio.md` |
 | USR-07 n8n | PASS (import/activate/execute live) / **BLOCKED** (เส้นทาง Gemini สำเร็จ) | ต้องใช้ Gemini API key จริง |
 | USR-08 Open WebUI | **BLOCKED** | container/config พร้อม; ต้องใช้ Gemini key + สร้างบัญชี admin |
-| USR-09 Performance | ดู AC-56 | |
+| USR-09 Performance | PASS | AC-56 |
 
 ## Acceptance criteria
 
@@ -85,7 +86,7 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 | AC-22 | PASS | API + E2E Engineering + In Active → Bob Brown, clear → 5 |
 | AC-23 | PASS | `treats %, _ and SQL-looking text as literals` |
 | AC-24 | PASS | sort stable + id tiebreak (API), URL/reload/back/forward (E2E) |
-| AC-25 | PASS | empty/page เกิน/total=0 (API); auto step-back หลังลบแถวสุดท้าย (โค้ด `employees-view.tsx`) |
+| AC-25 | PASS | empty/page เกิน/total=0 (API); E2E ลบแถวสุดท้ายของหน้าสุดท้าย → ถอยกลับหน้าก่อนหน้าอัตโนมัติ |
 | AC-26 | PASS | `Admin sees Salary and CRUD permissions`; E2E |
 | AC-27 | PASS | `Viewer responses have no salary key at all…`; E2E ตรวจ network body ไม่มี `"salary"` |
 | AC-28 | PASS | `Viewer mutations via the API are 403 and change nothing`; E2E direct API |
@@ -111,7 +112,7 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 | AC-43 | PASS | lease หมด → requeue, callback เก่า 409 `STALE_LEASE` |
 | AC-44 | PASS | deadline 10 นาทีโดยไม่มี worker → FAILED, CRUD ใช้ได้ |
 | AC-45 | PASS | duplicate complete เดิม 200 / ต่าง 409 |
-| AC-46 | PASS (API) / PASS (workflow live สร้างรายงาน) | integration `one report per Bangkok business day`; n8n daily execute → 202 |
+| AC-46 | PASS | integration `one report per Bangkok business day` + scheduler พร้อมกัน 4 คำขอได้รายงานเดียว; **live**: n8n daily workflow → 202 สร้างรายงาน (`docs/evidence/n8n.md`) — การกด daily ซ้ำวันเดียวกันแบบ live ยังไม่ได้รัน |
 | AC-47 | PASS | integration TEMPLATE; **live** n8n template path (`docs/evidence/n8n.md`) |
 | AC-48 | PASS | `claim payload is aggregate-only`, E2E ตรวจ payload |
 | AC-49 | PASS (automated) / NOT RUN (manual demo) | deadline test + CRUD ระหว่างไม่มี worker; การปิด service ต่อหน้ายังไม่ได้ซ้อม |
@@ -124,9 +125,9 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 | AC-51 | PASS | `pnpm run setup` / `pnpm dev:up` / `pnpm dev` บนเครื่องนี้ (พอร์ต 3001 ถูกโปรแกรมอื่นใช้ → ทดสอบด้วย `PORT` อื่น ตามที่ README อธิบาย) |
 | AC-52 | PASS | staging รันโดยไม่มี Jenkins/n8n/Open WebUI (smoke ✔) |
 | AC-53 | PASS | Newman 107/616, `pnpm secrets:scan` ไม่พบ secret ใน export |
-| AC-54 | ดู `docs/evidence/jenkins/` | |
-| AC-55 | ดู `docs/evidence/staging.md` | |
-| AC-56 | ดู `docs/performance.md` | |
+| AC-54 | PASS | Jenkins build ผ่านทุก stage (static checks, OpenAPI drift, unit, API, Postman, build, E2E, images, deploy, smoke) — `docs/evidence/jenkins/README.md` |
+| AC-55 | PASS | image tag = commit SHA; build #4 migrate ล้ม → **auto-rollback** ไป tag ก่อนหน้า + smoke ✔; rollback exercise ด้วย `pnpm staging:rollback` แล้ว redeploy (`docs/evidence/staging.md`) |
+| AC-56 | PASS | baseline (build เดียวกัน ไม่มี tuning index) เทียบ optimized, 10k records seed 42, EXPLAIN + k6 + Lighthouse (`docs/performance.md`) |
 | AC-57 | PASS | `pnpm secrets:scan` (ค่าใน `.env`/`.env.staging` + pattern), logs redact; `.env*` อยู่ใน `.gitignore` |
 | AC-58 | NOT RUN | ผู้สมัครต้องซ้อมตาม `docs/demo-script.md` |
 | AC-59 | PASS | README, PRD, migrations, seed, OpenAPI, collections, workflows, prompt, evidence |
@@ -134,8 +135,9 @@ Mock/fixture ใช้ได้เฉพาะใน test environment และ 
 
 ## Release gate (PRD §16.6)
 
-- **Core-ready**: ทุกข้อ AC-01..35 และ 51–52 ผ่านด้วย automated tests **ยกเว้น manual Google Login จริง (AC-29 real)** ที่ BLOCKED → สถานะ **core implementation-ready, external-verification-pending (Google)**
-- **Full-scope-ready**: ยังไม่ใช่ — Gemini live (AC-40/50), AI Studio, Open WebUI รอ credentials ของผู้สมัคร
+- **Core**: AC-01..35 และ 51–57 ผ่านด้วยหลักฐานจากการรันจริง (automated tests, Jenkins #6, staging deploy/rollback, benchmark) ยกเว้น **Google Login จริง** (USR-03 / AC-29 ส่วน real) ที่ BLOCKED เพราะยังไม่มี OAuth client และอีเมลของผู้สมัคร → สถานะ **core implementation-ready, external-verification-pending (Google)**
+- **Full scope**: ยังไม่ครบ — Gemini live (AC-40 เส้นทาง SUCCEEDED, AC-50), Google AI Studio (USR-06), Open WebUI (USR-08) รอ Gemini key/บัญชีของผู้สมัคร; การซ้อมนำเสนอ (REQ-09, AC-58) ผู้สมัครต้องทำเอง
+- สิ่งที่ต้องทำเมื่อได้ข้อมูลภายนอก: `docs/evidence/google-login.md`, `docs/evidence/open-webui.md`, ส่วน "ยังไม่ได้ทดสอบ" ใน `docs/evidence/n8n.md`, ตารางใน `prompts/employee-summary-v1/ai-studio.md`
 
 ## Known limitations
 

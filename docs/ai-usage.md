@@ -39,6 +39,10 @@
 | 13 | Form สร้างพนักงานเปลี่ยน Idempotency-Key เมื่อได้ 5xx | ถือว่า 5xx เป็นคำตอบแน่นอน ทั้งที่ API อาจ commit แล้วหรือ proxy ตอบระหว่าง restart | `outcomeUnknown` รวม 5xx → คง key; ถ้าแก้ค่าแล้วชน `IDEMPOTENCY_CONFLICT` ให้เตือนตรวจรายการ |
 | 14 | Logout ตอบ 204 แม้ลบ session ใน DB ไม่สำเร็จ | callback ของ `session.destroy` ทิ้ง error | logout ใช้ `destroySession(req, { strict: true })` → 503 เมื่อ store ล้ม |
 | 15 | Scheduled report ที่ชน unique index อาจตอบ 409 แทน 200 | เดาชนิด index จากข้อความ error ของ driver | ตัดสินจากข้อมูล (`findScheduled(day)`) + ใช้เวลาเดียวกันทั้งคำขอ; test scheduler พร้อมกัน 4 คำขอ |
+| 16 | Staging migrate ใน Jenkins ล้ม (`Can't write to …/@prisma/engines`) ทั้งที่ทุก CI gate ผ่าน (build #3/#4) | stage prod-deps ไม่มี OpenSSL → Prisma เลือก engine openssl-1.1 และ pnpm side-effects cache นำ engine ผิดตัวกลับมาใช้ | ติดตั้ง OpenSSL ใน base stage + ปิด side-effects cache + ตรวจ engine ตอน build; build #4 พิสูจน์ auto-rollback, build #5 ผ่าน |
+| 17 | Jenkins agent online/offline สลับไปมาหลัง restart controller | JVM ของ agent รอบก่อนค้างเป็น orphan (wrapper ตายแต่ไม่ส่ง signal ต่อ) แล้วต่อเข้ามาด้วยชื่อ node เดียวกัน | wrapper ส่ง SIGTERM/SIGINT/SIGHUP ต่อให้ JVM |
+| 18 | `buildWithParameters` ตอบ 400 "not parameterized" หลัง restart controller | JCasC สร้าง job ใหม่ทุกครั้งที่ start; parameters จาก Jenkinsfile หายจนกว่าจะรัน build หนึ่งครั้ง | ประกาศ parameters ใน job DSL ด้วย + `pnpm ci:up` ตรวจ job/parameters/node/plugin versions |
+| 19 | App role มี `CREATEDB` (ใช้ร่วมกับ test runner) — **reviewer subagent จับได้** | ใช้ role เดียวทั้งรันแอปและสร้างฐาน test | แยก test role (D-43); `init-databases.sh` idempotent รันซ้ำทุก `dev:up`/deploy เพื่อปรับ volume เดิม |
 
 ## สิ่งที่ AI ไม่ได้ทำแทน (ต้องใช้ข้อมูลจริงของผู้สมัคร)
 
