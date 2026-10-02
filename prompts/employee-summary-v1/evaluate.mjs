@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Runs the 5 fixtures through the same prompt/schema/validator as the n8n worker (PRD §12.6).
-//   GEMINI_API_KEY=... node prompts/employee-summary-v1/evaluate.mjs [--model=gemini-3.5-flash-lite]
+//   GEMINI_API_KEY=... node prompts/employee-summary-v1/evaluate.mjs [--model=gemini-3.8-flash]
 // Writes results/<timestamp>-<model>.json (inputs, raw outputs, checks, pass/fail).
 // This is the API path; the Google AI Studio session is recorded separately in ai-studio.md.
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import { EMPTY_TEMPLATE, checkNarrative, geminiRequest, interpretGemini } from './validate.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const model = process.argv.find((a) => a.startsWith('--model='))?.split('=')[1] ?? process.env.GEMINI_MODEL ?? 'gemini-3.5-flash-lite';
+const model = process.argv.find((a) => a.startsWith('--model='))?.split('=')[1] ?? process.env.GEMINI_MODEL ?? 'gemini-3.8-flash';
 const key = process.env.GEMINI_API_KEY;
 if (!key) {
   console.error('GEMINI_API_KEY is not set; nothing was sent. (Fixtures with 0 employees never call the model.)');

@@ -2,7 +2,7 @@ import 'server-only';
 import type { SessionData } from '@employee-console/api-client';
 import { headers } from 'next/headers';
 
-const API = process.env.API_INTERNAL_URL ?? 'http://localhost:3001';
+const API = process.env.API_INTERNAL_URL ?? 'http://127.0.0.1:3001';
 
 export type ServerSession = { status: 'ok'; session: SessionData } | { status: 'anonymous' } | { status: 'unavailable' };
 

@@ -238,7 +238,7 @@ P0/P1/P2 เป็นลำดับงาน ไม่ใช่การยก�
 | API validation | Nest ValidationPipe + DTO validation; whitelist และ reject unknown properties; ไม่เปลี่ยน string เป็น boolean อัตโนมัติ |
 | Tests | Jest/Supertest ฝั่ง API, Playwright ฝั่ง browser, Newman สำหรับ Postman, k6 และ Lighthouse สำหรับ performance |
 | Tool services | Jenkins LTS, n8n stable, Open WebUI stable; pin version/digest หลังทดสอบจริง ไม่ใช้ floating latest ใน delivery |
-| AI | Gemini ผ่าน n8n; default model `gemini-3.5-flash-lite`, configurable ผ่าน GEMINI_MODEL |
+| AI | Gemini ผ่าน n8n; default model `gemini-3.8-flash`, configurable ผ่าน GEMINI_MODEL |
 
 เวอร์ชันข้างต้นเป็น baseline ของ PRD ไม่ใช่ผลติดตั้งจริง ให้ทำ compatibility spike ก่อนสร้างฟีเจอร์ หาก release ที่ระบุหาไม่ได้หรือไม่เข้ากัน ให้เลือก stable ที่รองรับใกล้เคียงที่สุด บันทึก version/reason และ smoke test โดยไม่ถามผู้ใช้เรื่อง patch version ต้องได้ lockfile และไฟล์ `docs/versions.md` ที่ระบุสิ่งที่รันจริง
 
@@ -839,7 +839,7 @@ Credentials: worker bearer และ scheduler bearer แยกกัน, Gemini
 
 ใช้ HTTP Request node เรียก Gemini native API พร้อม structured JSON output และ schema รุ่นที่เลือก รองรับ structured outputs ต้องทดสอบกับ model จริง; server ยังต้อง validate response เอง [Gemini structured output](https://ai.google.dev/gemini-api/docs/structured-output)
 
-Default model `gemini-3.5-flash-lite`, temperature0.2 เมื่อ model รองรับ, max output tokens 1024, ไม่มี tools/grounding/URL fetch input มีเฉพาะ snapshot whitelist Model ID เป็น config; ตรวจ access ด้วย smoke test แล้วบันทึกผลจริง [Gemini models](https://ai.google.dev/gemini-api/docs/models)
+Default model `gemini-3.8-flash`, temperature0.2 เมื่อ model รองรับ, max output tokens 1024, ไม่มี tools/grounding/URL fetch input มีเฉพาะ snapshot whitelist Model ID เป็น config; ตรวจ access ด้วย smoke test แล้วบันทึกผลจริง [Gemini models](https://ai.google.dev/gemini-api/docs/models)
 
 System prompt รุ่น `employee-summary-v1`:
 
@@ -874,7 +874,7 @@ Complete callback body:
 {
   "leaseToken": "<opaque-current-lease-token>",
   "generatedBy": "GEMINI",
-  "model": "gemini-3.5-flash-lite",
+  "model": "gemini-3.8-flash",
   "promptVersion": "employee-summary-v1",
   "narrative": {
     "headline": "ภาพรวมพนักงานจากข้อมูลปัจจุบัน",
@@ -941,7 +941,7 @@ PostgreSQL อาจใช้ instance เดียวในเครื่อ�
 | ADMIN_EMAILS | รายชื่อจริง comma-separated | ไม่มี default email ที่แต่งขึ้น; ผู้สมัครใส่บัญชีตนเอง |
 | VIEWER_EMAILS | empty | ใส่บัญชี viewer เมื่อต้องการทดสอบด้วย Google จริง |
 | REPORTS_ENABLED | false จนตั้งค่า integration | เปิด true เมื่อ worker/Gemini config พร้อม; code/workflow ยังต้องสร้างครบ |
-| GEMINI_MODEL | gemini-3.5-flash-lite | model ของ worker และรายงาน; เปลี่ยนเมื่อ access หรือ version เปลี่ยนโดยบันทึกหลักฐาน |
+| GEMINI_MODEL | gemini-3.8-flash | model ของ worker และรายงาน; เปลี่ยนเมื่อ access หรือ version เปลี่ยนโดยบันทึกหลักฐาน |
 | GEMINI_API_KEY | secret จากบัญชีผู้ใช้ | นำเข้า n8n/Open WebUI credentials; ไม่ส่งเข้า frontend |
 | WORKER_SERVICE_TOKEN | random≥32 bytes | claim/complete/fail; credential แยก |
 | SCHEDULER_SERVICE_TOKEN | random≥32 bytes | scheduled report endpoint เท่านั้น |

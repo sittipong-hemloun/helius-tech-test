@@ -103,7 +103,7 @@ node scripts/staging.mjs restore --file=$HOME/.employee-console/staging/backups/
 1. `pnpm ai:up` (หรือ `docker compose --profile ai-workspace up -d open-webui`)
 2. เปิด http://localhost:3002 → สร้างบัญชีแรก (เป็น admin)
 3. ตั้ง `OPEN_WEBUI_ENABLE_SIGNUP=false` ใน `.env` แล้ว `docker compose --profile ai-workspace up -d open-webui`
-4. Admin Panel → Settings → Connections → OpenAI API: URL `https://generativelanguage.googleapis.com/v1beta/openai` และ key = Gemini key (ตั้งให้จาก env แล้ว) → เลือก model `gemini-3.5-flash-lite`
+4. Admin Panel → Settings → Connections → OpenAI API: URL `https://generativelanguage.googleapis.com/v1beta/openai` และ key = Gemini key (ตั้งให้จาก env แล้ว) → เลือก model `gemini-3.8-flash`
 5. วาง system prompt จาก `prompts/employee-summary-v1/system-prompt.txt` และ snapshot จาก `prompts/employee-summary-v1/fixtures/01-seed.json` (ไม่มีชื่อ/เงินเดือน) แล้วบันทึกคำตอบใน `docs/evidence/open-webui.md`
 
 ## 8. Jenkins

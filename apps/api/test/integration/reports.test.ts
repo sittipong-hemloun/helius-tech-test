@@ -54,7 +54,7 @@ const maintenance = () => ctx.app.get(ReportMaintenanceService).tick();
 const geminiResult = (leaseToken: string) => ({
   leaseToken,
   generatedBy: 'GEMINI',
-  model: 'gemini-3.5-flash-lite',
+  model: 'gemini-3.8-flash',
   promptVersion: 'employee-summary-v1',
   narrative: NARRATIVE,
 });
@@ -71,7 +71,7 @@ describe('report creation (AC-36..AC-38)', () => {
       totalEmployees: 5,
       completedAt: null,
       generatedBy: null,
-      model: 'gemini-3.5-flash-lite',
+      model: 'gemini-3.8-flash',
       promptVersion: 'employee-summary-v1',
       errorCode: null,
       snapshotCapturedAt: DEFAULT_NOW,
@@ -171,7 +171,7 @@ describe('worker claim/complete/fail (AC-39..AC-45, AC-47, AC-48)', () => {
     const jobs = results.map((r) => r.body.data).filter(Boolean);
     expect(results.every((r) => r.status === 200)).toBe(true);
     expect(jobs).toHaveLength(1);
-    expect(jobs[0]).toMatchObject({ attempt: 1, model: 'gemini-3.5-flash-lite', promptVersion: 'employee-summary-v1' });
+    expect(jobs[0]).toMatchObject({ attempt: 1, model: 'gemini-3.8-flash', promptVersion: 'employee-summary-v1' });
     const empty = await claim().expect(200);
     expect(empty.body.data).toBeNull();
   });
@@ -198,7 +198,7 @@ describe('worker claim/complete/fail (AC-39..AC-45, AC-47, AC-48)', () => {
     expect(d.body.data).toMatchObject({
       status: 'SUCCEEDED',
       generatedBy: 'GEMINI',
-      model: 'gemini-3.5-flash-lite',
+      model: 'gemini-3.8-flash',
       promptVersion: 'employee-summary-v1',
       errorCode: null,
       narrative: NARRATIVE,

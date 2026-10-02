@@ -51,7 +51,7 @@ export class CreateReportDto {}
 export class CompleteReportJobDto {
   @ApiProperty() @Rule(leaseTokenRule) leaseToken: string;
   @ApiProperty({ enum: ['GEMINI', 'TEMPLATE'] }) @Rule(generatedByRule) generatedBy: 'GEMINI' | 'TEMPLATE';
-  @ApiProperty({ type: String, nullable: true, example: 'gemini-3.5-flash-lite' }) @Rule(modelRule) model: string | null;
+  @ApiProperty({ type: String, nullable: true, example: 'gemini-3.8-flash' }) @Rule(modelRule) model: string | null;
   @ApiProperty({ example: 'employee-summary-v1' }) @Rule(promptVersionRule) promptVersion: string;
   @ApiProperty({ example: { headline: 'ภาพรวมพนักงาน', bullets: ['...', '...', '...'] } })
   @Rule(narrativeShapeRule)

@@ -241,7 +241,7 @@ export interface components {
             /** @enum {string} */
             generatedBy: "GEMINI" | "TEMPLATE";
             leaseToken: string;
-            /** @example gemini-3.5-flash-lite */
+            /** @example gemini-3.8-flash */
             model: string | null;
             /**
              * @example {

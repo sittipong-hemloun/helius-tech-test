@@ -4,7 +4,7 @@
 
 ## ขั้นตอน
 
-1. Create prompt → Chat → Model: `gemini-3.5-flash-lite` (ถ้าไม่มีในบัญชีให้เลือก Flash-Lite รุ่นล่าสุด แล้วบันทึกชื่อจริงด้านล่าง)
+1. Create prompt → Chat → Model: `gemini-3.8-flash` (ถ้าไม่มีในบัญชีให้เลือก Flash รุ่นล่าสุด แล้วบันทึกชื่อจริงด้านล่าง)
 2. System instructions: วางข้อความจาก `system-prompt.txt` ทั้งหมด
 3. Run settings: Temperature 0.2, Output length 1024, Structured output = On → Edit → วาง `response-schema.json`, ปิด Grounding/Code execution/URL context
 4. ข้อความผู้ใช้: วาง `snapshot` (เฉพาะ object `snapshot`) จาก fixture ทีละไฟล์ `01`, `03`, `04`, `05` (fixture `02` ไม่มีพนักงาน — worker ใช้ template โดยไม่เรียกโมเดล; ลองใน AI Studio ได้เพื่อดูพฤติกรรม แต่ผลจริงใช้ template)

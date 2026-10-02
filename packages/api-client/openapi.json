@@ -83,7 +83,7 @@
             "type": "string"
           },
           "model": {
-            "example": "gemini-3.5-flash-lite",
+            "example": "gemini-3.8-flash",
             "nullable": true,
             "type": "string"
           },
