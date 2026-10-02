@@ -1,37 +1,50 @@
 @import "tailwindcss";
 
 /*
- * Employee Console — "green-bar ledger" tokens (docs/design.md).
- * Light theme only (PRD §7.1). The one bold element is the payroll-printout table:
- * alternating pale green bands and tabular figures. Everything else stays quiet.
+ * Employee Console — Chememan (CMAN) enterprise console (docs/design.md).
+ * An ERP-style work tool: solid forest-green module bar, white page bar, and a fully gridded
+ * register with a filled header and green-bar bands. Light theme only, dense, no decoration.
  */
 @theme {
-  --color-ground: #f3f5f1;
+  /* Brand */
+  --color-chememan-green: #09532d;
+  --color-cman-emerald: #00805e;
+  --color-cman-navy: #1b3564;
+
+  /* Surfaces */
+  --color-ground: #f3f7f5;
   --color-sheet: #ffffff;
-  --color-ink: #1b2a22;
+  --color-head: #e6ece5; /* filled header cells, label cells, dialog footers */
+
+  /* Ink */
+  --color-ink: #1c1c1c;
   --color-ink-2: #4b5a52;
   --color-ink-3: #6b7a72;
+
+  /* Rules: gridlines and frames; the strong rule outlines interactive controls. */
+  --color-rule-subtle: #e2e8e0;
   --color-rule: #d3dbd2;
-  --color-rule-strong: #b7c4b8;
-  --color-bar: #e6f0e3;
-  --color-bar-strong: #d5e6d1;
-  --color-ledger: #1d6a49;
-  --color-ledger-deep: #134d34;
-  --color-ledger-wash: #edf5ea;
-  --color-stamp: #a8321f;
-  --color-stamp-wash: #fbece8;
+  --color-rule-strong: #9aa79e;
+
+  /* Green-bar bands */
+  --color-bar: #eef5ee;
+  --color-bar-strong: #ddecdc;
+
+  /* Semantic aliases used by components */
+  --color-ledger: var(--color-chememan-green);
+  --color-ledger-deep: #063d21;
+  --color-ledger-hover: var(--color-cman-emerald);
+  --color-ledger-wash: #e9f3ec;
+  --color-navy: var(--color-cman-navy);
+  --color-stamp: #c21e31;
+  --color-stamp-wash: #fcebed;
   --color-amber: #8a5a00;
   --color-amber-wash: #fbf2dc;
 
-  --font-sans: var(--font-archivo), var(--font-anuphan), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
 
   --radius-control: 6px;
-  --radius-sheet: 10px;
-
-  --text-display: 2.75rem;
-  --text-display--line-height: 1;
-  --text-title: 1.75rem;
-  --text-title--line-height: 1.15;
+  --radius-sheet: 8px;
 }
 
 @layer base {
@@ -43,7 +56,7 @@
     background: var(--color-ground);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     line-height: 1.5;
     font-feature-settings: "kern";
     text-rendering: optimizeLegibility;
@@ -58,43 +71,95 @@
 }
 
 @layer utilities {
-  /* Archivo's width axis carries the voice: expanded for titles/numerals, condensed for headers. */
-  .type-expanded {
-    font-variation-settings: "wdth" 125;
-    letter-spacing: -0.01em;
-  }
-  .type-wide {
-    font-variation-settings: "wdth" 112;
-  }
-  .type-condensed {
-    font-variation-settings: "wdth" 82;
-  }
   .figures {
     font-variant-numeric: tabular-nums lining-nums;
   }
-  /* Green-bar printout: bands every row; hover deepens; focus row outlined by the cell focus ring. */
+
+  /* Focus on the green module bar: a green ring would vanish, so it turns white there. */
+  .on-brand :focus-visible {
+    outline-color: #ffffff;
+  }
+
+  /*
+   * Register: every cell ruled, header filled and sticky inside its scroll box. Outer cell edges are
+   * left to the frame so lines never double. The header's bottom rule is a shadow because collapsed
+   * borders don't travel with sticky cells.
+   */
+  .register {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .register :is(th, td) {
+    border-right: 1px solid var(--color-rule);
+    border-bottom: 1px solid var(--color-rule);
+  }
+  .register :is(th, td):last-child {
+    border-right: 0;
+  }
+  .register > tbody:last-child > tr:last-child > :is(th, td),
+  .register > tfoot > tr:last-child > :is(th, td) {
+    border-bottom: 0;
+  }
+  .register > thead > tr > th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: var(--color-head);
+    border-bottom: 0;
+    box-shadow: inset 0 -1px 0 var(--color-rule-strong);
+  }
+  /* Green-bar printout: bands on even rows; hover deepens. */
   .greenbar > tr:nth-child(even) > :is(td, th) {
     background: var(--color-bar);
   }
   .greenbar > tr:hover > :is(td, th) {
     background: var(--color-bar-strong);
   }
-  /* Paper-form field: label sits inside the box like a printed form cell. */
+
+  /*
+   * Joined form: cells share gridlines like a printed personnel form. The grid's background shows
+   * through 1px gaps as the rules.
+   */
+  .form-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--color-rule);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-sheet);
+    overflow: hidden;
+  }
   .form-cell {
-    border: 1px solid var(--color-rule-strong);
-    border-radius: var(--radius-control);
+    position: relative;
     background: var(--color-sheet);
-    transition: border-color 120ms ease, box-shadow 120ms ease;
   }
   .form-cell:focus-within {
-    border-color: var(--color-ledger);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-ledger) 18%, transparent);
+    z-index: 1;
+    outline: 2px solid var(--color-ledger);
+    outline-offset: -2px;
+  }
+  /* System-assigned values read as "not yours to edit". */
+  .form-cell[data-readonly="true"] {
+    background: var(--color-ground);
   }
   .form-cell[data-invalid="true"] {
-    border-color: var(--color-stamp);
+    background: var(--color-stamp-wash);
+    box-shadow: inset 3px 0 0 var(--color-stamp);
+  }
+  .form-cell[data-invalid="true"]:focus-within {
+    outline-color: var(--color-stamp);
+  }
+
+  /* Select inside a form cell: no native inset, same chevron as the toolbar selects. */
+  .cell-select {
+    appearance: none;
+    padding-right: 1.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 7.5 10 12l4.5-4.5' stroke='%234b5a52' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0 center;
+    background-size: 1rem;
   }
   .select-control {
-    height: 2.5rem;
+    height: 2rem;
     width: 100%;
     appearance: none;
     border: 1px solid var(--color-rule-strong);
@@ -102,21 +167,13 @@
     background-color: var(--color-sheet);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 7.5 10 12l4.5-4.5' stroke='%234b5a52' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 0.6rem center;
-    background-size: 1.1rem;
-    padding-left: 0.75rem;
-    padding-right: 2.25rem;
-    font-size: 0.9375rem;
+    background-position: right 0.45rem center;
+    background-size: 1rem;
+    padding-left: 0.5rem;
+    padding-right: 1.75rem;
+    font-size: 0.875rem;
     color: var(--color-ink);
-  }
-  .ledger-lines {
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 2.25rem,
-      var(--color-bar) 2.25rem,
-      var(--color-bar) 4.5rem
-    );
+    text-overflow: ellipsis;
   }
 }
 

@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { PAGE_SIZES } from '@/lib/list-params';
 import { selectClass } from './employee-filters';
 import { Button } from './ui/button';
+import { cn } from './ui/cn';
 
 interface Props {
   page: number;
@@ -27,10 +28,10 @@ function pageWindow(page: number, totalPages: number): (number | 'gap')[] {
 
 export function Pagination({ page, pageSize, total, totalPages, onPage, onPageSize }: Props) {
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center gap-2 text-sm text-ink-2">
+    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
+      <div className="flex items-center gap-2 text-[0.8125rem] text-ink-2">
         <label htmlFor="page-size">Rows per page</label>
-        <div className="w-20">
+        <div className="w-16">
           <select id="page-size" value={pageSize} onChange={(e) => onPageSize(Number(e.target.value))} className={selectClass}>
             {PAGE_SIZES.map((s) => (
               <option key={s} value={s}>
@@ -58,7 +59,7 @@ export function Pagination({ page, pageSize, total, totalPages, onPage, onPageSi
                 onClick={() => onPage(p)}
                 aria-current={p === page ? 'page' : undefined}
                 aria-label={`Page ${p}`}
-                className="figures min-w-8"
+                className={cn('figures min-w-7', p === page && 'border-ledger bg-ledger font-semibold text-white hover:bg-ledger')}
               >
                 {p}
               </Button>
@@ -69,7 +70,7 @@ export function Pagination({ page, pageSize, total, totalPages, onPage, onPageSi
           </Button>
         </nav>
       ) : (
-        <span className="text-sm text-ink-3">{total > 0 ? 'All results on one page' : ''}</span>
+        <span className="text-[0.8125rem] text-ink-2">{total > 0 ? 'All results on one page' : ''}</span>
       )}
     </div>
   );

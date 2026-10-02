@@ -67,18 +67,33 @@ export function EmployeesView() {
   const from = meta && meta.total > 0 ? (meta.page - 1) * meta.pageSize + 1 : 0;
   const to = meta ? Math.min(meta.page * meta.pageSize, meta.total) : 0;
 
+  const clearAll = () => navigate({ ...DEFAULT_PARAMS, pageSize: params.pageSize });
+  const retry = (
+    <Button variant="secondary" size="sm" onClick={() => void query.refetch()}>
+      Try again
+    </Button>
+  );
+
   return (
     <>
       <PageHeader
         title="Employees"
         meta={
           meta ? (
-            <span className="figures" aria-live="polite">
-              {meta.total === 0 ? (filtered ? 'No matching employees' : 'No employees yet') : `${from}–${to} of ${plural(meta.total, 'employee')}`}
-              {filtered && meta.total > 0 ? ' match the filters' : ''}
+            <span className="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="figures" aria-live="polite">
+                {meta.total === 0 ? (filtered ? 'No matching employees' : 'No employees yet') : `${from}–${to} of ${plural(meta.total, 'employee')}`}
+                {filtered && meta.total > 0 ? ' match the filters' : ''}
+              </span>
+              {query.isFetching && rows ? (
+                <span className="inline-flex items-center gap-1.5 text-sm text-ink-2" role="status">
+                  <Loader2 aria-hidden className="size-3.5 animate-spin" />
+                  Updating
+                </span>
+              ) : null}
             </span>
           ) : (
-            <span className="text-ink-3">Loading employees…</span>
+            <span className="text-ink-2">Loading employees…</span>
           )
         }
         actions={
@@ -91,80 +106,60 @@ export function EmployeesView() {
         }
       />
 
-      <div className="mb-4">
-        <EmployeeFilters params={params} onSearch={onSearch} onChange={update} onClear={() => navigate({ ...DEFAULT_PARAMS, pageSize: params.pageSize })} filtered={filtered} />
-      </div>
-
       {query.isError && rows ? (
         // Background refresh failed: keep the last loaded data visible, say so, and offer a retry.
-        <Notice
-          tone="warning"
-          title="Couldn't refresh the list. Showing the last loaded data."
-          className="mb-4"
-          action={
-            <Button variant="secondary" size="sm" onClick={() => void query.refetch()}>
-              Try again
-            </Button>
-          }
-        >
+        <Notice tone="warning" title="Couldn't refresh the list. Showing the last loaded data." className="mb-4" action={retry}>
           {describeError(query.error).detail}
         </Notice>
       ) : null}
 
-      {query.isError && !rows ? (
-        <Notice
-          tone="error"
-          title={describeError(query.error).title}
-          action={
-            <Button variant="secondary" size="sm" onClick={() => void query.refetch()}>
-              Try again
-            </Button>
-          }
-        >
-          {describeError(query.error).detail}
-        </Notice>
-      ) : rows && rows.length === 0 && meta?.total === 0 ? (
-        <div className="rounded-[var(--radius-sheet)] border border-dashed border-rule-strong bg-sheet px-6 py-12 text-center">
-          <p className="type-wide text-lg font-semibold">{filtered ? 'No matching employees.' : 'No employees yet.'}</p>
-          <p className="mt-1 text-ink-2">{filtered ? 'Try a different name or clear the filters.' : 'Records you add will appear here.'}</p>
-          <div className="mt-5">
-            {filtered ? (
-              <Button variant="secondary" onClick={() => navigate({ ...DEFAULT_PARAMS, pageSize: params.pageSize })}>
-                Clear filters
-              </Button>
-            ) : isAdmin ? (
-              <GuardedLink href="/employees/new" className={buttonVariants({ variant: 'primary' })}>
-                <Plus aria-hidden />
-                Add employee
-              </GuardedLink>
-            ) : null}
-          </div>
+      {/* One sheet: filter toolbar, register, pagination footer. */}
+      <section aria-label="Employee register" className="overflow-hidden rounded-[var(--radius-sheet)] border border-rule-strong/60 bg-sheet">
+        <div className="border-b border-rule px-3 py-2">
+          <EmployeeFilters params={params} onSearch={onSearch} onChange={update} onClear={clearAll} filtered={filtered} />
         </div>
-      ) : (
-        <>
-          <div className="relative">
-            {query.isFetching && rows ? (
-              <span className="absolute -top-7 right-0 inline-flex items-center gap-1.5 text-sm text-ink-3" role="status">
-                <Loader2 aria-hidden className="size-3.5 animate-spin" />
-                Updating
-              </span>
-            ) : null}
-            <EmployeeTable rows={rows} isAdmin={isAdmin} params={params} loading={query.isFetching} onSort={onSort} onDelete={setToDelete} />
+
+        {query.isError && !rows ? (
+          <div className="px-4 py-4">
+            <Notice bare tone="error" title={describeError(query.error).title} action={retry}>
+              {describeError(query.error).detail}
+            </Notice>
           </div>
-          {meta ? (
-            <div className="mt-4">
-              <Pagination
-                page={meta.page}
-                pageSize={meta.pageSize}
-                total={meta.total}
-                totalPages={meta.totalPages}
-                onPage={(page) => navigate({ ...params, page })}
-                onPageSize={(pageSize) => update({ pageSize })}
-              />
+        ) : rows && rows.length === 0 && meta?.total === 0 ? (
+          <div className="px-4 py-5">
+            <p className="font-semibold">{filtered ? 'No matching employees.' : 'No employees yet.'}</p>
+            <p className="mt-0.5 text-ink-2">{filtered ? 'Try a different name or clear the filters.' : 'Records you add will appear here.'}</p>
+            <div className="mt-3">
+              {filtered ? (
+                <Button variant="secondary" onClick={clearAll}>
+                  Clear filters
+                </Button>
+              ) : isAdmin ? (
+                <GuardedLink href="/employees/new" className={buttonVariants({ variant: 'primary' })}>
+                  <Plus aria-hidden />
+                  Add employee
+                </GuardedLink>
+              ) : null}
             </div>
-          ) : null}
-        </>
-      )}
+          </div>
+        ) : (
+          <>
+            <EmployeeTable rows={rows} isAdmin={isAdmin} params={params} loading={query.isFetching} onSort={onSort} onDelete={setToDelete} />
+            {meta ? (
+              <div className="border-t border-rule px-3 py-1.5">
+                <Pagination
+                  page={meta.page}
+                  pageSize={meta.pageSize}
+                  total={meta.total}
+                  totalPages={meta.totalPages}
+                  onPage={(page) => navigate({ ...params, page })}
+                  onPageSize={(pageSize) => update({ pageSize })}
+                />
+              </div>
+            ) : null}
+          </>
+        )}
+      </section>
 
       <DeleteEmployeeDialog
         target={toDelete ? { id: toDelete.id, name: toDelete.name, version: toDelete.version } : null}

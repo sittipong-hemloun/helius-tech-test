@@ -7,9 +7,8 @@
 3. ถ้ามีบัญชีที่สอง ใส่ `VIEWER_EMAILS` และทดลอง; ถ้าไม่มีให้บอกว่าหลักฐาน Viewer มาจาก automated tests
 4. `pnpm staging:smoke` → ทุกข้อ ✔; `node scripts/staging.mjs reset --confirm-reset` ให้กลับเป็น 5 records
 5. `pnpm ai:up --activate` → Integrations แสดง worker Available → สร้างรายงานจริงหนึ่งงาน
-6. เปิด Open WebUI ทดลอง snapshot หนึ่งครั้ง แล้ว `docker compose stop open-webui`
-7. เปิด Jenkins build ล่าสุดที่ผ่าน + `docs/performance.md` ไว้ในแท็บ (ไม่รัน load test ระหว่าง demo)
-8. เปิด repo ใน editor + AI coding assistant ให้พร้อม
+6. เปิด Jenkins build ล่าสุดที่ผ่าน + `docs/performance.md` ไว้ในแท็บ (ไม่รัน load test ระหว่าง demo)
+7. เปิด repo ใน editor + AI coding assistant ให้พร้อม
 
 ## ลำดับนำเสนอ
 

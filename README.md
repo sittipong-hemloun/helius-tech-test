@@ -73,7 +73,7 @@ pnpm dev
 | Authorized redirect URIs | ต้องลงทะเบียนทั้งสองค่า | `http://localhost:3000/api/auth/google/callback` และ `http://localhost:3100/api/auth/google/callback` |
 | `ADMIN_EMAILS` | อีเมล Google ที่เป็น Admin (คั่นด้วย comma) | บัญชีของคุณ |
 | `VIEWER_EMAILS` | (ไม่บังคับ) บัญชีสำหรับทดสอบ Viewer | บัญชีที่สอง |
-| `GEMINI_API_KEY` | รายงาน AI (n8n) และ Open WebUI | https://aistudio.google.com/apikey |
+| `GEMINI_API_KEY` | รายงาน AI (n8n worker) | https://aistudio.google.com/apikey |
 | `JENKINS_GIT_URL` | (ไม่บังคับ) Git remote ที่มีอยู่แล้ว | ถ้าว่าง Jenkins ใช้ repo ในเครื่อง |
 
 ใส่ค่าใน `.env` (dev) — `pnpm run setup` จะคัดลอกค่า Google/allowlist ไป `.env.staging` ให้ถ้าฝั่ง staging ยังว่าง จากนั้น restart API ไม่มี password login หรือ demo bypass: ถ้ายังไม่ตั้ง Google หน้า Login จะแจ้งว่า "Google sign-in isn't set up" และเข้า Employees ไม่ได้
@@ -97,7 +97,7 @@ pnpm dev
 | `pnpm openapi:generate` | สร้าง OpenAPI + client types (CI ตรวจ drift) |
 | `pnpm staging:up` / `staging:restart` / `staging:smoke` / `staging:rollback` / `staging:down` | build images ตาม SHA → backup → migrate → deploy :3100 → smoke (ล้มแล้ว rollback อัตโนมัติ) / apply env ใหม่ / ย้อน image ก่อนหน้า |
 | `node scripts/staging.mjs reset --confirm-reset` / `restore --file=… --confirm-restore` | คืนข้อมูล 5 records บน staging / restore backup ด้วยสิทธิ์ที่ถูกต้อง |
-| `pnpm ai:up [--activate]` | เปิด n8n + Open WebUI, ผูก credentials, import workflows |
+| `pnpm ai:up [--activate]` | เปิด n8n, ผูก credentials, import workflows |
 | `pnpm ci:up` | เปิด Jenkins controller (:8080) และ agent บนเครื่องนี้ |
 | `pnpm perf:seed` | สร้าง 10k synthetic records (seed 42) — เฉพาะ `APP_ENV=performance` + ฐานที่ mark performance |
 | `pnpm perf:run --label=<name>` | benchmark 10k records (k6 + Lighthouse); `--without-perf-indexes` สำหรับ baseline บน build เดียวกัน; `node scripts/perf-report.mjs <labels…>` สร้างตาราง |

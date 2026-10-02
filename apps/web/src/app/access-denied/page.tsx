@@ -30,13 +30,13 @@ export default async function AccessDeniedPage({ searchParams }: { searchParams:
   const signedIn = session.status === 'ok';
   return (
     <main className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center px-4 py-16">
-      <p className="type-expanded text-[4rem] font-black leading-none text-stamp">403</p>
-      <h1 className="type-wide mt-4 text-2xl font-bold">{copy.title}</h1>
+      <p className="figures text-[0.8125rem] font-semibold text-stamp">Error 403</p>
+      <h1 className="mt-1 text-[1.25rem] font-bold">{copy.title}</h1>
       <p className="mt-2 text-ink-2">{copy.body}</p>
-      <div className="mt-8">
+      <div className="mt-5">
         <Link
           href={signedIn ? '/employees' : '/login'}
-          className="inline-flex h-10 items-center rounded-[var(--radius-control)] bg-ledger px-4 font-medium text-white hover:bg-ledger-deep"
+          className="inline-flex h-8 items-center rounded-[var(--radius-control)] bg-ledger px-3 font-medium text-white hover:bg-ledger-hover"
         >
           {signedIn ? 'Go to employees' : 'Back to sign in'}
         </Link>

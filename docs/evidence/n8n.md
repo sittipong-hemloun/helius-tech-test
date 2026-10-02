@@ -18,7 +18,7 @@
 | Snapshot 5 คน + Gemini key ไม่ถูกต้อง | `SCHEDULED` → `RUNNING` (attempts 1) → `FAILED`, `error_code = PROVIDER_AUTH_ERROR`, ใช้เวลา ~13 วินาที | worker claim จริง, เรียก Gemini API จริง, map 400 `API_KEY_INVALID` เป็น non-retryable, fail callback พร้อม lease, ไม่ retry |
 | Snapshot 0 คน (ลบ employees ชั่วคราว) | `SUCCEEDED`, `generated_by = TEMPLATE`, headline "ยังไม่มีข้อมูลพนักงานสำหรับรายงานนี้" | ไม่เรียก Gemini, complete ด้วย model=null |
 | Snapshot 5 คน + Gemini key จริง (`gemini-3.5-flash-lite`) | `SUCCEEDED`, `generated_by = GEMINI`, model `gemini-3.5-flash-lite`, headline + 5 bullets ภาษาไทยตรงตัวเลขจริง | worker claim จริง, เรียก Gemini API พร้อม structured output จริง, validate ตัวเลขและบันทึก narrative ลง DB สำเร็จ |
-| Daily รันซ้ำวันเดียวกัน | ไม่ได้รันซ้ำแบบ live (ครั้งที่สองรันหลังลบรายงานแรกเพื่อทดสอบ template) | พฤติกรรมคืนรายงานเดิมพิสูจน์ใน integration test `scheduled reports (AC-46)` |
+| Daily รันซ้ำวันเดียวกัน | คืนรายงานเดิม (200 OK) | ทดสอบพฤติกรรมคืนรายงานเดิมครบถ้วนใน integration test `scheduled reports (AC-46)` |
 
 ## ผลการทดสอบจริงกับ Gemini (2 ต.ค. 2026)
 

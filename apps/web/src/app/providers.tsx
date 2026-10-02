@@ -15,7 +15,8 @@ export function Providers({ children }: { children: ReactNode }) {
         closeButton
         toastOptions={{
           classNames: {
-            toast: 'border border-rule bg-sheet text-ink font-sans',
+            toast: 'rounded-[var(--radius-sheet)] border border-rule bg-sheet text-ink font-sans',
+            title: 'font-semibold',
             description: 'text-ink-2',
           },
         }}

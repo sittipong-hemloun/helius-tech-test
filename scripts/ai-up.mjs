@@ -1,9 +1,8 @@
 #!/usr/bin/env node
-// pnpm ai:up — start n8n (profile automation) and Open WebUI (profile ai-workspace), then
-// bind n8n credentials from your env files and import both workflows (PRD §12.4, §12.7).
+// pnpm ai:up — start n8n (profile automation), bind n8n credentials from your env files,
+// and import both workflows (PRD §12.4).
 // Secrets are written to a temporary file inside the container and deleted right after import.
 // Options: --activate  publish/activate the workflows (needs GEMINI_API_KEY for real reports)
-//          --no-webui  skip Open WebUI
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { CREDENTIALS } from '../workflows/n8n/credentials.mjs';
@@ -26,8 +25,7 @@ const schedulerToken = tokenSource.get('SCHEDULER_SERVICE_TOKEN');
 const geminiKey = process.env.GEMINI_API_KEY || env.get('GEMINI_API_KEY');
 
 if (!capture('docker', ['network', 'inspect', 'employee-console-shared'])) run('docker', ['network', 'create', 'employee-console-shared']);
-const services = ['postgres', 'n8n', ...(args.includes('--no-webui') ? [] : ['open-webui'])];
-run('docker', ['compose', '--profile', 'automation', '--profile', 'ai-workspace', 'up', '-d', ...services]);
+run('docker', ['compose', '--profile', 'automation', 'up', '-d', 'postgres', 'n8n']);
 
 await waitFor(
   async () => {
@@ -84,7 +82,5 @@ Next steps:
   1. Open http://localhost:5678 and create the n8n owner account (first visit only).
   2. Set REPORTS_ENABLED=true in ${target.includes('api-staging') ? '.env.staging' : '.env'} and restart the API.
   3. Activate: pnpm ai:up --activate   (or toggle the workflows in the n8n UI)
-  4. Open WebUI: http://localhost:3002 — the first account becomes admin; then set
-     OPEN_WEBUI_ENABLE_SIGNUP=false in .env and run: docker compose --profile ai-workspace up -d open-webui
 `);
 if (!existsSync(resolve(ROOT, '.env.staging'))) warn('.env.staging missing — run pnpm run setup');

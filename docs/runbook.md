@@ -88,7 +88,7 @@ node scripts/staging.mjs restore --file=$HOME/.employee-console/staging/backups/
 3. ```bash
    pnpm ai:up
    ```
-   เปิด n8n (http://localhost:5678) + Open WebUI, import credentials (worker/scheduler bearer จาก env ของปลายทาง, Gemini key) และ workflows ทั้งสอง
+   เปิด n8n (http://localhost:5678), import credentials (worker/scheduler bearer จาก env ของปลายทาง, Gemini key) และ workflows ทั้งสอง
 4. สร้างบัญชี owner ของ n8n ครั้งแรกในเบราว์เซอร์
 5. ตั้ง `REPORTS_ENABLED=true` ใน env ของปลายทาง แล้ว restart API (`pnpm staging:restart` หรือ `pnpm dev`)
 6. ```bash
@@ -98,15 +98,7 @@ node scripts/staging.mjs restore --file=$HOME/.employee-console/staging/backups/
 
 ปิด n8n/Gemini (`docker compose stop n8n`) → CRUD ยังใช้ได้, รายงานใหม่ค้าง Queued แล้ว FAILED `REPORT_DEADLINE_EXCEEDED` หลัง 10 นาที
 
-## 7. Open WebUI
-
-1. `pnpm ai:up` (หรือ `docker compose --profile ai-workspace up -d open-webui`)
-2. เปิด http://localhost:3002 → สร้างบัญชีแรก (เป็น admin)
-3. ตั้ง `OPEN_WEBUI_ENABLE_SIGNUP=false` ใน `.env` แล้ว `docker compose --profile ai-workspace up -d open-webui`
-4. Admin Panel → Settings → Connections → OpenAI API: URL `https://generativelanguage.googleapis.com/v1beta/openai` และ key = Gemini key (ตั้งให้จาก env แล้ว) → เลือก model `gemini-3.8-flash`
-5. วาง system prompt จาก `prompts/employee-summary-v1/system-prompt.txt` และ snapshot จาก `prompts/employee-summary-v1/fixtures/01-seed.json` (ไม่มีชื่อ/เงินเดือน) แล้วบันทึกคำตอบใน `docs/evidence/open-webui.md`
-
-## 8. Jenkins
+## 7. Jenkins
 
 ```bash
 pnpm ci:up
@@ -120,15 +112,15 @@ pnpm ci:up
 - เปลี่ยนเวอร์ชัน plugin: แก้ `infra/jenkins/plugins.txt` → `pnpm ci:up` → รัน pipeline → commit (D-44)
 - หยุด: `pnpm ci:up --stop`
 
-## 9. Performance
+## 8. Performance
 
 ```bash
 pnpm perf:run --label=baseline
 ```
 
-ใช้ฐาน `employee_console_perf` (สร้างใหม่ทุกครั้ง, mark performance), 10,000 synthetic records (seed 42), API production build 1 instance pool 10, k6 ใน Docker, Lighthouse desktop 3 รอบ ผลอยู่ใน `tests/performance/results/<label>/` สรุปใน `docs/performance.md` — หยุด Jenkins/n8n/Open WebUI ก่อนวัด
+ใช้ฐาน `employee_console_perf` (สร้างใหม่ทุกครั้ง, mark performance), 10,000 synthetic records (seed 42), API production build 1 instance pool 10, k6 ใน Docker, Lighthouse desktop 3 รอบ ผลอยู่ใน `tests/performance/results/<label>/` สรุปใน `docs/performance.md` — หยุด Jenkins/n8n ก่อนวัด
 
-## 10. ปัญหาที่พบบ่อย
+## 9. ปัญหาที่พบบ่อย
 
 | อาการ | ตรวจ / แก้ |
 | --- | --- |

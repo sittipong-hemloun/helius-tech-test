@@ -2,7 +2,6 @@
 // Runs the 5 fixtures through the same prompt/schema/validator as the n8n worker (PRD §12.6).
 //   GEMINI_API_KEY=... node prompts/employee-summary-v1/evaluate.mjs [--model=gemini-3.8-flash]
 // Writes results/<timestamp>-<model>.json (inputs, raw outputs, checks, pass/fail).
-// This is the API path; the Google AI Studio session is recorded separately in ai-studio.md.
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

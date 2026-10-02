@@ -44,10 +44,10 @@ export function EditEmployeeView({ rawId }: { rawId: string }) {
     return query.isError ? (
       <Notice tone="error" title={describeError(query.error).title}>{describeError(query.error).detail}</Notice>
     ) : (
-      <div className="max-w-3xl space-y-4" aria-busy>
-        <Skeleton className="h-10 w-64" />
-        <Skeleton className="h-16 w-full" />
-        <Skeleton className="h-16 w-full" />
+      <div className="max-w-3xl space-y-3" aria-busy>
+        <Skeleton className="h-6 w-48" />
+        <Skeleton className="h-14 w-full" />
+        <Skeleton className="h-14 w-full" />
       </div>
     );
   }
@@ -114,7 +114,7 @@ export function EditEmployeeView({ rawId }: { rawId: string }) {
 
   return (
     <>
-      <PageHeader title="Edit employee" meta={<span className="figures">ID {employee.id}</span>} />
+      <PageHeader title="Edit employee" meta={<span className="figures">ID {employee.id}, {employee.name}</span>} back={{ href: `/employees/${employee.id}`, label: employee.name }} />
       <EmployeeForm
         mode="edit"
         employee={employee}

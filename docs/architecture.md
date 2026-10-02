@@ -10,8 +10,6 @@ flowchart TD
     A <-->|"OIDC code + PKCE"| G["Google"]
     N["n8n worker (15 s) + daily (09:00)"] -->|"/internal/v1 + bearer token<br/>(Docker network only)"| A
     N -->|"generateContent, structured JSON"| M["Gemini API"]
-    S["Google AI Studio (prompt trials)"] -.-> M
-    O["Open WebUI :3002 (separate workspace)"] -->|"OpenAI-compatible API"| M
     J["Jenkins controller :8080"] --> JA["Host agent: lint · tests · build · images"]
     JA -->|"compose up (SHA tag)"| ST["local staging :3100"]
 ```

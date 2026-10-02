@@ -30,7 +30,7 @@ for (const [key, label] of [
   ['GOOGLE_CLIENT_ID', 'Google client ID'],
   ['GOOGLE_CLIENT_SECRET', 'Google client secret'],
   ['ADMIN_EMAILS', 'Admin allowlist'],
-  ['GEMINI_API_KEY', 'Gemini API key (n8n/Open WebUI)'],
+  ['GEMINI_API_KEY', 'Gemini API key (n8n worker)'],
 ]) {
   add('config', label, env.get(key) ? 'ok' : 'missing', env.get(key) ? 'set' : 'empty');
 }
@@ -77,7 +77,6 @@ add('staging', 'Staging :3100', staging === 200 ? 'ok' : 'off', staging ? String
 for (const [port, name, path] of [
   [5678, 'n8n', '/healthz'],
   [8080, 'Jenkins', '/login'],
-  [3002, 'Open WebUI', '/health'],
 ]) {
   const s = await http(`http://127.0.0.1:${port}${path}`);
   add('tools', `${name} :${port}`, s && s < 500 ? 'ok' : 'off', s ? String(s) : 'not running');

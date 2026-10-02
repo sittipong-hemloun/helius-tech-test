@@ -54,7 +54,6 @@
 | Jenkins controller | `jenkins/jenkins:2.580.1-lts-jdk21` + plugin 78 ตัว pin เวอร์ชันตรงใน `infra/jenkins/plugins.txt` (ชุดที่ build #5 ผ่าน; `pnpm ci:up` ตรวจว่าติดตั้งตรงทุกตัว — D-44) |
 | Jenkins agent | Java 21 (OpenJDK 21.0.11) บนเครื่อง host |
 | n8n | `docker.n8n.io/n8nio/n8n:2.41.5` (stable) |
-| Open WebUI | `ghcr.io/open-webui/open-webui:v0.11.4` |
 
 ## Smoke test ที่ผ่านจริงตอนเลือกเวอร์ชัน
 

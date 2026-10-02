@@ -29,7 +29,7 @@ export function NewEmployeeView() {
 
   return (
     <>
-      <PageHeader title="Add employee" meta="ID and Last updated are set by the system when you save." />
+      <PageHeader title="Add employee" meta="ID and Last updated are set by the system when you save." back={{ href: lastListHref(), label: 'Employees' }} />
       <EmployeeForm
         mode="create"
         defaultValues={EMPTY_VALUES}

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { DeleteEmployeeDialog } from '@/components/delete-employee-dialog';
 import { Notice } from '@/components/notice';
 import { StatusBadge } from '@/components/status-badge';
+import { PageBar, pageTitleClass } from '@/components/app-shell';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError, describeError } from '@/lib/api';
@@ -33,16 +34,17 @@ export function RecordUnavailable() {
   );
 }
 
-function Field({ label, children, wide }: { label: string; children: React.ReactNode; wide?: boolean }) {
+/** One label | value pair of the property sheet; label cells are shaded like a printed form. */
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className={wide ? 'sm:col-span-2' : undefined}>
-      <dt className="text-sm text-ink-3">{label}</dt>
-      <dd className="mt-0.5 text-lg">{children}</dd>
+    <div className="grid grid-cols-[8.5rem_minmax(0,1fr)] bg-sheet">
+      <dt className="bg-head px-3 py-2 text-[0.8125rem] font-medium text-ink-2">{label}</dt>
+      <dd className="px-3 py-2">{children}</dd>
     </div>
   );
 }
 
-/** "Personnel card": the record number is the one large element on the page. */
+/** "Personnel card": the record number is the one large element; the forest-green rule echoes the register header. */
 export function EmployeeDetailView({ rawId }: { rawId: string }) {
   const id = parseEmployeeId(rawId);
   const { session } = useSession();
@@ -62,67 +64,70 @@ export function EmployeeDetailView({ rawId }: { rawId: string }) {
   const e = query.data;
   const canWrite = session.permissions.canWriteEmployees;
 
-  return (
-    <article aria-labelledby="employee-name" className="max-w-4xl">
-      <GuardedLink href={lastListHref()} className="mb-6 inline-flex items-center gap-1.5 text-sm text-ink-2 hover:text-ink">
-        <ArrowLeft aria-hidden className="size-4" />
-        Employees
-      </GuardedLink>
+  const fields = e
+    ? [
+        <Field key="department" label="Department">{e.departmentName}</Field>,
+        <Field key="status" label="Status">
+          <StatusBadge isActive={e.isActive} />
+        </Field>,
+        session.permissions.canViewSalary ? (
+          <Field key="salary" label="Salary">
+            <span className="figures">{formatSalary(e.salary)}</span>
+          </Field>
+        ) : null,
+        <Field key="join" label="Join date">
+          <span className="figures">{formatDateOnly(e.joinDate)}</span>
+        </Field>,
+        <Field key="updated" label="Last updated">
+          <span className="figures">{formatDateOnly(e.lastUpdatedDate)}</span>
+        </Field>,
+        <Field key="version" label="Version">
+          <span className="figures text-ink-2">{e.version}</span>
+        </Field>,
+      ].filter(Boolean)
+    : [];
 
-      <div className="overflow-hidden rounded-[var(--radius-sheet)] border border-rule bg-sheet">
-        <header className="flex flex-col gap-5 border-b border-rule bg-ledger-wash/60 px-6 py-6 sm:flex-row sm:items-end sm:justify-between sm:px-8">
-          <div className="flex items-end gap-5">
-            <p aria-label={e ? `Employee ID ${e.id}` : undefined} className="figures type-expanded text-[3.5rem] font-black leading-[0.85] text-ledger sm:text-[4.5rem]">
-              {e ? e.id : <Skeleton className="h-14 w-28" />}
-            </p>
-            <div className="min-w-0 pb-1">
-              <h1 id="employee-name" className="type-wide break-words text-2xl font-bold leading-tight sm:text-[1.75rem]">
-                {e ? e.name : <Skeleton className="h-7 w-48" />}
-              </h1>
-              <p className="mt-1 text-ink-2">{e ? e.departmentName : <Skeleton className="mt-1 h-4 w-24" />}</p>
-            </div>
-          </div>
-          {e && canWrite ? (
-            <div className="flex gap-2">
+  return (
+    <article aria-labelledby="employee-name">
+      <PageBar
+        back={{ href: lastListHref(), label: 'Employees' }}
+        actions={
+          e && canWrite ? (
+            <>
               <GuardedLink href={`/employees/${e.id}/edit`} className={buttonVariants({ variant: 'primary' })}>
                 <Pencil aria-hidden />
-                Edit
+                Edit employee
               </GuardedLink>
-              <Button variant="secondary" onClick={() => setConfirmDelete(true)} className="text-stamp">
+              <Button variant="danger-secondary" onClick={() => setConfirmDelete(true)}>
                 <Trash2 aria-hidden />
-                Delete
+                Delete employee
               </Button>
-            </div>
-          ) : null}
-        </header>
+            </>
+          ) : null
+        }
+      >
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+          <p aria-label={e ? `Employee ID ${e.id}` : undefined} className={`figures ${pageTitleClass} text-ledger`}>
+            {e ? e.id : <Skeleton className="h-5 w-10" />}
+          </p>
+          <h1 id="employee-name" className={`${pageTitleClass} break-words`}>
+            {e ? e.name : <Skeleton className="h-5 w-40" />}
+          </h1>
+          {e ? <p className="text-[0.8125rem] text-ink-2">{e.departmentName}</p> : null}
+        </div>
+      </PageBar>
 
-        <dl className="grid gap-x-8 gap-y-5 px-6 py-6 sm:grid-cols-2 sm:px-8">
+      <div className="max-w-4xl overflow-hidden rounded-[var(--radius-sheet)] border border-rule">
+        <dl className="grid gap-px bg-rule sm:grid-cols-2">
           {e ? (
             <>
-              <Field label="Department">{e.departmentName}</Field>
-              <Field label="Status">
-                <StatusBadge isActive={e.isActive} className="text-sm" />
-              </Field>
-              {session.permissions.canViewSalary ? (
-                <Field label="Salary">
-                  <span className="figures">{formatSalary(e.salary)}</span>
-                </Field>
-              ) : null}
-              <Field label="Join date">
-                <span className="figures">{formatDateOnly(e.joinDate)}</span>
-              </Field>
-              <Field label="Last updated">
-                <span className="figures">{formatDateOnly(e.lastUpdatedDate)}</span>
-              </Field>
-              <Field label="Version">
-                <span className="figures text-ink-2">{e.version}</span>
-              </Field>
+              {fields}
+              {fields.length % 2 === 1 ? <div aria-hidden className="hidden bg-sheet sm:block" /> : null}
             </>
           ) : (
             Array.from({ length: 6 }, (_, i) => (
-              <div key={i}>
-                <Skeleton className="h-3.5 w-20" />
-                <Skeleton className="mt-2 h-5 w-36" />
+              <div key={i} className="bg-sheet px-3 py-2.5">
+                <Skeleton className="h-4 w-40" />
               </div>
             ))
           )}

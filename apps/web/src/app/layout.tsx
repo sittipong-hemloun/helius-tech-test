@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { Anuphan, Archivo } from 'next/font/google';
+import { IBM_Plex_Sans_Thai } from 'next/font/google';
 import type { ReactNode } from 'react';
 import { Providers } from './providers';
 import './globals.css';
 
-// Archivo's width axis (62–125) gives titles and numerals their voice; Anuphan covers Thai names and reports.
-const archivo = Archivo({ subsets: ['latin'], axes: ['wdth'], variable: '--font-archivo', display: 'swap' });
-const anuphan = Anuphan({ subsets: ['thai', 'latin'], variable: '--font-anuphan', display: 'swap' });
+// One family for both scripts: IBM Plex Sans Thai carries matching Latin, so Thai names and English
+// labels share one rhythm. Plex's industrial heritage suits a minerals company's work console.
+const plex = IBM_Plex_Sans_Thai({ subsets: ['thai', 'latin'], weight: ['400', '500', '600', '700'], variable: '--font-plex', display: 'swap' });
 
 export const metadata: Metadata = {
   title: { default: 'Employee Console', template: '%s — Employee Console' },
@@ -14,11 +14,11 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export const viewport: Viewport = { themeColor: '#f3f5f1', width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = { themeColor: '#09532d', width: 'device-width', initialScale: 1 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className={`${archivo.variable} ${anuphan.variable}`}>
+    <html lang="en" className={plex.variable}>
       <body className="min-h-dvh antialiased">
         <Providers>{children}</Providers>
       </body>

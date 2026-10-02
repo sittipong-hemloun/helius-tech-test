@@ -13,25 +13,23 @@ interface FormCellProps {
 }
 
 /**
- * A printed-form cell: the label sits inside the box, the control fills it, and errors
- * appear underneath with an icon and text (never colour alone — PRD §8.1).
+ * One cell of a joined `.form-grid`, like a box on a printed personnel form: label at the top,
+ * control below, and hint or error inside the same box. Errors carry an icon and text (never colour alone).
  */
 export function FormCell({ id, label, hint, error, children, className, readOnly }: FormCellProps) {
   return (
-    <div className={className}>
-      <div className={cn('form-cell px-3 pt-2 pb-1.5', readOnly && 'bg-ground')} data-invalid={error ? 'true' : undefined}>
-        <label htmlFor={id} className="block text-[0.78rem] font-medium text-ink-2">
-          {label}
-        </label>
-        {children}
-      </div>
+    <div className={cn('form-cell px-3 pb-2 pt-1.5', className)} data-invalid={error ? 'true' : undefined} data-readonly={readOnly ? 'true' : undefined}>
+      <label htmlFor={id} className="block text-[0.75rem] font-medium text-ink-2">
+        {label}
+      </label>
+      {children}
       {error ? (
-        <p id={`${id}-error`} className="mt-1.5 flex items-start gap-1.5 text-sm text-stamp" role="alert">
-          <CircleAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
+        <p id={`${id}-error`} className="mt-0.5 flex items-start gap-1.5 text-[0.8125rem] font-medium text-stamp" role="alert">
+          <CircleAlert aria-hidden className="mt-0.5 size-3.5 shrink-0" />
           {error}
         </p>
       ) : hint ? (
-        <p id={`${id}-hint`} className="mt-1.5 text-sm text-ink-3">
+        <p id={`${id}-hint`} className="mt-0.5 text-[0.75rem] text-ink-2">
           {hint}
         </p>
       ) : null}
@@ -40,4 +38,4 @@ export function FormCell({ id, label, hint, error, children, className, readOnly
 }
 
 export const cellInputClass =
-  'block w-full bg-transparent pb-0.5 pt-0.5 text-base text-ink outline-none placeholder:text-ink-3 disabled:text-ink-2';
+  'block w-full bg-transparent py-0.5 text-[0.9375rem] text-ink outline-none placeholder:text-ink-3 disabled:text-ink-2';

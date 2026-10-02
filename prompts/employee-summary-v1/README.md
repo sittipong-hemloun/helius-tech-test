@@ -10,7 +10,6 @@
 | `validate.mjs` | ตรวจโครงสร้าง + ตัวเลขทุกตัวต้องมีใน snapshot + ต้องระบุจำนวนรวม + คำต้องห้าม; map HTTP error → error code ของ worker |
 | `fixtures/*.json` | 5 กรณี: seed ปกติ, ไม่มีรายการ, ทุกคน Active, ทุกคน In Active, แผนกที่มี 0 คน (ไม่มีข้อมูลบุคคลจริง) |
 | `evaluate.mjs` | รัน 5 fixtures ผ่าน Gemini API ด้วย prompt/schema/validator เดียวกับ worker → `results/` |
-| `ai-studio.md` | ขั้นตอนและผลการทดลองใน Google AI Studio |
 
 ```bash
 node --test prompts/employee-summary-v1/validate.test.mjs
@@ -20,4 +19,4 @@ node --test prompts/employee-summary-v1/validate.test.mjs
 GEMINI_API_KEY=<your key> node prompts/employee-summary-v1/evaluate.mjs
 ```
 
-ข้อจำกัด: validator พิสูจน์ได้ว่าโครงสร้างถูกและไม่มีตัวเลขที่ไม่มีใน snapshot แต่ไม่พิสูจน์ว่าภาษาไทยสื่อความถูกทุกประโยค — ต้องอ่านผลใน `results/` และ AI Studio ประกอบ ตัวเลขในหน้ารายงานมาจาก DB เสมอ
+ข้อจำกัด: validator พิสูจน์ได้ว่าโครงสร้างถูกและไม่มีตัวเลขที่ไม่มีใน snapshot แต่ไม่พิสูจน์ว่าภาษาไทยสื่อความถูกทุกประโยค — ตัวเลขในหน้ารายงานมาจาก DB เสมอ และสามารถตรวจสอบผลการประเมินชุด fixtures ได้ใน `results/`

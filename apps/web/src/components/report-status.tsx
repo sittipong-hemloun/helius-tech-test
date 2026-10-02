@@ -3,16 +3,16 @@ import { CircleCheck, CircleDashed, CircleX, Loader2 } from 'lucide-react';
 import { cn } from './ui/cn';
 
 const STATUS: Record<ReportStatus, { label: string; className: string; Icon: typeof CircleCheck }> = {
-  QUEUED: { label: 'Queued', className: 'border-rule-strong text-ink-2', Icon: CircleDashed },
-  RUNNING: { label: 'Running', className: 'border-amber/40 bg-amber-wash text-amber', Icon: Loader2 },
-  SUCCEEDED: { label: 'Ready', className: 'border-ledger/30 bg-ledger-wash text-ledger-deep', Icon: CircleCheck },
-  FAILED: { label: 'Failed', className: 'border-stamp/40 bg-stamp-wash text-stamp', Icon: CircleX },
+  QUEUED: { label: 'Queued', className: 'text-ink-2', Icon: CircleDashed },
+  RUNNING: { label: 'Running', className: 'text-amber', Icon: Loader2 },
+  SUCCEEDED: { label: 'Ready', className: 'text-ledger-deep', Icon: CircleCheck },
+  FAILED: { label: 'Failed', className: 'text-stamp', Icon: CircleX },
 };
 
 export function ReportStatusBadge({ status }: { status: ReportStatus }) {
   const { label, className, Icon } = STATUS[status];
   return (
-    <span className={cn('inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[0.8125rem] font-medium', className)}>
+    <span className={cn('inline-flex items-center gap-1.5 whitespace-nowrap font-medium', className)}>
       <Icon aria-hidden className={cn('size-3.5', status === 'RUNNING' && 'animate-spin')} />
       {label}
     </span>

@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { Employee } from '@employee-console/api-client';
+import { Loader2, Save } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import { Controller, useForm, type UseFormSetError } from 'react-hook-form';
 import { z } from 'zod';
@@ -117,29 +118,29 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
 
   return (
     <form noValidate onSubmit={handleSubmit((v) => onSubmit(v, setError, markClean))} className="max-w-3xl" aria-busy={pending}>
-      {banner ? <div className="mb-5">{banner}</div> : null}
+      {banner ? <div className="mb-4">{banner}</div> : null}
 
-      <fieldset className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3" aria-label="Assigned by the system">
+      <fieldset className={`form-grid mb-4 grid-cols-2 ${employee ? 'sm:grid-cols-3' : ''}`} aria-label="Assigned by the system">
         <FormCell id="emp-id" label="ID" readOnly>
-          <output id="emp-id" className="figures type-wide block py-0.5 text-base text-ink-2">
+          <output id="emp-id" className="figures block py-0.5 text-[0.9375rem] font-semibold text-ink-2">
             {employee ? employee.id : 'Assigned on save'}
           </output>
         </FormCell>
         <FormCell id="emp-updated" label="Last updated" readOnly>
-          <output id="emp-updated" className="figures block py-0.5 text-base text-ink-2">
+          <output id="emp-updated" className="figures block py-0.5 text-[0.9375rem] text-ink-2">
             {employee ? formatDateOnly(employee.lastUpdatedDate) : 'Assigned on save'}
           </output>
         </FormCell>
         {employee ? (
           <FormCell id="emp-version" label="Version" readOnly className="hidden sm:block">
-            <output id="emp-version" className="figures block py-0.5 text-base text-ink-2">
+            <output id="emp-version" className="figures block py-0.5 text-[0.9375rem] text-ink-2">
               {employee.version}
             </output>
           </FormCell>
         ) : null}
       </fieldset>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="form-grid sm:grid-cols-2">
         <FormCell id="emp-name" label="Name" error={errors.name?.message} className="sm:col-span-2">
           <input
             id="emp-name"
@@ -158,7 +159,7 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
             id="emp-departmentId"
             aria-invalid={Boolean(errors.departmentId)}
             aria-describedby={describedBy('departmentId')}
-            className={`${cellInputClass} appearance-auto`}
+            className={`${cellInputClass} cell-select`}
             {...register('departmentId')}
           >
             <option value="" disabled>
@@ -172,11 +173,11 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
           </select>
         </FormCell>
 
-        <div className="form-cell flex items-center gap-3 px-3 py-3">
+        <div className="form-cell flex items-center gap-3 px-3 py-2">
           <input
             id="emp-isActive"
             type="checkbox"
-            className="size-5 shrink-0 accent-[var(--color-ledger)]"
+            className="size-5 shrink-0 accent-[var(--color-ledger)] focus-visible:outline-none"
             aria-describedby="emp-isActive-hint"
             {...register('isActive')}
           />
@@ -184,7 +185,7 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
             <label htmlFor="emp-isActive" className="font-medium">
               Active
             </label>
-            <p id="emp-isActive-hint" className="text-sm text-ink-3">
+            <p id="emp-isActive-hint" className="text-[0.75rem] text-ink-2">
               Unchecked means In Active.
             </p>
           </div>
@@ -231,11 +232,12 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
         </FormCell>
       </div>
 
-      <div className="mt-8 flex flex-col-reverse gap-2 border-t border-rule pt-5 sm:flex-row sm:justify-end">
+      <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
         <Button variant="secondary" onClick={() => guard(onCancel)} disabled={pending}>
           Cancel
         </Button>
         <Button type="submit" disabled={pending}>
+          {pending ? <Loader2 aria-hidden className="animate-spin" /> : <Save aria-hidden />}
           {pending ? 'Saving…' : mode === 'create' ? 'Save employee' : 'Save changes'}
         </Button>
       </div>

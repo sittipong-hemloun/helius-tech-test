@@ -57,7 +57,6 @@ const local = prepare('.env', '.env.example', {
   TEST_DB_PASSWORD: () => dbPassword(),
   N8N_DB_PASSWORD: () => dbPassword(),
   N8N_ENCRYPTION_KEY: () => secret(32),
-  WEBUI_SECRET_KEY: () => secret(32),
   JENKINS_ADMIN_PASSWORD: () => secret(18),
 });
 
@@ -102,7 +101,7 @@ const external = [
   ['GOOGLE_CLIENT_ID', 'Google OAuth client ID'],
   ['GOOGLE_CLIENT_SECRET', 'Google OAuth client secret'],
   ['ADMIN_EMAILS', 'your Google account email(s) for the Admin role'],
-  ['GEMINI_API_KEY', 'Gemini API key (only needed for AI reports / Open WebUI)'],
+  ['GEMINI_API_KEY', 'Gemini API key (only needed for AI reports via n8n)'],
 ];
 const missing = external.filter(([k]) => !local.get(k));
 console.log('');

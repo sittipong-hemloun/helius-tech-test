@@ -8,12 +8,15 @@ import { PageHeader } from '@/components/app-shell';
 import { Notice } from '@/components/notice';
 import { ReportStatusBadge } from '@/components/report-status';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/components/ui/cn';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError, describeError } from '@/lib/api';
 import { formatTimestamp } from '@/lib/format';
 import { useGenerateReport, useReports } from '@/lib/queries';
 import { useSession } from '@/lib/session';
 import { GuardedLink } from '@/lib/unsaved-changes';
+
+const COLUMNS: [string, string?][] = [['Snapshot taken'], ['Status', 'text-center'], ['Source'], ['Employees', 'text-right'], ['Completed']];
 
 export function ReportsView() {
   const { session } = useSession();
@@ -79,7 +82,7 @@ export function ReportsView() {
           className="mb-5"
           action={
             notice.reportId ? (
-              <GuardedLink href={`/reports/${notice.reportId}`} className="font-medium text-ledger underline underline-offset-4">
+              <GuardedLink href={`/reports/${notice.reportId}`} className="font-medium text-ledger underline underline-offset-2">
                 Open the current report
               </GuardedLink>
             ) : undefined
@@ -92,69 +95,71 @@ export function ReportsView() {
       {reports.isError && !rows ? (
         <Notice tone="error" title={describeError(reports.error).title} action={<Button variant="secondary" size="sm" onClick={() => void reports.refetch()}>Try again</Button>} />
       ) : rows && rows.length === 0 ? (
-        <div className="rounded-[var(--radius-sheet)] border border-dashed border-rule-strong bg-sheet px-6 py-12 text-center">
-          <p className="type-wide text-lg font-semibold">No reports yet.</p>
-          <p className="mt-1 text-ink-2">
+        <div className="rounded-[var(--radius-sheet)] border border-rule bg-sheet px-4 py-5">
+          <p className="font-semibold">No reports yet.</p>
+          <p className="mt-0.5 text-ink-2">
             {session.permissions.canGenerateReports ? 'Generate the first Workforce Snapshot to see it here.' : 'Reports appear here once an admin generates one.'}
           </p>
         </div>
       ) : (
-        <div className="relative overflow-x-auto rounded-[var(--radius-sheet)] border border-rule bg-sheet">
-          <table className="w-full min-w-[46rem] border-collapse text-left">
-            <caption className="sr-only">Reports, newest first</caption>
-            <thead>
-              <tr className="border-b border-rule-strong">
-                {['Snapshot taken', 'Status', 'Source', 'Employees', 'Completed'].map((h) => (
-                  <th key={h} scope="col" className="type-condensed px-4 py-2.5 text-[0.875rem] font-semibold text-ink-2">
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="greenbar">
-              {rows === undefined
-                ? Array.from({ length: 3 }, (_, i) => (
-                    <tr key={i}>
-                      {Array.from({ length: 5 }, (__, j) => (
-                        <td key={j} className="px-4 py-3">
-                          <Skeleton className="h-4 w-28" />
-                        </td>
-                      ))}
-                    </tr>
-                  ))
-                : rows.map((r) => (
-                    <tr key={r.id}>
-                      <td className="figures px-4 py-2.5">
-                        <GuardedLink href={`/reports/${r.id}`} className="font-medium underline-offset-4 hover:underline">
-                          {formatTimestamp(r.snapshotCapturedAt)}
-                        </GuardedLink>
-                      </td>
-                      <td className="px-4 py-2.5">
-                        <ReportStatusBadge status={r.status as never} />
-                      </td>
-                      <td className="px-4 py-2.5 text-ink-2">{r.source === 'SCHEDULED' ? 'Daily schedule' : 'Manual'}</td>
-                      <td className="figures px-4 py-2.5">{r.totalEmployees}</td>
-                      <td className="figures px-4 py-2.5 text-ink-2">{formatTimestamp(r.completedAt)}</td>
-                    </tr>
+        <div className="overflow-hidden rounded-[var(--radius-sheet)] border border-rule bg-sheet">
+          <div className="relative max-h-[max(20rem,calc(100dvh-14rem))] overflow-auto overscroll-x-contain">
+            <table className="register w-full min-w-[46rem] text-left text-[0.8125rem]">
+              <caption className="sr-only">Reports, newest first</caption>
+              <thead>
+                <tr>
+                  {COLUMNS.map(([h, align]) => (
+                    <th key={h} scope="col" className={cn('whitespace-nowrap px-2.5 py-1.5 font-semibold text-ink', align)}>
+                      {h}
+                    </th>
                   ))}
-            </tbody>
-          </table>
+                </tr>
+              </thead>
+              <tbody className="greenbar">
+                {rows === undefined
+                  ? Array.from({ length: 3 }, (_, i) => (
+                      <tr key={i}>
+                        {Array.from({ length: 5 }, (__, j) => (
+                          <td key={j} className="px-2.5 py-2">
+                            <Skeleton className="h-3.5 w-28" />
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  : rows.map((r) => (
+                      <tr key={r.id}>
+                        <td className="figures whitespace-nowrap px-2.5 py-1.5">
+                          <GuardedLink href={`/reports/${r.id}`} className="font-medium text-ledger underline-offset-2 hover:underline">
+                            {formatTimestamp(r.snapshotCapturedAt)}
+                          </GuardedLink>
+                        </td>
+                        <td className="px-2.5 py-1.5 text-center">
+                          <ReportStatusBadge status={r.status as never} />
+                        </td>
+                        <td className="px-2.5 py-1.5 text-ink-2">{r.source === 'SCHEDULED' ? 'Daily schedule' : 'Manual'}</td>
+                        <td className="figures px-2.5 py-1.5 text-right">{r.totalEmployees}</td>
+                        <td className="figures whitespace-nowrap px-2.5 py-1.5 text-ink-2">{formatTimestamp(r.completedAt)}</td>
+                      </tr>
+                    ))}
+              </tbody>
+            </table>
+          </div>
+          {meta && meta.totalPages > 1 ? (
+          <nav aria-label="Report pages" className="flex items-center justify-end gap-2 border-t border-rule px-3 py-1.5">
+            <Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+              Newer
+            </Button>
+            <span className="figures text-[0.8125rem] text-ink-2">
+              Page {meta.page} of {meta.totalPages}
+            </span>
+            <Button variant="ghost" size="sm" disabled={page >= meta.totalPages} onClick={() => setPage((p) => p + 1)}>
+              Older
+            </Button>
+          </nav>
+          ) : null}
         </div>
       )}
-      {meta && meta.totalPages > 1 ? (
-        <div className="mt-4 flex items-center justify-end gap-2">
-          <Button variant="ghost" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
-            Newer
-          </Button>
-          <span className="figures text-sm text-ink-2">
-            Page {meta.page} of {meta.totalPages}
-          </span>
-          <Button variant="ghost" size="sm" disabled={page >= meta.totalPages} onClick={() => setPage((p) => p + 1)}>
-            Older
-          </Button>
-        </div>
-      ) : null}
-      <p className="mt-6 text-sm text-ink-3">Times are shown in Asia/Bangkok.</p>
+      <p className="mt-2 text-[0.8125rem] text-ink-2">Times are shown in Asia/Bangkok.</p>
     </>
   );
 }

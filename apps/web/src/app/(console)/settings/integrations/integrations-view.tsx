@@ -15,14 +15,14 @@ type State = 'ok' | 'off' | 'bad';
 function Row({ label, state, value, note }: { label: string; state: State | null; value: ReactNode; note?: string }) {
   const Icon = state === 'ok' ? CircleCheck : state === 'bad' ? CircleX : CircleMinus;
   return (
-    <div className="grid gap-1 px-5 py-4 sm:grid-cols-[14rem_minmax(0,1fr)] sm:gap-6">
-      <dt className="font-medium">{label}</dt>
-      <dd>
+    <div className="grid sm:grid-cols-[13rem_minmax(0,1fr)]">
+      <dt className="bg-head px-3 py-2 text-[0.8125rem] font-medium text-ink-2">{label}</dt>
+      <dd className="px-3 py-2">
         <span className="inline-flex items-center gap-2">
           {state ? <Icon aria-hidden className={`size-4 ${state === 'ok' ? 'text-ledger' : state === 'bad' ? 'text-stamp' : 'text-ink-3'}`} /> : null}
           {value}
         </span>
-        {note ? <p className="mt-0.5 text-sm text-ink-3">{note}</p> : null}
+        {note ? <p className="mt-0.5 text-[0.8125rem] text-ink-2">{note}</p> : null}
       </dd>
     </div>
   );
@@ -42,8 +42,8 @@ export function IntegrationsView() {
   return (
     <>
       <PageHeader title="Integrations" meta="Configuration status for this server. Secrets are never shown here." />
-      {status.isError ? <Notice tone="error" title={describeError(status.error).title} className="mb-5" /> : null}
-      <dl className="max-w-3xl divide-y divide-rule rounded-[var(--radius-sheet)] border border-rule bg-sheet">
+      {status.isError ? <Notice tone="error" title={describeError(status.error).title} className="mb-4" /> : null}
+      <dl className="max-w-3xl divide-y divide-rule overflow-hidden rounded-[var(--radius-sheet)] border border-rule bg-sheet">
         <Row label="Core API and database" state={ready.data === undefined ? null : ready.data ? 'ok' : 'bad'} value={ready.data === undefined ? <Skeleton className="h-4 w-24" /> : ready.data ? 'Ready' : 'Not ready'} />
         <Row
           label="Google sign-in"

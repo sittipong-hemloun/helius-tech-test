@@ -3,20 +3,21 @@ import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { cn } from './cn';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-control)] font-medium transition-colors disabled:pointer-events-none disabled:opacity-55 [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-[var(--radius-control)] font-medium transition-colors disabled:pointer-events-none disabled:opacity-55 [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        primary: 'bg-ledger text-white hover:bg-ledger-deep',
-        secondary: 'border border-rule-strong bg-sheet text-ink hover:bg-ledger-wash',
+        primary: 'bg-ledger text-white hover:bg-ledger-hover',
+        secondary: 'border border-rule-strong bg-sheet text-ink hover:bg-bar',
         ghost: 'text-ink-2 hover:bg-bar hover:text-ink',
-        danger: 'bg-stamp text-white hover:brightness-95',
+        danger: 'bg-stamp text-white hover:brightness-90',
+        'danger-secondary': 'border border-stamp/40 bg-sheet text-stamp hover:bg-stamp-wash',
         link: 'px-0 text-ledger underline-offset-4 hover:underline',
       },
       size: {
-        sm: 'h-8 px-3 text-sm',
-        md: 'h-10 px-4 text-[0.9375rem]',
-        icon: 'size-9',
+        sm: 'h-7 px-2.5 text-[0.8125rem]',
+        md: 'h-8 px-3 text-[0.875rem]',
+        icon: 'size-8',
       },
     },
     defaultVariants: { variant: 'primary', size: 'md' },
