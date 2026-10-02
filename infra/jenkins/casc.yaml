@@ -58,6 +58,12 @@ jobs:
           disableConcurrentBuilds()
         }
         logRotator { numToKeep(30) }
+        // Same parameters as the Jenkinsfile. JCasC regenerates the job on every controller start; without
+        // these the job is "not parameterized" until a build runs once.
+        parameters {
+          booleanParam('DEPLOY_STAGING', false, 'Deploy to local staging even if this is not the default branch')
+          booleanParam('RUN_PERF', false, 'Run the k6/Lighthouse benchmark (slow; results are only comparable on an idle machine)')
+        }
         definition {
           cpsScm {
             lightweight(true)

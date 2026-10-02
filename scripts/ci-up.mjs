@@ -58,6 +58,9 @@ try {
     intervalMs: 3000,
     label: 'JCasC job employee-console',
   });
+  const job = await jenkinsJson('/job/employee-console/api/json?tree=property%5BparameterDefinitions%5Bname%5D%5D');
+  const params = job.property.flatMap((p) => p.parameterDefinitions ?? []).map((p) => p.name);
+  if (!['DEPLOY_STAGING', 'RUN_PERF'].every((n) => params.includes(n))) throw new Error(`job parameters missing (have: ${params.join(', ') || 'none'})`);
   const nodes = await jenkinsJson('/computer/api/json?tree=computer%5BdisplayName%5D');
   if (!nodes.computer.some((c) => c.displayName === 'host-agent')) throw new Error('agent node host-agent not configured');
   const installed = new Map((await jenkinsJson('/pluginManager/api/json?depth=1&tree=plugins%5BshortName,version,active%5D')).plugins.map((p) => [p.shortName, p]));
