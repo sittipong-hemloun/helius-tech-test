@@ -38,23 +38,6 @@ export interface ApiResult<T, M = Record<string, unknown>> {
   status: number;
 }
 
-let csrfToken: string | null = null;
-let onUnauthorized: ((code: string) => void) | null = null;
-let onForbidden: (() => void) | null = null;
-
-export function setCsrfToken(token: string | null): void {
-  csrfToken = token;
-}
-
-export function setUnauthorizedHandler(handler: ((code: string) => void) | null): void {
-  onUnauthorized = handler;
-}
-
-/** Called on 403 FORBIDDEN: the UI offered something the server refused — re-check the session (PRD §11.2). */
-export function setForbiddenHandler(handler: (() => void) | null): void {
-  onForbidden = handler;
-}
-
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
   body?: unknown;
@@ -63,14 +46,13 @@ interface RequestOptions {
   timeoutMs?: number;
 }
 
-/** Same-origin fetch to the NestJS API through the Next.js /api rewrite. Cookies only; no tokens in storage. */
+/** Same-origin fetch to the NestJS API through the Next.js /api rewrite. */
 export async function api<T, M = Record<string, unknown>>(path: string, opts: RequestOptions = {}): Promise<ApiResult<T, M>> {
   const method = opts.method ?? 'GET';
   const timeout = AbortSignal.timeout(opts.timeoutMs ?? 15_000);
   const signal = opts.signal ? AbortSignal.any([opts.signal, timeout]) : timeout;
   const headers: Record<string, string> = { Accept: 'application/json', ...opts.headers };
   if (opts.body !== undefined) headers['Content-Type'] = 'application/json';
-  if (method !== 'GET' && csrfToken) headers['X-CSRF-Token'] = csrfToken;
 
   let res: Response;
   try {
@@ -78,7 +60,6 @@ export async function api<T, M = Record<string, unknown>>(path: string, opts: Re
       method,
       headers,
       body: opts.body === undefined ? undefined : JSON.stringify(opts.body),
-      credentials: 'same-origin',
       cache: 'no-store',
       signal,
     });
@@ -104,14 +85,6 @@ export async function api<T, M = Record<string, unknown>>(path: string, opts: Re
   if (!res.ok) {
     const err = (json as ApiErrorBody | null)?.error;
     const code = err?.code ?? (res.status >= 500 ? 'INTERNAL_ERROR' : 'HTTP_ERROR');
-    if (res.status === 401 && onUnauthorized && !path.startsWith('/api/auth/providers')) onUnauthorized(code);
-    // Removed from the allowlist since this page loaded: the server already ended the session.
-    if (res.status === 403 && code === 'ACCOUNT_NOT_ALLOWED' && typeof window !== 'undefined') {
-      // Full navigation on purpose: drops every piece of client state from the ended session.
-      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-      window.location.assign('/access-denied?reason=not_allowed');
-    }
-    if (res.status === 403 && code === 'FORBIDDEN' && onForbidden) onForbidden();
     const retryAfter = res.headers.get('retry-after');
     throw new ApiError(
       res.status,
@@ -133,7 +106,6 @@ export function describeError(err: unknown): { title: string; detail?: string } 
   if (err instanceof ApiError) {
     const ref = err.requestId ? `Request ID ${err.requestId}` : undefined;
     if (err.status === 0) return { title: err.message, detail: 'Nothing was shown as saved. Check the record before trying again.' };
-    if (err.status === 403 && err.code === 'FORBIDDEN') return { title: 'Your role does not allow this action. The page was refreshed with your current access.', detail: ref };
     if (err.status >= 500) return { title: 'The server could not complete the request. Try again.', detail: ref };
     return { title: err.message, detail: ref };
   }

@@ -1,6 +1,6 @@
 // pnpm demo:reset --confirm-reset — restore the 5 source records on a demo database.
 // Guards (PRD §9.5): APP_ENV local/staging, database marked "demo", explicit flag.
-// Clears employees, reports and idempotency keys only; users and sessions are kept.
+// Clears employees and idempotency keys, then re-seeds the Excel data.
 import { loadEnvFile } from '../src/config/env-file.js';
 import { createPrismaClient } from '../src/database/prisma.service.js';
 import { databasePurpose, resetToSource, seedSummary } from '../src/seed/seed-original.js';
@@ -8,7 +8,7 @@ import { databasePurpose, resetToSource, seedSummary } from '../src/seed/seed-or
 loadEnvFile();
 const appEnv = process.env.APP_ENV ?? 'local';
 if (!process.argv.includes('--confirm-reset')) {
-  console.error('Refusing to reset without --confirm-reset. This deletes all employees and reports in the demo database.');
+  console.error('Refusing to reset without --confirm-reset. This deletes all employees in the demo database.');
   process.exit(2);
 }
 if (appEnv !== 'local' && appEnv !== 'staging') {

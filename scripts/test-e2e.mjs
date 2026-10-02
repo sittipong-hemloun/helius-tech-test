@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 // pnpm test:e2e — Playwright against production builds of web + API on an isolated test DB.
-// Sessions come from the test:session CLI (APP_ENV=test only); there is no login bypass route.
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import pg from 'pg';
@@ -31,7 +30,7 @@ cpSync(resolve(webDir, '.next/static'), resolve(standalone, '.next/static'), { r
 if (existsSync(resolve(webDir, 'public'))) cpSync(resolve(webDir, 'public'), resolve(standalone, 'public'), { recursive: true });
 
 mkdirSync(resolve(ROOT, '.tmp'), { recursive: true });
-const api = startProcess('node', ['dist/main.js'], { cwd: resolve(ROOT, 'apps/api'), env: { ...env, REPORT_MAINTENANCE_ENABLED: 'false' }, logFile: resolve(ROOT, '.tmp/e2e-api.log') });
+const api = startProcess('node', ['dist/main.js'], { cwd: resolve(ROOT, 'apps/api'), env, logFile: resolve(ROOT, '.tmp/e2e-api.log') });
 const web = startProcess('node', ['server.js'], {
   cwd: standalone,
   env: { ...process.env, PORT: String(WEB_PORT), HOSTNAME: '127.0.0.1', API_INTERNAL_URL: `http://127.0.0.1:${API_PORT}`, NODE_ENV: 'production' },
@@ -41,11 +40,11 @@ const web = startProcess('node', ['server.js'], {
 let status = 1;
 try {
   await waitHttp(`http://127.0.0.1:${API_PORT}/api/health/ready`, 'api');
-  await waitHttp(`http://127.0.0.1:${WEB_PORT}/login`, 'web');
-  const runtime = resolve(ROOT, 'tests/e2e/.auth');
+  await waitHttp(`http://127.0.0.1:${WEB_PORT}/employees`, 'web');
+  const runtime = resolve(ROOT, 'tests/e2e/.runtime');
   mkdirSync(runtime, { recursive: true });
   // Test-only values for this run; the directory is git-ignored and removed afterwards.
-  writeFileSync(resolve(runtime, 'env.json'), JSON.stringify({ apiEnv: app, baseURL: ORIGIN }), { mode: 0o600 });
+  writeFileSync(resolve(runtime, 'env.json'), JSON.stringify({ apiEnv: app }), { mode: 0o600 });
   status = run('pnpm', ['--filter', '@employee-console/e2e', 'exec', 'playwright', 'test', ...extraArgs], {
     allowFailure: true,
     env: { ...process.env, E2E_BASE_URL: ORIGIN },
@@ -57,7 +56,7 @@ try {
 } finally {
   api.kill('SIGTERM');
   web.kill('SIGTERM');
-  rmSync(resolve(ROOT, 'tests/e2e/.auth'), { recursive: true, force: true });
+  rmSync(resolve(ROOT, 'tests/e2e/.runtime'), { recursive: true, force: true });
   if (!process.env.KEEP_TEST_DB) {
     const admin = new pg.Client({ connectionString: localDb().admin });
     await admin.connect();

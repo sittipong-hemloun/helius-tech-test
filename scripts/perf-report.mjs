@@ -49,8 +49,6 @@ for (const label of labels) {
     const med = median(p95s);
     console.log(`| ${kind} | ≤ ${target} | ${vals.map((v) => `${fmt(v?.med)} / ${fmt(v?.['p(95)'])}`).join(' | ')} | ${fmt(med)} | ${med !== undefined && med <= target ? 'yes' : 'no'} |`);
   }
-  const enq = runs.map((r) => load(label, `enqueue-${r}.json`)?.metrics?.['http_req_duration{kind:enqueue}']?.['p(95)']);
-  console.log(`| report enqueue | ≤ 1000 | ${enq.map((v) => `p95 ${fmt(v)}`).join(' | ')} | ${fmt(median(enq))} | ${median(enq) <= 1000 ? 'yes' : 'no'} |`);
 
   console.log('\n| Run | Read requests (rps) | Read failed rate | Write requests (rps) | Write failed rate | List payload max (bytes) |');
   console.log('| --- | --- | --- | --- | --- | --- |');

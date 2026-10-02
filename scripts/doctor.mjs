@@ -26,13 +26,6 @@ const docker = capture('docker', ['version', '--format', '{{.Server.Version}}'])
 add('tooling', 'Docker daemon', docker ? 'ok' : 'fail', docker ?? 'not reachable');
 add('config', '.env present', existsSync(envPath) ? 'ok' : 'fail', existsSync(envPath) ? '' : 'run pnpm run setup');
 
-for (const [key, label] of [
-  ['ADMIN_EMAILS', 'Admin allowlist'],
-  ['GEMINI_API_KEY', 'Gemini API key (n8n worker)'],
-]) {
-  add('config', label, env.get(key) ? 'ok' : 'missing', env.get(key) ? 'set' : 'empty');
-}
-add('config', 'REPORTS_ENABLED', env.get('REPORTS_ENABLED') === 'true' ? 'ok' : 'info', env.get('REPORTS_ENABLED') || 'false');
 
 const pgHealth = capture('docker', ['compose', 'ps', 'postgres', '--format', '{{.Health}}']);
 add('database', 'postgres container', pgHealth === 'healthy' ? 'ok' : 'fail', pgHealth || 'not running (pnpm dev:up)');
@@ -45,8 +38,6 @@ if (env.get('DATABASE_URL') && pgHealth === 'healthy') {
     add('database', 'employees', s.employees === null ? 'fail' : 'ok', String(s.employees));
     add('database', 'app role least privilege', s.canCreateDb === false ? 'ok' : 'warn', s.canCreateDb ? 'app role has CREATEDB — run pnpm dev:up' : 'NOCREATEDB');
     add('database', 'test role password', env.get('TEST_DB_PASSWORD') ? 'ok' : 'warn', env.get('TEST_DB_PASSWORD') ? 'set' : 'missing — run pnpm run setup');
-    const age = s.worker ? Math.round((Date.now() - new Date(s.worker).getTime()) / 1000) : null;
-    add('reports', 'worker heartbeat (dev DB)', age !== null && age <= 60 ? 'ok' : 'info', age === null ? 'never seen' : `${age}s ago`);
   } catch (err) {
     add('database', 'connection', 'fail', err.code ?? err.message);
   }
@@ -68,17 +59,12 @@ add(
         ? `port used by ${portOwner(Number(apiPort)) ?? 'another process'} — not this API`
         : 'not running',
 );
-const web = await http('http://127.0.0.1:3000/login');
+const web = await http('http://127.0.0.1:3000/employees');
 add('dev', 'Web :3000', web === 200 ? 'ok' : 'off', web ? String(web) : 'not running');
 const staging = await http('http://127.0.0.1:3100/api/health/ready');
 add('staging', 'Staging :3100', staging === 200 ? 'ok' : 'off', staging ? String(staging) : 'not running');
-for (const [port, name, path] of [
-  [5678, 'n8n', '/healthz'],
-  [8080, 'Jenkins', '/login'],
-]) {
-  const s = await http(`http://127.0.0.1:${port}${path}`);
-  add('tools', `${name} :${port}`, s && s < 500 ? 'ok' : 'off', s ? String(s) : 'not running');
-}
+const jenkins = await http('http://127.0.0.1:8080/login');
+add('tools', 'Jenkins :8080', jenkins && jenkins < 500 ? 'ok' : 'off', jenkins ? String(jenkins) : 'not running');
 
 const icon = { ok: '✔', warn: '⚠', fail: '✖', missing: '○', info: '•', off: '–' };
 for (const r of rows) console.log(`${icon[r.state] ?? '•'} ${r.area.padEnd(9)} ${r.check.padEnd(28)} ${r.note}`);

@@ -70,7 +70,7 @@ export function useUnsavedChanges(dirty: boolean) {
   return guard;
 }
 
-export function useNavigationGuard() {
+function useNavigationGuard() {
   return useContext(UnsavedContext).guard;
 }
 

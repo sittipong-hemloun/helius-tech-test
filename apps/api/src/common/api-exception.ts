@@ -8,7 +8,7 @@ export interface FieldErrorDetail {
 
 /**
  * Application error carrying a stable machine code (PRD §10.5).
- * `extra` adds safe top-level fields to the error object (e.g. currentReportId).
+ * `extra` adds safe top-level fields to the error object (e.g. currentVersion).
  */
 export class ApiException extends HttpException {
   constructor(
@@ -28,16 +28,7 @@ export const Errors = {
     new ApiException(400, 'VALIDATION_ERROR', 'Please correct the highlighted fields.', details),
   invalidQuery: (details: FieldErrorDetail[]) =>
     new ApiException(400, 'INVALID_QUERY', 'The query parameters are not valid.', details),
-  unauthenticated: () => new ApiException(401, 'UNAUTHENTICATED', 'Sign in to continue.'),
-  sessionExpired: () => new ApiException(401, 'SESSION_EXPIRED', 'Your session has expired. Sign in again.'),
-  forbidden: (message = 'You do not have permission to perform this action.') =>
-    new ApiException(403, 'FORBIDDEN', message),
-  accountNotAllowed: () =>
-    new ApiException(403, 'ACCOUNT_NOT_ALLOWED', 'This account is not allowed to use Employee Console.'),
-  csrfInvalid: () => new ApiException(403, 'CSRF_INVALID', 'The request could not be verified. Reload the page and try again.'),
-  invalidServiceToken: () => new ApiException(401, 'INVALID_SERVICE_TOKEN', 'A valid service token is required.'),
   employeeNotFound: () => new ApiException(404, 'EMPLOYEE_NOT_FOUND', 'Employee not found.'),
-  reportNotFound: () => new ApiException(404, 'REPORT_NOT_FOUND', 'Report not found.'),
   versionConflict: (currentVersion?: number) =>
     new ApiException(
       409,

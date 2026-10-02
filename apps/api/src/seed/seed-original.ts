@@ -118,11 +118,10 @@ export async function resetToSource(prisma: PrismaClient, opts: { truncate?: boo
   source.employees.forEach((r) => mapSourceRow(r, source.departments)); // validate before touching data
   return prisma.$transaction(
     async (tx) => {
-      await tx.$executeRawUnsafe('LOCK TABLE employees, reports, idempotency_keys IN ACCESS EXCLUSIVE MODE');
+      await tx.$executeRawUnsafe('LOCK TABLE employees, idempotency_keys IN ACCESS EXCLUSIVE MODE');
       if (opts.truncate) {
-        await tx.$executeRawUnsafe('TRUNCATE reports, idempotency_keys, employees, integration_state');
+        await tx.$executeRawUnsafe('TRUNCATE idempotency_keys, employees');
       } else {
-        await tx.$executeRaw`DELETE FROM reports`;
         await tx.$executeRaw`DELETE FROM idempotency_keys`;
         await tx.$executeRaw`DELETE FROM employees`;
       }

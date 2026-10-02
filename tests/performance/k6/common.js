@@ -1,4 +1,4 @@
-// Shared k6 helpers. BASE_URL, COOKIE and CSRF come from the perf runner (test-only session).
+// Shared k6 helpers. BASE_URL comes from the perf runner.
 import http from 'k6/http';
 
 export const BASE = __ENV.BASE_URL || 'http://host.docker.internal:3201';
@@ -6,11 +6,11 @@ export const STEADY = __ENV.STEADY || '3m';
 export const WARMUP = __ENV.WARMUP || '30s';
 
 export function headers(extra = {}) {
-  return { Cookie: __ENV.COOKIE, Accept: 'application/json', ...extra };
+  return { Accept: 'application/json', ...extra };
 }
 
 export function writeHeaders(extra = {}) {
-  return headers({ 'Content-Type': 'application/json', 'X-CSRF-Token': __ENV.CSRF, ...extra });
+  return headers({ 'Content-Type': 'application/json', ...extra });
 }
 
 export function uuid() {

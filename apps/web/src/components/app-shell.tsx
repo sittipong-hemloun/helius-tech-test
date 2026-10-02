@@ -3,15 +3,10 @@
 import { ArrowLeft, Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
-import { GuardedLink, useNavigationGuard } from '@/lib/unsaved-changes';
-import { useSession } from '@/lib/session';
+import { GuardedLink } from '@/lib/unsaved-changes';
 import { cn } from './ui/cn';
 
-const NAV = [
-  { href: '/employees', label: 'Employees', adminOnly: false },
-  { href: '/reports', label: 'Reports', adminOnly: false },
-  { href: '/settings/integrations', label: 'Integrations', adminOnly: true },
-];
+const NAV = [{ href: '/employees', label: 'Employees' }];
 
 /** Company name set solid, product name lighter after a rule: a plain text lockup, no logo art. */
 function Brand() {
@@ -25,14 +20,9 @@ function Brand() {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { session, logout } = useSession();
   const pathname = usePathname();
-  const guard = useNavigationGuard();
   const [open, setOpen] = useState(false);
-  const isAdmin = session.user.role === 'ADMIN';
-  const items = NAV.filter((n) => !n.adminOnly || isAdmin);
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
-  const signOut = () => guard(() => void logout());
 
   return (
     <div className="min-h-dvh">
@@ -47,7 +37,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
 
           <nav aria-label="Main" className="hidden items-stretch md:flex">
-            {items.map(({ href, label }) => {
+            {NAV.map(({ href, label }) => {
               const active = isActive(href);
               return (
                 <GuardedLink
@@ -65,16 +55,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             })}
           </nav>
 
-          <div className="ml-auto hidden items-center gap-4 text-[0.8125rem] md:flex">
-            <span className="truncate" title={session.user.email}>
-              {session.user.displayName}
-              <span className="ml-2 text-white/70">{isAdmin ? 'Admin' : 'Viewer'}</span>
-            </span>
-            <button type="button" onClick={signOut} className="rounded px-1.5 py-1 text-white/85 underline-offset-4 hover:text-white hover:underline">
-              Sign out
-            </button>
-          </div>
-
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -91,7 +71,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       {open ? (
         <div id="mobile-nav" className="border-b border-rule bg-sheet md:hidden">
           <nav aria-label="Main" className="flex flex-col py-1">
-            {items.map(({ href, label }) => {
+            {NAV.map(({ href, label }) => {
               const active = isActive(href);
               return (
                 <GuardedLink
@@ -106,15 +86,6 @@ export function AppShell({ children }: { children: ReactNode }) {
               );
             })}
           </nav>
-          <div className="flex items-center justify-between border-t border-rule px-4 py-3 text-[0.8125rem]">
-            <span className="min-w-0 truncate">
-              {session.user.displayName}
-              <span className="ml-2 text-ink-2">{isAdmin ? 'Admin' : 'Viewer'}</span>
-            </span>
-            <button type="button" onClick={signOut} className="rounded px-1.5 py-1 text-ledger underline-offset-4 hover:underline">
-              Sign out
-            </button>
-          </div>
         </div>
       ) : null}
 

@@ -16,7 +16,7 @@ type Tx = Prisma.TransactionClient;
 class ReplayRequired extends Error {}
 
 /**
- * Create-once semantics for POST employees/reports (PRD §10.5).
+ * Create-once semantics for POST employees (PRD §10.5).
  * The key row is inserted first with ON CONFLICT DO NOTHING inside the same
  * transaction as the business write: a concurrent request with the same key blocks
  * on the unique index, then replays the committed result instead of creating a row.
@@ -30,7 +30,7 @@ export class IdempotencyService {
   ) {}
 
   async run<T>(
-    params: { scope: string; actorId: string; key: string; requestHash: string },
+    params: { scope: string; key: string; requestHash: string },
     work: (tx: Tx) => Promise<{ status: number; body: T }>,
   ): Promise<StoredResult<T>> {
     for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -39,13 +39,12 @@ export class IdempotencyService {
           const now = this.clock.now();
           await tx.$executeRaw`
             DELETE FROM idempotency_keys
-            WHERE scope = ${params.scope} AND actor_id = ${params.actorId}::uuid AND key = ${params.key}::uuid
-              AND expires_at <= ${now}`;
+            WHERE scope = ${params.scope} AND key = ${params.key}::uuid AND expires_at <= ${now}`;
           const inserted = await tx.$queryRaw<{ id: bigint }[]>`
-            INSERT INTO idempotency_keys (scope, key, actor_id, request_hash, created_at, expires_at)
-            VALUES (${params.scope}, ${params.key}::uuid, ${params.actorId}::uuid, ${params.requestHash},
+            INSERT INTO idempotency_keys (scope, key, request_hash, created_at, expires_at)
+            VALUES (${params.scope}, ${params.key}::uuid, ${params.requestHash},
                     ${now}, ${new Date(now.getTime() + this.config.idempotencyTtlMs)})
-            ON CONFLICT (scope, actor_id, key) DO NOTHING
+            ON CONFLICT (scope, key) DO NOTHING
             RETURNING id`;
           if (inserted.length === 0) throw new ReplayRequired();
           const result = await work(tx);
@@ -61,8 +60,7 @@ export class IdempotencyService {
 
       const rows = await this.prisma.$queryRaw<{ request_hash: string; response_status: number | null; response_body: unknown }[]>`
         SELECT request_hash, response_status, response_body FROM idempotency_keys
-        WHERE scope = ${params.scope} AND actor_id = ${params.actorId}::uuid AND key = ${params.key}::uuid
-          AND expires_at > ${this.clock.now()}`;
+        WHERE scope = ${params.scope} AND key = ${params.key}::uuid AND expires_at > ${this.clock.now()}`;
       const row = rows[0];
       if (!row) continue; // the other request rolled back or expired: try once more as a fresh request
       if (row.request_hash !== params.requestHash) throw Errors.idempotencyConflict();

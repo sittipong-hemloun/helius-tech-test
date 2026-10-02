@@ -78,7 +78,7 @@ export class ListEmployeesQueryDto {
   @Rule(pageSizeRule, { optional: true })
   pageSize?: string;
 
-  @ApiPropertyOptional({ enum: SORT_FIELDS, default: 'id', description: 'salary is Admin-only' })
+  @ApiPropertyOptional({ enum: SORT_FIELDS, default: 'id', })
   @Rule(sortByRule, { optional: true })
   sortBy?: string;
 
@@ -96,8 +96,8 @@ export class EmployeeDto {
   @ApiProperty({ example: 'Dana Lee' }) name: string;
   @ApiProperty({ enum: DEPARTMENT_IDS }) departmentId: string;
   @ApiProperty({ example: 'Engineering' }) departmentName: string;
-  @ApiPropertyOptional({ type: String, example: '62000.00', description: 'Present for Admin only; the key is omitted for Viewer.' })
-  salary?: string;
+  @ApiProperty({ type: String, example: '62000.00' })
+  salary: string;
   @ApiProperty({ type: String, format: 'date', example: '2026-09-01' }) joinDate: string;
   @ApiProperty({ example: true }) isActive: boolean;
   @ApiProperty({ type: String, format: 'date', example: '2026-10-01' }) lastUpdatedDate: string;

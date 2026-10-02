@@ -4,54 +4,6 @@
  */
 
 export interface paths {
-    "/api/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Auth_logout"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/auth/providers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["Auth_providers"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/auth/session": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["Auth_session"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/v1/departments": {
         parameters: {
             query?: never;
@@ -100,162 +52,15 @@ export interface paths {
         patch: operations["Employees_update"];
         trace?: never;
     };
-    "/api/v1/integrations/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["Integrations_status"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/reports": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["Reports_list"];
-        put?: never;
-        post: operations["Reports_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/reports/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["Reports_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/internal/v1/report-jobs/claim": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["InternalReports_claim"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/internal/v1/report-jobs/{id}/complete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["InternalReports_complete"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/internal/v1/report-jobs/{id}/fail": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["InternalReports_fail"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/internal/v1/reports/scheduled": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["InternalReports_scheduled"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        BuildDto: {
-            appVersion: string;
-            commitSha: string;
-        };
         ChangedMetaDto: {
             /** @description false when the PATCH matched the stored values after normalization (no write, same version) */
             changed: boolean;
             /** Format: uuid */
             requestId: string;
-        };
-        ClaimedReportJobDto: {
-            attempt: number;
-            /** Format: date-time */
-            leaseExpiresAt: string;
-            leaseToken: string;
-            model: string;
-            promptVersion: string;
-            /** Format: uuid */
-            reportId: string;
-            snapshot: components["schemas"]["SnapshotDto"];
-        };
-        CompleteReportJobDto: {
-            /** @enum {string} */
-            generatedBy: "GEMINI" | "TEMPLATE";
-            leaseToken: string;
-            /** @example gemini-3.8-flash */
-            model: string | null;
-            /**
-             * @example {
-             *       "bullets": [
-             *         "...",
-             *         "...",
-             *         "..."
-             *       ],
-             *       "headline": "ภาพรวมพนักงาน"
-             *     }
-             */
-            narrative: Record<string, never>;
-            /** @example employee-summary-v1 */
-            promptVersion: string;
         };
         CreateEmployeeDto: {
             /**
@@ -284,7 +89,6 @@ export interface components {
              */
             salary: string;
         };
-        CreateReportDto: Record<string, never>;
         DepartmentDto: {
             /** @example engineering */
             id: string;
@@ -314,11 +118,8 @@ export interface components {
             lastUpdatedDate: string;
             /** @example Dana Lee */
             name: string;
-            /**
-             * @description Present for Admin only; the key is omitted for Viewer.
-             * @example 62000.00
-             */
-            salary?: string;
+            /** @example 62000.00 */
+            salary: string;
             /** @example 1 */
             version: number;
         };
@@ -341,15 +142,9 @@ export interface components {
              */
             totalPages: number;
         };
-        EmptyBodyDto: Record<string, never>;
         ErrorBodyDto: {
             /** @example VALIDATION_ERROR */
             code: string;
-            /**
-             * Format: uuid
-             * @description REPORT_IN_PROGRESS only
-             */
-            currentReportId?: Record<string, never> | null;
             /** @description VERSION_CONFLICT only */
             currentVersion?: number;
             details?: components["schemas"]["FieldErrorDto"][];
@@ -361,11 +156,6 @@ export interface components {
         ErrorEnvelopeDto: {
             error: components["schemas"]["ErrorBodyDto"];
         };
-        FailReportJobDto: {
-            /** @enum {string} */
-            errorCode: "PROVIDER_TIMEOUT" | "PROVIDER_RATE_LIMIT" | "PROVIDER_UNAVAILABLE" | "INVALID_MODEL_OUTPUT" | "PROVIDER_AUTH_ERROR" | "MODEL_UNAVAILABLE" | "INVALID_SNAPSHOT" | "CONTENT_REJECTED";
-            leaseToken: string;
-        };
         FieldErrorDto: {
             /** @example DECIMAL_SCALE_EXCEEDED */
             code: string;
@@ -374,140 +164,9 @@ export interface components {
             /** @example Salary must have at most 2 decimal places. */
             message: string;
         };
-        GoogleProviderDto: {
-            configured: boolean;
-        };
-        GoogleStatusDto: {
-            configured: boolean;
-        };
-        IntegrationStatusDto: {
-            build: components["schemas"]["BuildDto"];
-            google: components["schemas"]["GoogleStatusDto"];
-            reports: components["schemas"]["ReportsStatusDto"];
-        };
-        JobStatusDto: {
-            /** Format: uuid */
-            reportId: string;
-            /** @enum {string} */
-            status: "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
-        };
         MetaDto: {
             /** Format: uuid */
             requestId: string;
-        };
-        NarrativeDto: {
-            bullets: string[];
-            headline: string;
-        };
-        PageMetaDto: {
-            /** @example 1 */
-            page: number;
-            /** @example 20 */
-            pageSize: number;
-            /** Format: uuid */
-            requestId: string;
-            /** @example 5 */
-            total: number;
-            /**
-             * @description 0 when total is 0
-             * @example 1
-             */
-            totalPages: number;
-        };
-        PermissionsDto: {
-            canGenerateReports: boolean;
-            canViewIntegrations: boolean;
-            canViewSalary: boolean;
-            canWriteEmployees: boolean;
-        };
-        ProvidersDto: {
-            google: components["schemas"]["GoogleProviderDto"];
-        };
-        ReportDetailDto: {
-            attempts: number;
-            /** Format: date-time */
-            completedAt: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            errorCode: string | null;
-            /** @enum {string|null} */
-            generatedBy: "GEMINI" | "TEMPLATE" | null;
-            /** Format: uuid */
-            id: string;
-            model: string | null;
-            narrative: components["schemas"]["NarrativeDto"] | null;
-            promptVersion: string;
-            snapshot: components["schemas"]["SnapshotDto"];
-            /** Format: date-time */
-            snapshotCapturedAt: string;
-            /** @enum {string} */
-            source: "MANUAL" | "SCHEDULED";
-            /** @enum {string} */
-            status: "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
-            totalEmployees: number;
-        };
-        ReportSummaryDto: {
-            /** Format: date-time */
-            completedAt: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            errorCode: string | null;
-            /** @enum {string|null} */
-            generatedBy: "GEMINI" | "TEMPLATE" | null;
-            /** Format: uuid */
-            id: string;
-            model: string | null;
-            promptVersion: string;
-            /** Format: date-time */
-            snapshotCapturedAt: string;
-            /** @enum {string} */
-            source: "MANUAL" | "SCHEDULED";
-            /** @enum {string} */
-            status: "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
-            totalEmployees: number;
-        };
-        ReportsStatusDto: {
-            enabled: boolean;
-            model: string;
-            workerAvailable: boolean;
-            /** Format: date-time */
-            workerLastSeenAt: string | null;
-        };
-        SessionDataDto: {
-            /** Format: date-time */
-            absoluteExpiresAt: string;
-            csrfToken: string;
-            permissions: components["schemas"]["PermissionsDto"];
-            user: components["schemas"]["SessionUserDto"];
-        };
-        SessionUserDto: {
-            displayName: string;
-            email: string;
-            /** Format: uuid */
-            id: string;
-            /** @enum {string} */
-            role: "ADMIN" | "VIEWER";
-        };
-        SnapshotDepartmentDto: {
-            active: number;
-            id: string;
-            inactive: number;
-            name: string;
-            total: number;
-        };
-        SnapshotDto: {
-            activeEmployees: number;
-            /** Format: date */
-            businessDate: string;
-            /** Format: date-time */
-            capturedAt: string;
-            departments: components["schemas"]["SnapshotDepartmentDto"][];
-            inactiveEmployees: number;
-            /** @enum {number} */
-            schemaVersion: 1;
-            /** @enum {string} */
-            timezone: "Asia/Bangkok";
-            totalEmployees: number;
         };
         UpdateEmployeeDto: {
             /** @enum {string} */
@@ -529,153 +188,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    Auth_logout: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Session destroyed and cookie cleared */
-            204: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description AI_NOT_CONFIGURED / AUTH_NOT_CONFIGURED / DEPENDENCY_UNAVAILABLE */
-            503: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
-    Auth_providers: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["ProvidersDto"];
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-        };
-    };
-    Auth_session: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["SessionDataDto"];
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
     Departments_list: {
         parameters: {
             query?: never;
@@ -699,29 +211,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
+            /** @description RATE_LIMITED */
             429: {
                 headers: {
                     /** @description Seconds to wait before retrying */
@@ -756,7 +246,6 @@ export interface operations {
                 status?: "all" | "active" | "inactive";
                 page?: number;
                 pageSize?: number;
-                /** @description salary is Admin-only */
                 sortBy?: "id" | "name" | "department" | "joinDate" | "isActive" | "lastUpdatedDate" | "salary";
                 sortOrder?: "asc" | "desc";
             };
@@ -766,7 +255,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Viewer responses omit the salary key */
+            /** @description Success */
             200: {
                 headers: {
                     /** @description Server-generated UUID for this request */
@@ -791,29 +280,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
+            /** @description RATE_LIMITED */
             429: {
                 headers: {
                     /** @description Seconds to wait before retrying */
@@ -843,7 +310,6 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                "X-CSRF-Token": string;
                 /** @description UUID generated once per create intent */
                 "Idempotency-Key": string;
             };
@@ -887,29 +353,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED */
+            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT */
             409: {
                 headers: {
                     /** @description Server-generated UUID for this request */
@@ -942,7 +386,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
+            /** @description RATE_LIMITED */
             429: {
                 headers: {
                     /** @description Seconds to wait before retrying */
@@ -995,29 +439,7 @@ export interface operations {
                     };
                 };
             };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND */
+            /** @description EMPLOYEE_NOT_FOUND */
             404: {
                 headers: {
                     /** @description Server-generated UUID for this request */
@@ -1028,7 +450,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
+            /** @description RATE_LIMITED */
             429: {
                 headers: {
                     /** @description Seconds to wait before retrying */
@@ -1058,7 +480,6 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                "X-CSRF-Token": string;
                 "If-Match": string;
             };
             path: {
@@ -1088,29 +509,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND */
+            /** @description EMPLOYEE_NOT_FOUND */
             404: {
                 headers: {
                     /** @description Server-generated UUID for this request */
@@ -1121,7 +520,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED */
+            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT */
             409: {
                 headers: {
                     /** @description Server-generated UUID for this request */
@@ -1143,7 +542,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
+            /** @description RATE_LIMITED */
             429: {
                 headers: {
                     /** @description Seconds to wait before retrying */
@@ -1173,7 +572,6 @@ export interface operations {
         parameters: {
             query?: never;
             header: {
-                "X-CSRF-Token": string;
                 /** @description Quoted employee version, e.g. "1" */
                 "If-Match": string;
             };
@@ -1215,29 +613,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND */
+            /** @description EMPLOYEE_NOT_FOUND */
             404: {
                 headers: {
                     /** @description Server-generated UUID for this request */
@@ -1248,7 +624,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED */
+            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT */
             409: {
                 headers: {
                     /** @description Server-generated UUID for this request */
@@ -1292,7 +668,7 @@ export interface operations {
                     "application/json": components["schemas"]["ErrorEnvelopeDto"];
                 };
             };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
+            /** @description RATE_LIMITED */
             429: {
                 headers: {
                     /** @description Seconds to wait before retrying */
@@ -1307,718 +683,6 @@ export interface operations {
             };
             /** @description INTERNAL_ERROR */
             500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
-    Integrations_status: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["IntegrationStatusDto"];
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
-            429: {
-                headers: {
-                    /** @description Seconds to wait before retrying */
-                    "Retry-After"?: string;
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
-    Reports_list: {
-        parameters: {
-            query?: {
-                page?: number;
-                pageSize?: number;
-                status?: "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Newest first (createdAt desc, id desc) */
-            200: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["ReportSummaryDto"][];
-                        meta: components["schemas"]["PageMetaDto"];
-                    };
-                };
-            };
-            /** @description VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON */
-            400: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
-            429: {
-                headers: {
-                    /** @description Seconds to wait before retrying */
-                    "Retry-After"?: string;
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
-    Reports_create: {
-        parameters: {
-            query?: never;
-            header: {
-                "X-CSRF-Token": string;
-                "Idempotency-Key": string;
-            };
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateReportDto"];
-            };
-        };
-        responses: {
-            /** @description Queued; poll GET /api/v1/reports/{id} */
-            202: {
-                headers: {
-                    /** @description "true" when the response was replayed for a repeated Idempotency-Key */
-                    "Idempotency-Replayed"?: string;
-                    /** @description Path of the created resource */
-                    Location?: string;
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["ReportSummaryDto"];
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-            /** @description VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON */
-            400: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED */
-            409: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
-            429: {
-                headers: {
-                    /** @description Seconds to wait before retrying */
-                    "Retry-After"?: string;
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description AI_NOT_CONFIGURED / AUTH_NOT_CONFIGURED / DEPENDENCY_UNAVAILABLE */
-            503: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
-    Reports_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["ReportDetailDto"];
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID */
-            403: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND */
-            404: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
-            429: {
-                headers: {
-                    /** @description Seconds to wait before retrying */
-                    "Retry-After"?: string;
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
-    InternalReports_claim: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EmptyBodyDto"];
-            };
-        };
-        responses: {
-            /** @description data is null when no job is due; updates the worker heartbeat */
-            200: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["ClaimedReportJobDto"] | null;
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-            /** @description VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON */
-            400: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description RATE_LIMITED / REPORT_QUOTA_EXCEEDED */
-            429: {
-                headers: {
-                    /** @description Seconds to wait before retrying */
-                    "Retry-After"?: string;
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
-    InternalReports_complete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CompleteReportJobDto"];
-            };
-        };
-        responses: {
-            /** @description Success */
-            200: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["JobStatusDto"];
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-            /** @description VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON */
-            400: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND */
-            404: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED */
-            409: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description PAYLOAD_TOO_LARGE */
-            413: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
-    InternalReports_fail: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["FailReportJobDto"];
-            };
-        };
-        responses: {
-            /** @description QUEUED (retry scheduled) or FAILED */
-            200: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["JobStatusDto"];
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-            /** @description VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON */
-            400: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND */
-            404: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED */
-            409: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-        };
-    };
-    InternalReports_scheduled: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EmptyBodyDto"];
-            };
-        };
-        responses: {
-            /** @description Today's scheduled report already exists */
-            200: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["ReportSummaryDto"];
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-            /** @description Created for today (Asia/Bangkok business day) */
-            202: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: components["schemas"]["ReportSummaryDto"];
-                        meta: components["schemas"]["MetaDto"];
-                    };
-                };
-            };
-            /** @description VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON */
-            400: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN */
-            401: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED */
-            409: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description INTERNAL_ERROR */
-            500: {
-                headers: {
-                    /** @description Server-generated UUID for this request */
-                    "X-Request-Id"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ErrorEnvelopeDto"];
-                };
-            };
-            /** @description AI_NOT_CONFIGURED / AUTH_NOT_CONFIGURED / DEPENDENCY_UNAVAILABLE */
-            503: {
                 headers: {
                     /** @description Server-generated UUID for this request */
                     "X-Request-Id"?: string;

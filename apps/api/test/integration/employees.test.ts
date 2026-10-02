@@ -1,8 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { seedOriginal } from '../../src/seed/seed-original.js';
-import type { FixtureSession } from '../../src/testing/session-fixture.js';
-import { ADMIN_EMAIL, asUser, login, resetData, startApp, VIEWER_EMAIL, type TestContext } from '../support/harness.js';
+import { resetData, startApp, type TestContext } from '../support/harness.js';
 
 const DANA = { name: 'Dana Lee', departmentId: 'engineering', salary: '62000.00', joinDate: '2026-09-01', isActive: true };
 
@@ -15,18 +14,12 @@ const SOURCE = {
 } as const;
 
 let ctx: TestContext;
-let admin: FixtureSession;
-let viewer: FixtureSession;
 
 beforeAll(async () => {
   ctx = await startApp();
 });
 afterAll(async () => ctx.close());
-beforeEach(async () => {
-  await resetData(ctx);
-  admin = await login(ctx, ADMIN_EMAIL);
-  viewer = await login(ctx, VIEWER_EMAIL);
-});
+beforeEach(async () => resetData(ctx));
 
 async function dbRow(id: number) {
   const rows = await ctx.prisma.$queryRaw<
@@ -35,18 +28,17 @@ async function dbRow(id: number) {
   return rows[0];
 }
 
-const create = (body: unknown, key = randomUUID(), s = admin) =>
-  ctx.http.post('/api/v1/employees').set(asUser(s, { 'Idempotency-Key': key })).send(body as object);
+const create = (body: unknown, key = randomUUID()) => ctx.http.post('/api/v1/employees').set('Idempotency-Key', key).send(body as object);
 
 describe('seed data (AC-01, AC-02, AC-03)', () => {
   it('fresh migrate+seed has 5 records, 4 departments, 4/1 status and salary sum 290000.00', async () => {
-    const res = await ctx.http.get('/api/v1/employees').set('Cookie', admin.cookieHeader).expect(200);
+    const res = await ctx.http.get('/api/v1/employees').expect(200);
     expect(res.body.meta).toMatchObject({ page: 1, pageSize: 20, total: 5, totalPages: 1, sortBy: 'id', sortOrder: 'asc' });
     expect(res.body.data.map((e: { id: number }) => e.id)).toEqual([101, 102, 103, 104, 105]);
     const sum = res.body.data.reduce((s: number, e: { salary: string }) => s + Math.round(Number(e.salary) * 100), 0);
     expect((sum / 100).toFixed(2)).toBe('290000.00');
     expect(res.body.data.filter((e: { isActive: boolean }) => e.isActive)).toHaveLength(4);
-    const depts = await ctx.http.get('/api/v1/departments').set('Cookie', admin.cookieHeader).expect(200);
+    const depts = await ctx.http.get('/api/v1/departments').expect(200);
     expect(depts.body.data).toEqual([
       { id: 'engineering', name: 'Engineering', sortOrder: 1 },
       { id: 'marketing', name: 'Marketing', sortOrder: 2 },
@@ -57,17 +49,17 @@ describe('seed data (AC-01, AC-02, AC-03)', () => {
 
   it('every source field matches Appendix C for Admin detail', async () => {
     for (const [id, expected] of Object.entries(SOURCE)) {
-      const res = await ctx.http.get(`/api/v1/employees/${id}`).set('Cookie', admin.cookieHeader).expect(200);
+      const res = await ctx.http.get(`/api/v1/employees/${id}`).expect(200);
       expect(res.body.data).toMatchObject({ id: Number(id), ...expected, version: 1 });
       expect(res.headers.etag).toBe('"1"');
     }
   });
 
   it('seeding again does not add rows or overwrite edited values', async () => {
-    const before = await ctx.http.get('/api/v1/employees/101').set('Cookie', admin.cookieHeader);
+    const before = await ctx.http.get('/api/v1/employees/101');
     await ctx.http
       .patch('/api/v1/employees/101')
-      .set(asUser(admin, { 'If-Match': `"${before.body.data.version}"` }))
+      .set({ 'If-Match': `"${before.body.data.version}"` })
       .send({ name: 'John Edited' })
       .expect(200);
     const edited = await dbRow(101);
@@ -101,8 +93,7 @@ describe('create (AC-04, AC-05, AC-06..AC-10, AC-19, AC-20)', () => {
 
   it('uses the Bangkok day near midnight UTC', async () => {
     ctx.clock.set('2026-10-01T17:30:00Z'); // 00:30 on 2 Oct in Bangkok
-    const lateAdmin = await login(ctx, ADMIN_EMAIL);
-    const res = await create(DANA, randomUUID(), lateAdmin).expect(201);
+    const res = await create(DANA).expect(201);
     expect(res.body.data.lastUpdatedDate).toBe('2026-10-02');
     ctx.clock.set('2026-10-01T03:00:00Z');
   });
@@ -111,10 +102,8 @@ describe('create (AC-04, AC-05, AC-06..AC-10, AC-19, AC-20)', () => {
     await create(DANA).expect(201);
     await ctx.close();
     ctx = await startApp();
-    const s = await login(ctx, ADMIN_EMAIL);
-    const res = await ctx.http.get('/api/v1/employees/106').set('Cookie', s.cookieHeader).expect(200);
+    const res = await ctx.http.get('/api/v1/employees/106').expect(200);
     expect(res.body.data.name).toBe('Dana Lee');
-    admin = s;
   });
 
   it('rejects system-managed fields and unknown fields without inserting (AC-05)', async () => {
@@ -189,7 +178,7 @@ describe('create (AC-04, AC-05, AC-06..AC-10, AC-19, AC-20)', () => {
   });
 
   it('requires a UUID Idempotency-Key', async () => {
-    const res = await ctx.http.post('/api/v1/employees').set(asUser(admin)).send(DANA).expect(400);
+    const res = await ctx.http.post('/api/v1/employees').send(DANA).expect(400);
     expect(res.body.error.code).toBe('INVALID_IDEMPOTENCY_KEY');
   });
 
@@ -230,7 +219,7 @@ describe('update (AC-12..AC-16)', () => {
     ctx.clock.set('2026-10-01T05:00:00Z');
     const res = await ctx.http
       .patch('/api/v1/employees/104')
-      .set(asUser(admin, { 'If-Match': '"1"' }))
+      .set({ 'If-Match': '"1"' })
       .send({ isActive: true })
       .expect(200);
     expect(res.body.data).toMatchObject({ id: 104, isActive: true, version: 2, lastUpdatedDate: '2026-10-01' });
@@ -244,7 +233,7 @@ describe('update (AC-12..AC-16)', () => {
   it('rejects string booleans on PATCH (AC-12)', async () => {
     const res = await ctx.http
       .patch('/api/v1/employees/104')
-      .set(asUser(admin, { 'If-Match': '"1"' }))
+      .set({ 'If-Match': '"1"' })
       .send({ isActive: 'true' })
       .expect(400);
     expect(res.body.error.details[0].code).toBe('BOOLEAN_REQUIRED');
@@ -254,7 +243,7 @@ describe('update (AC-12..AC-16)', () => {
     const before = await dbRow(101);
     const res = await ctx.http
       .patch('/api/v1/employees/101')
-      .set(asUser(admin, { 'If-Match': '"1"' }))
+      .set({ 'If-Match': '"1"' })
       .send({ name: '  John Doe ', salary: '65000', isActive: true })
       .expect(200);
     expect(res.body.meta.changed).toBe(false);
@@ -264,19 +253,18 @@ describe('update (AC-12..AC-16)', () => {
 
   it('reads, searches and failed validation leave rows untouched (AC-15)', async () => {
     const before = await dbRow(102);
-    await ctx.http.get('/api/v1/employees/102').set('Cookie', admin.cookieHeader).expect(200);
-    await ctx.http.get('/api/v1/employees?q=jane').set('Cookie', admin.cookieHeader).expect(200);
-    await ctx.http.patch('/api/v1/employees/102').set(asUser(admin, { 'If-Match': '"1"' })).send({ salary: '-5' }).expect(400);
-    await ctx.http.patch('/api/v1/employees/102').set(asUser(viewer, { 'If-Match': '"1"' })).send({ name: 'X' }).expect(403);
+    await ctx.http.get('/api/v1/employees/102').expect(200);
+    await ctx.http.get('/api/v1/employees?q=jane').expect(200);
+    await ctx.http.patch('/api/v1/employees/102').set({ 'If-Match': '"1"' }).send({ salary: '-5' }).expect(400);
     expect(await dbRow(102)).toEqual(before);
   });
 
   it('requires If-Match (428) and rejects stale versions (409) without overwriting (AC-16)', async () => {
-    await ctx.http.patch('/api/v1/employees/103').set(asUser(admin)).send({ name: 'A' }).expect(428);
-    await ctx.http.patch('/api/v1/employees/103').set(asUser(admin, { 'If-Match': '"1"' })).send({ name: 'Alice W.' }).expect(200);
+    await ctx.http.patch('/api/v1/employees/103').send({ name: 'A' }).expect(428);
+    await ctx.http.patch('/api/v1/employees/103').set({ 'If-Match': '"1"' }).send({ name: 'Alice W.' }).expect(200);
     const stale = await ctx.http
       .patch('/api/v1/employees/103')
-      .set(asUser(admin, { 'If-Match': '"1"' }))
+      .set({ 'If-Match': '"1"' })
       .send({ name: 'Overwrite attempt' })
       .expect(409);
     expect(stale.body.error).toMatchObject({ code: 'VERSION_CONFLICT', currentVersion: 2 });
@@ -286,7 +274,7 @@ describe('update (AC-12..AC-16)', () => {
   it('concurrent PATCHes with the same version: exactly one wins', async () => {
     const results = await Promise.all(
       ['First', 'Second', 'Third'].map((name) =>
-        ctx.http.patch('/api/v1/employees/105').set(asUser(admin, { 'If-Match': '"1"' })).send({ name }),
+        ctx.http.patch('/api/v1/employees/105').set({ 'If-Match': '"1"' }).send({ name }),
       ),
     );
     expect(results.map((r) => r.status).sort()).toEqual([200, 409, 409]);
@@ -294,30 +282,29 @@ describe('update (AC-12..AC-16)', () => {
   });
 
   it('rejects empty and null-only PATCH bodies', async () => {
-    const empty = await ctx.http.patch('/api/v1/employees/101').set(asUser(admin, { 'If-Match': '"1"' })).send({}).expect(400);
+    const empty = await ctx.http.patch('/api/v1/employees/101').set({ 'If-Match': '"1"' }).send({}).expect(400);
     expect(empty.body.error.details[0].code).toBe('EMPTY_PATCH');
-    const nulls = await ctx.http.patch('/api/v1/employees/101').set(asUser(admin, { 'If-Match': '"1"' })).send({ name: null }).expect(400);
+    const nulls = await ctx.http.patch('/api/v1/employees/101').set({ 'If-Match': '"1"' }).send({ name: null }).expect(400);
     expect(nulls.body.error.details[0].field).toBe('name');
   });
 
-  it('returns 404 for a missing id after authorization', async () => {
-    await ctx.http.patch('/api/v1/employees/999').set(asUser(viewer, { 'If-Match': '"1"' })).send({ name: 'x' }).expect(403);
-    await ctx.http.patch('/api/v1/employees/999').set(asUser(admin, { 'If-Match': '"1"' })).send({ name: 'x' }).expect(404);
-    await ctx.http.get('/api/v1/employees/abc').set('Cookie', admin.cookieHeader).expect(404);
+  it('returns 404 for a missing id', async () => {
+    await ctx.http.patch('/api/v1/employees/999').set({ 'If-Match': '"1"' }).send({ name: 'x' }).expect(404);
+    await ctx.http.get('/api/v1/employees/abc').expect(404);
   });
 });
 
 describe('delete (AC-16, AC-17)', () => {
   it('deletes one row, then 404; other rows unchanged; IDs are not reused', async () => {
     const created = await create(DANA).expect(201);
-    await ctx.http.delete('/api/v1/employees/106').set(asUser(admin)).expect(428);
-    await ctx.http.delete('/api/v1/employees/106').set(asUser(admin, { 'If-Match': '"9"' })).expect(409);
-    const del = await ctx.http.delete('/api/v1/employees/106').set(asUser(admin, { 'If-Match': `"${created.body.data.version}"` })).expect(204);
+    await ctx.http.delete('/api/v1/employees/106').expect(428);
+    await ctx.http.delete('/api/v1/employees/106').set({ 'If-Match': '"9"' }).expect(409);
+    const del = await ctx.http.delete('/api/v1/employees/106').set({ 'If-Match': `"${created.body.data.version}"` }).expect(204);
     expect(del.text).toBe('');
     expect(del.headers['x-request-id']).toBeTruthy();
-    await ctx.http.get('/api/v1/employees/106').set('Cookie', admin.cookieHeader).expect(404);
-    await ctx.http.delete('/api/v1/employees/106').set(asUser(admin, { 'If-Match': '"1"' })).expect(404);
-    const list = await ctx.http.get('/api/v1/employees').set('Cookie', admin.cookieHeader).expect(200);
+    await ctx.http.get('/api/v1/employees/106').expect(404);
+    await ctx.http.delete('/api/v1/employees/106').set({ 'If-Match': '"1"' }).expect(404);
+    const list = await ctx.http.get('/api/v1/employees').expect(200);
     expect(list.body.meta.total).toBe(5);
     const next = await create({ ...DANA, name: 'Next Person' }).expect(201);
     expect(next.body.data.id).toBe(107);
@@ -325,7 +312,7 @@ describe('delete (AC-16, AC-17)', () => {
 });
 
 describe('listing, search and filters (AC-21..AC-25)', () => {
-  const list = (qs: string, s = admin) => ctx.http.get(`/api/v1/employees${qs}`).set('Cookie', s.cookieHeader);
+  const list = (qs: string) => ctx.http.get(`/api/v1/employees${qs}`);
 
   it('name search is case-insensitive contains (AC-21)', async () => {
     for (const q of ['john', 'JOHN', ' oh ']) {

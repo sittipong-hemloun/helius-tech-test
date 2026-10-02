@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError, api, describeError } from '@/lib/api';
 import { useEmployee, useUpdateEmployee, type EmployeeInput } from '@/lib/queries';
-import { useSession } from '@/lib/session';
 import type { Employee } from '@employee-console/api-client';
 import { parseEmployeeId, RecordUnavailable } from '../employee-detail-view';
 
@@ -28,7 +27,6 @@ function diff(next: EmployeeInput, current: Employee): Partial<EmployeeInput> {
 
 export function EditEmployeeView({ rawId }: { rawId: string }) {
   const id = parseEmployeeId(rawId);
-  const { session } = useSession();
   const router = useRouter();
   // No background refetch while editing: the copy (and its version) the user started from stays put.
   const query = useEmployee(id, { editing: true });
@@ -36,9 +34,6 @@ export function EditEmployeeView({ rawId }: { rawId: string }) {
   const [banner, setBanner] = useState<Banner>(null);
   const employee = query.data ?? null;
 
-  if (!session.permissions.canWriteEmployees) {
-    return <Notice tone="error" title="Your role can't edit employees.">Viewers can read records only.</Notice>;
-  }
   if (id === null || (query.error instanceof ApiError && query.error.status === 404)) return <RecordUnavailable />;
   if (!employee) {
     return query.isError ? (

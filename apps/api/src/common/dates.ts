@@ -1,5 +1,5 @@
 /**
- * Date-only helpers. Business dates (Join Date, Last Updated Date, report day) are
+ * Date-only helpers. Business dates (Join Date, Last Updated Date) are
  * plain `YYYY-MM-DD` strings end-to-end so no browser/server timezone can shift them.
  */
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -35,9 +35,4 @@ export function isIsoDateShape(value: string): boolean {
 /** Lexicographic compare works for zero-padded ISO dates. */
 export function isDateInRange(value: string, min = DATE_MIN, max = DATE_MAX): boolean {
   return value >= min && value <= max;
-}
-
-/** Converts a Prisma @db.Date value (UTC midnight) back to YYYY-MM-DD. */
-export function dateOnlyFromDb(value: Date): string {
-  return value.toISOString().slice(0, 10);
 }

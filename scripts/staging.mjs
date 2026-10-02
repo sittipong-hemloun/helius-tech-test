@@ -2,7 +2,7 @@
 // Local staging (PRD §13.1, §14): production images tagged with the commit SHA on this machine.
 //   pnpm staging:up        build images → backup → migrate → first-bootstrap seed → start → smoke
 //   pnpm staging:restart   redeploy the current tag to apply .env.staging changes
-//   pnpm staging:smoke     health, login page, static assets, auth enforcement (not a Google login test)
+//   pnpm staging:smoke     health, employees page, static assets, API reachable through the web origin
 //   pnpm staging:rollback  redeploy the previous image tag (schema is not rolled back)
 //   pnpm staging:down      stop containers, keep the volume
 //   node scripts/staging.mjs reset --confirm-reset   restore the 5 source records on staging
@@ -151,8 +151,8 @@ async function smoke() {
     return 'ready';
   });
   let html = '';
-  await check('login page', async () => {
-    const r = await get('/login');
+  await check('employees page', async () => {
+    const r = await get('/employees');
     html = await r.text();
     if (r.status !== 200 || !html.includes('Employee')) throw new Error(`status ${r.status}`);
     return '200';
@@ -164,20 +164,15 @@ async function smoke() {
     if (r.status !== 200) throw new Error(`${asset} → ${r.status}`);
     return asset.split('/').pop();
   });
-  await check('auth enforced on employees API', async () => {
+  await check('employees API reachable via web origin', async () => {
     const r = await get('/api/v1/employees');
-    if (r.status !== 401) throw new Error(`expected 401, got ${r.status}`);
-    return '401 without session';
+    if (r.status !== 200) throw new Error(`expected 200, got ${r.status}`);
+    return '200';
   });
   await check('internal API not exposed via web origin', async () => {
     const r = await get('/internal/v1/report-jobs/claim', { method: 'POST' });
     if (r.status !== 404) throw new Error(`expected 404, got ${r.status}`);
     return '404';
-  });
-  await check('authentication provider', async () => {
-    const r = await get('/api/auth/providers');
-    const body = await r.json();
-    return 'ready (local role-based sign-in)';
   });
 
   for (const r of results) console.log(`${r.ok ? '✔' : '✖'} ${r.name}: ${r.detail}`);
@@ -235,7 +230,6 @@ async function deployWithRollback(tag, { lastGood, smokeAfter }) {
 
 if (command === 'up') {
   requireEnv();
-  if (!capture('docker', ['network', 'inspect', 'employee-console-shared'])) run('docker', ['network', 'create', 'employee-console-shared']);
   const tag = flagValue('tag') ?? commitTag();
   if (!flag('skip-build') && !flagValue('tag')) buildImages(tag);
   for (const img of [`employee-console/api:${tag}`, `employee-console/web:${tag}`]) {
@@ -248,7 +242,7 @@ if (command === 'up') {
   const okDeploy = await deployWithRollback(tag, { lastGood, smokeAfter: !flag('no-smoke') });
   process.exit(okDeploy ? 0 : 1);
 } else if (command === 'restart') {
-  // Redeploy the current image tag so .env.staging changes (e.g. REPORTS_ENABLED) take effect.
+  // Redeploy the current image tag so .env.staging changes take effect.
   requireEnv();
   const m = readManifest();
   if (!m.current) {

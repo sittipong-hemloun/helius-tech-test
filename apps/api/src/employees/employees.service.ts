@@ -17,16 +17,11 @@ export interface EmployeeRow {
   name: string;
   departmentId: string;
   departmentName: string;
-  salary?: string;
+  salary: string;
   joinDate: string;
   isActive: boolean;
   lastUpdatedDate: string;
   version: number;
-}
-
-export interface Viewer {
-  userId: string;
-  canViewSalary: boolean;
 }
 
 type Tx = Prisma.TransactionClient;
@@ -42,13 +37,9 @@ const SORT_SQL: Record<SortField, string> = {
   salary: 'e.salary',
 };
 
-function columns(withSalary: boolean): Prisma.Sql {
-  // Viewer queries never select salary, so it cannot leak through serialization.
-  return Prisma.sql`e.id, e.name, e.department_id AS "departmentId", d.name AS "departmentName",
-    ${withSalary ? Prisma.sql`e.salary::text AS salary,` : Prisma.empty}
-    e.join_date::text AS "joinDate", e.is_active AS "isActive",
-    e.last_updated_date::text AS "lastUpdatedDate", e.version`;
-}
+const COLUMNS = Prisma.sql`e.id, e.name, e.department_id AS "departmentId", d.name AS "departmentName",
+  e.salary::text AS salary, e.join_date::text AS "joinDate", e.is_active AS "isActive",
+  e.last_updated_date::text AS "lastUpdatedDate", e.version`;
 
 @Injectable()
 export class EmployeesService {
@@ -63,7 +54,7 @@ export class EmployeesService {
     return businessDate(this.clock.now(), this.config.timezone);
   }
 
-  async list(query: ListQuery, viewer: Viewer): Promise<{ rows: EmployeeRow[]; total: number }> {
+  async list(query: ListQuery): Promise<{ rows: EmployeeRow[]; total: number }> {
     const conditions: Prisma.Sql[] = [];
     if (query.q) {
       conditions.push(Prisma.sql`lower(e.name) LIKE lower(${`%${escapeLike(query.q)}%`}) ESCAPE '\\'`);
@@ -89,7 +80,7 @@ export class EmployeesService {
           total === 0 || offset >= total
             ? []
             : await tx.$queryRaw<EmployeeRow[]>`
-                SELECT ${columns(viewer.canViewSalary)}
+                SELECT ${COLUMNS}
                 FROM employees e JOIN departments d ON d.id = e.department_id
                 ${where}
                 ORDER BY ${order}
@@ -100,25 +91,25 @@ export class EmployeesService {
     );
   }
 
-  async get(id: number, viewer: Viewer): Promise<EmployeeRow> {
-    const row = await this.findOne(this.prisma, id, viewer.canViewSalary);
+  async get(id: number): Promise<EmployeeRow> {
+    const row = await this.findOne(this.prisma, id);
     if (!row) throw Errors.employeeNotFound();
     return row;
   }
 
-  private async findOne(db: Tx | PrismaService, id: number, withSalary: boolean, lock = false): Promise<EmployeeRow | null> {
+  private async findOne(db: Tx | PrismaService, id: number, lock = false): Promise<EmployeeRow | null> {
     const rows = await db.$queryRaw<EmployeeRow[]>`
-      SELECT ${columns(withSalary)}
+      SELECT ${COLUMNS}
       FROM employees e JOIN departments d ON d.id = e.department_id
       WHERE e.id = ${id}
       ${lock ? Prisma.sql`FOR UPDATE OF e` : Prisma.empty}`;
     return rows[0] ?? null;
   }
 
-  async create(input: EmployeeFields, actorId: string, idempotencyKey: string) {
+  async create(input: EmployeeFields, idempotencyKey: string) {
     const fields = normalizeAll(input);
     return this.idempotency.run<EmployeeRow>(
-      { scope: 'employees.create', actorId, key: idempotencyKey, requestHash: hashPayload(fields) },
+      { scope: 'employees.create', key: idempotencyKey, requestHash: hashPayload(fields) },
       async (tx) => {
         const now = this.clock.now();
         try {
@@ -127,7 +118,7 @@ export class EmployeesService {
             VALUES (${fields.name}, ${fields.departmentId}, ${fields.salary}::numeric, ${fields.joinDate}::date,
                     ${fields.isActive}, ${this.today()}::date, 1, ${now}, ${now})
             RETURNING id`;
-          const created = await this.findOne(tx, rows[0].id, true);
+          const created = await this.findOne(tx, rows[0].id);
           return { status: 201, body: created! };
         } catch (err) {
           if (isForeignKeyViolation(err)) throw departmentInvalid();
@@ -144,7 +135,7 @@ export class EmployeesService {
   async update(id: number, patch: Partial<EmployeeFields>, expectedVersion: number): Promise<{ employee: EmployeeRow; changed: boolean }> {
     const normalized = normalizePartial(patch);
     return this.prisma.$transaction(async (tx) => {
-      const current = await this.findOne(tx, id, true, true);
+      const current = await this.findOne(tx, id, true);
       if (!current) throw Errors.employeeNotFound();
       if (current.version !== expectedVersion) throw Errors.versionConflict(current.version);
 
@@ -175,7 +166,7 @@ export class EmployeesService {
         if (isForeignKeyViolation(err)) throw departmentInvalid();
         throw err;
       }
-      return { employee: (await this.findOne(tx, id, true))!, changed: true };
+      return { employee: (await this.findOne(tx, id))!, changed: true };
     });
   }
 

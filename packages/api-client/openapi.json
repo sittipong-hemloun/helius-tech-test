@@ -1,21 +1,6 @@
 {
   "components": {
     "schemas": {
-      "BuildDto": {
-        "properties": {
-          "appVersion": {
-            "type": "string"
-          },
-          "commitSha": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "commitSha",
-          "appVersion"
-        ],
-        "type": "object"
-      },
       "ChangedMetaDto": {
         "properties": {
           "changed": {
@@ -30,85 +15,6 @@
         "required": [
           "requestId",
           "changed"
-        ],
-        "type": "object"
-      },
-      "ClaimedReportJobDto": {
-        "properties": {
-          "attempt": {
-            "type": "number"
-          },
-          "leaseExpiresAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "leaseToken": {
-            "type": "string"
-          },
-          "model": {
-            "type": "string"
-          },
-          "promptVersion": {
-            "type": "string"
-          },
-          "reportId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "snapshot": {
-            "$ref": "#/components/schemas/SnapshotDto"
-          }
-        },
-        "required": [
-          "reportId",
-          "leaseToken",
-          "leaseExpiresAt",
-          "attempt",
-          "model",
-          "promptVersion",
-          "snapshot"
-        ],
-        "type": "object"
-      },
-      "CompleteReportJobDto": {
-        "properties": {
-          "generatedBy": {
-            "enum": [
-              "GEMINI",
-              "TEMPLATE"
-            ],
-            "type": "string"
-          },
-          "leaseToken": {
-            "type": "string"
-          },
-          "model": {
-            "example": "gemini-3.8-flash",
-            "nullable": true,
-            "type": "string"
-          },
-          "narrative": {
-            "example": {
-              "bullets": [
-                "...",
-                "...",
-                "..."
-              ],
-              "headline": "ภาพรวมพนักงาน"
-            },
-            "type": "object"
-          },
-          "promptVersion": {
-            "example": "employee-summary-v1",
-            "type": "string"
-          }
-        },
-        "required": [
-          "leaseToken",
-          "generatedBy",
-          "model",
-          "promptVersion",
-          "narrative"
         ],
         "type": "object"
       },
@@ -154,10 +60,6 @@
           "joinDate",
           "isActive"
         ],
-        "type": "object"
-      },
-      "CreateReportDto": {
-        "properties": {},
         "type": "object"
       },
       "DepartmentDto": {
@@ -220,7 +122,6 @@
             "type": "string"
           },
           "salary": {
-            "description": "Present for Admin only; the key is omitted for Viewer.",
             "example": "62000.00",
             "type": "string"
           },
@@ -234,6 +135,7 @@
           "name",
           "departmentId",
           "departmentName",
+          "salary",
           "joinDate",
           "isActive",
           "lastUpdatedDate",
@@ -295,21 +197,11 @@
         ],
         "type": "object"
       },
-      "EmptyBodyDto": {
-        "properties": {},
-        "type": "object"
-      },
       "ErrorBodyDto": {
         "properties": {
           "code": {
             "example": "VALIDATION_ERROR",
             "type": "string"
-          },
-          "currentReportId": {
-            "description": "REPORT_IN_PROGRESS only",
-            "format": "uuid",
-            "nullable": true,
-            "type": "object"
           },
           "currentVersion": {
             "description": "VERSION_CONFLICT only",
@@ -348,31 +240,6 @@
         ],
         "type": "object"
       },
-      "FailReportJobDto": {
-        "properties": {
-          "errorCode": {
-            "enum": [
-              "PROVIDER_TIMEOUT",
-              "PROVIDER_RATE_LIMIT",
-              "PROVIDER_UNAVAILABLE",
-              "INVALID_MODEL_OUTPUT",
-              "PROVIDER_AUTH_ERROR",
-              "MODEL_UNAVAILABLE",
-              "INVALID_SNAPSHOT",
-              "CONTENT_REJECTED"
-            ],
-            "type": "string"
-          },
-          "leaseToken": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "leaseToken",
-          "errorCode"
-        ],
-        "type": "object"
-      },
       "FieldErrorDto": {
         "properties": {
           "code": {
@@ -395,69 +262,6 @@
         ],
         "type": "object"
       },
-      "GoogleProviderDto": {
-        "properties": {
-          "configured": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "configured"
-        ],
-        "type": "object"
-      },
-      "GoogleStatusDto": {
-        "properties": {
-          "configured": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "configured"
-        ],
-        "type": "object"
-      },
-      "IntegrationStatusDto": {
-        "properties": {
-          "build": {
-            "$ref": "#/components/schemas/BuildDto"
-          },
-          "google": {
-            "$ref": "#/components/schemas/GoogleStatusDto"
-          },
-          "reports": {
-            "$ref": "#/components/schemas/ReportsStatusDto"
-          }
-        },
-        "required": [
-          "google",
-          "reports",
-          "build"
-        ],
-        "type": "object"
-      },
-      "JobStatusDto": {
-        "properties": {
-          "reportId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "status": {
-            "enum": [
-              "QUEUED",
-              "RUNNING",
-              "SUCCEEDED",
-              "FAILED"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "reportId",
-          "status"
-        ],
-        "type": "object"
-      },
       "MetaDto": {
         "properties": {
           "requestId": {
@@ -467,409 +271,6 @@
         },
         "required": [
           "requestId"
-        ],
-        "type": "object"
-      },
-      "NarrativeDto": {
-        "properties": {
-          "bullets": {
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "headline": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "headline",
-          "bullets"
-        ],
-        "type": "object"
-      },
-      "PageMetaDto": {
-        "properties": {
-          "page": {
-            "example": 1,
-            "type": "number"
-          },
-          "pageSize": {
-            "example": 20,
-            "type": "number"
-          },
-          "requestId": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "total": {
-            "example": 5,
-            "type": "number"
-          },
-          "totalPages": {
-            "description": "0 when total is 0",
-            "example": 1,
-            "type": "number"
-          }
-        },
-        "required": [
-          "requestId",
-          "page",
-          "pageSize",
-          "total",
-          "totalPages"
-        ],
-        "type": "object"
-      },
-      "PermissionsDto": {
-        "properties": {
-          "canGenerateReports": {
-            "type": "boolean"
-          },
-          "canViewIntegrations": {
-            "type": "boolean"
-          },
-          "canViewSalary": {
-            "type": "boolean"
-          },
-          "canWriteEmployees": {
-            "type": "boolean"
-          }
-        },
-        "required": [
-          "canWriteEmployees",
-          "canViewSalary",
-          "canGenerateReports",
-          "canViewIntegrations"
-        ],
-        "type": "object"
-      },
-      "ProvidersDto": {
-        "properties": {
-          "google": {
-            "$ref": "#/components/schemas/GoogleProviderDto"
-          }
-        },
-        "required": [
-          "google"
-        ],
-        "type": "object"
-      },
-      "ReportDetailDto": {
-        "properties": {
-          "attempts": {
-            "type": "number"
-          },
-          "completedAt": {
-            "format": "date-time",
-            "nullable": true,
-            "type": "string"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "errorCode": {
-            "nullable": true,
-            "type": "string"
-          },
-          "generatedBy": {
-            "enum": [
-              "GEMINI",
-              "TEMPLATE"
-            ],
-            "nullable": true,
-            "type": "string"
-          },
-          "id": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "model": {
-            "nullable": true,
-            "type": "string"
-          },
-          "narrative": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/NarrativeDto"
-              }
-            ],
-            "nullable": true,
-            "type": "object"
-          },
-          "promptVersion": {
-            "type": "string"
-          },
-          "snapshot": {
-            "$ref": "#/components/schemas/SnapshotDto"
-          },
-          "snapshotCapturedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "source": {
-            "enum": [
-              "MANUAL",
-              "SCHEDULED"
-            ],
-            "type": "string"
-          },
-          "status": {
-            "enum": [
-              "QUEUED",
-              "RUNNING",
-              "SUCCEEDED",
-              "FAILED"
-            ],
-            "type": "string"
-          },
-          "totalEmployees": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "id",
-          "status",
-          "source",
-          "snapshotCapturedAt",
-          "totalEmployees",
-          "createdAt",
-          "completedAt",
-          "generatedBy",
-          "model",
-          "promptVersion",
-          "errorCode",
-          "snapshot",
-          "narrative",
-          "attempts"
-        ],
-        "type": "object"
-      },
-      "ReportSummaryDto": {
-        "properties": {
-          "completedAt": {
-            "format": "date-time",
-            "nullable": true,
-            "type": "string"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "errorCode": {
-            "nullable": true,
-            "type": "string"
-          },
-          "generatedBy": {
-            "enum": [
-              "GEMINI",
-              "TEMPLATE"
-            ],
-            "nullable": true,
-            "type": "string"
-          },
-          "id": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "model": {
-            "nullable": true,
-            "type": "string"
-          },
-          "promptVersion": {
-            "type": "string"
-          },
-          "snapshotCapturedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "source": {
-            "enum": [
-              "MANUAL",
-              "SCHEDULED"
-            ],
-            "type": "string"
-          },
-          "status": {
-            "enum": [
-              "QUEUED",
-              "RUNNING",
-              "SUCCEEDED",
-              "FAILED"
-            ],
-            "type": "string"
-          },
-          "totalEmployees": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "id",
-          "status",
-          "source",
-          "snapshotCapturedAt",
-          "totalEmployees",
-          "createdAt",
-          "completedAt",
-          "generatedBy",
-          "model",
-          "promptVersion",
-          "errorCode"
-        ],
-        "type": "object"
-      },
-      "ReportsStatusDto": {
-        "properties": {
-          "enabled": {
-            "type": "boolean"
-          },
-          "model": {
-            "type": "string"
-          },
-          "workerAvailable": {
-            "type": "boolean"
-          },
-          "workerLastSeenAt": {
-            "format": "date-time",
-            "nullable": true,
-            "type": "string"
-          }
-        },
-        "required": [
-          "enabled",
-          "model",
-          "workerLastSeenAt",
-          "workerAvailable"
-        ],
-        "type": "object"
-      },
-      "SessionDataDto": {
-        "properties": {
-          "absoluteExpiresAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "csrfToken": {
-            "type": "string"
-          },
-          "permissions": {
-            "$ref": "#/components/schemas/PermissionsDto"
-          },
-          "user": {
-            "$ref": "#/components/schemas/SessionUserDto"
-          }
-        },
-        "required": [
-          "user",
-          "permissions",
-          "csrfToken",
-          "absoluteExpiresAt"
-        ],
-        "type": "object"
-      },
-      "SessionUserDto": {
-        "properties": {
-          "displayName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "id": {
-            "format": "uuid",
-            "type": "string"
-          },
-          "role": {
-            "enum": [
-              "ADMIN",
-              "VIEWER"
-            ],
-            "type": "string"
-          }
-        },
-        "required": [
-          "id",
-          "email",
-          "displayName",
-          "role"
-        ],
-        "type": "object"
-      },
-      "SnapshotDepartmentDto": {
-        "properties": {
-          "active": {
-            "type": "number"
-          },
-          "id": {
-            "type": "string"
-          },
-          "inactive": {
-            "type": "number"
-          },
-          "name": {
-            "type": "string"
-          },
-          "total": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "total",
-          "active",
-          "inactive"
-        ],
-        "type": "object"
-      },
-      "SnapshotDto": {
-        "properties": {
-          "activeEmployees": {
-            "type": "number"
-          },
-          "businessDate": {
-            "format": "date",
-            "type": "string"
-          },
-          "capturedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "departments": {
-            "items": {
-              "$ref": "#/components/schemas/SnapshotDepartmentDto"
-            },
-            "type": "array"
-          },
-          "inactiveEmployees": {
-            "type": "number"
-          },
-          "schemaVersion": {
-            "enum": [
-              1
-            ],
-            "type": "number"
-          },
-          "timezone": {
-            "enum": [
-              "Asia/Bangkok"
-            ],
-            "type": "string"
-          },
-          "totalEmployees": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "schemaVersion",
-          "capturedAt",
-          "businessDate",
-          "timezone",
-          "totalEmployees",
-          "activeEmployees",
-          "inactiveEmployees",
-          "departments"
         ],
         "type": "object"
       },
@@ -903,258 +304,16 @@
         },
         "type": "object"
       }
-    },
-    "securitySchemes": {
-      "bearer": {
-        "bearerFormat": "JWT",
-        "scheme": "bearer",
-        "type": "http"
-      },
-      "cookie": {
-        "in": "cookie",
-        "name": "employee_console.local.sid",
-        "type": "apiKey"
-      }
     }
   },
   "info": {
     "contact": {},
-    "description": "NestJS API for Employee Console. Browser clients authenticate with the session cookie (Google OIDC) and send X-CSRF-Token on mutations. /internal/v1 is for the n8n worker/scheduler (bearer tokens).",
+    "description": "NestJS API for Employee Console.",
     "title": "Employee Console API",
     "version": "1.0.0"
   },
   "openapi": "3.0.0",
   "paths": {
-    "/api/auth/logout": {
-      "post": {
-        "operationId": "Auth_logout",
-        "parameters": [],
-        "responses": {
-          "204": {
-            "description": "Session destroyed and cookie cleared",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "503": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "AI_NOT_CONFIGURED / AUTH_NOT_CONFIGURED / DEPENDENCY_UNAVAILABLE",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "auth"
-        ]
-      }
-    },
-    "/api/auth/providers": {
-      "get": {
-        "operationId": "Auth_providers",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/ProvidersDto"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Success",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "auth"
-        ]
-      }
-    },
-    "/api/auth/session": {
-      "get": {
-        "operationId": "Auth_session",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/SessionDataDto"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Success",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "auth"
-        ]
-      }
-    },
     "/api/v1/departments": {
       "get": {
         "operationId": "Departments_list",
@@ -1193,42 +352,6 @@
               }
             }
           },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
           "429": {
             "content": {
               "application/json": {
@@ -1237,7 +360,7 @@
                 }
               }
             },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
+            "description": "RATE_LIMITED",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying",
@@ -1341,7 +464,6 @@
             }
           },
           {
-            "description": "salary is Admin-only",
             "in": "query",
             "name": "sortBy",
             "required": false,
@@ -1397,7 +519,7 @@
                 }
               }
             },
-            "description": "Viewer responses omit the salary key",
+            "description": "Success",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated UUID for this request",
@@ -1425,42 +547,6 @@
               }
             }
           },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
           "429": {
             "content": {
               "application/json": {
@@ -1469,7 +555,7 @@
                 }
               }
             },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
+            "description": "RATE_LIMITED",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying",
@@ -1511,14 +597,6 @@
       "post": {
         "operationId": "Employees_create",
         "parameters": [
-          {
-            "in": "header",
-            "name": "X-CSRF-Token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "description": "UUID generated once per create intent",
             "in": "header",
@@ -1606,42 +684,6 @@
               }
             }
           },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
           "409": {
             "content": {
               "application/json": {
@@ -1650,7 +692,7 @@
                 }
               }
             },
-            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED",
+            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated UUID for this request",
@@ -1704,7 +746,7 @@
                 }
               }
             },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
+            "description": "RATE_LIMITED",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying",
@@ -1758,14 +800,6 @@
           },
           {
             "in": "header",
-            "name": "X-CSRF-Token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "header",
             "name": "If-Match",
             "required": true,
             "schema": {
@@ -1803,42 +837,6 @@
               }
             }
           },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
           "404": {
             "content": {
               "application/json": {
@@ -1847,7 +845,7 @@
                 }
               }
             },
-            "description": "EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND",
+            "description": "EMPLOYEE_NOT_FOUND",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated UUID for this request",
@@ -1865,7 +863,7 @@
                 }
               }
             },
-            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED",
+            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated UUID for this request",
@@ -1901,7 +899,7 @@
                 }
               }
             },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
+            "description": "RATE_LIMITED",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying",
@@ -1989,42 +987,6 @@
               }
             }
           },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
           "404": {
             "content": {
               "application/json": {
@@ -2033,7 +995,7 @@
                 }
               }
             },
-            "description": "EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND",
+            "description": "EMPLOYEE_NOT_FOUND",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated UUID for this request",
@@ -2051,7 +1013,7 @@
                 }
               }
             },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
+            "description": "RATE_LIMITED",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying",
@@ -2096,14 +1058,6 @@
           {
             "in": "path",
             "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "header",
-            "name": "X-CSRF-Token",
             "required": true,
             "schema": {
               "type": "string"
@@ -2184,42 +1138,6 @@
               }
             }
           },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
           "404": {
             "content": {
               "application/json": {
@@ -2228,7 +1146,7 @@
                 }
               }
             },
-            "description": "EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND",
+            "description": "EMPLOYEE_NOT_FOUND",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated UUID for this request",
@@ -2246,7 +1164,7 @@
                 }
               }
             },
-            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED",
+            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT",
             "headers": {
               "X-Request-Id": {
                 "description": "Server-generated UUID for this request",
@@ -2318,7 +1236,7 @@
                 }
               }
             },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
+            "description": "RATE_LIMITED",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying",
@@ -2355,1298 +1273,6 @@
         },
         "tags": [
           "employees"
-        ]
-      }
-    },
-    "/api/v1/integrations/status": {
-      "get": {
-        "operationId": "Integrations_status",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/IntegrationStatusDto"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Success",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "429": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
-            "headers": {
-              "Retry-After": {
-                "description": "Seconds to wait before retrying",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "integrations"
-        ]
-      }
-    },
-    "/api/v1/reports": {
-      "get": {
-        "operationId": "Reports_list",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "page",
-            "required": false,
-            "schema": {
-              "default": 1,
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "pageSize",
-            "required": false,
-            "schema": {
-              "default": 20,
-              "maximum": 100,
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "status",
-            "required": false,
-            "schema": {
-              "enum": [
-                "QUEUED",
-                "RUNNING",
-                "SUCCEEDED",
-                "FAILED"
-              ],
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "items": {
-                        "$ref": "#/components/schemas/ReportSummaryDto"
-                      },
-                      "type": "array"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/PageMetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Newest first (createdAt desc, id desc)",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "429": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
-            "headers": {
-              "Retry-After": {
-                "description": "Seconds to wait before retrying",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "reports"
-        ]
-      },
-      "post": {
-        "operationId": "Reports_create",
-        "parameters": [
-          {
-            "in": "header",
-            "name": "X-CSRF-Token",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "header",
-            "name": "Idempotency-Key",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateReportDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "202": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/ReportSummaryDto"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Queued; poll GET /api/v1/reports/{id}",
-            "headers": {
-              "Idempotency-Replayed": {
-                "description": "\"true\" when the response was replayed for a repeated Idempotency-Key",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Location": {
-                "description": "Path of the created resource",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "429": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
-            "headers": {
-              "Retry-After": {
-                "description": "Seconds to wait before retrying",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "503": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "AI_NOT_CONFIGURED / AUTH_NOT_CONFIGURED / DEPENDENCY_UNAVAILABLE",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "reports"
-        ]
-      }
-    },
-    "/api/v1/reports/{id}": {
-      "get": {
-        "operationId": "Reports_get",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/ReportDetailDto"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Success",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "403": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "429": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
-            "headers": {
-              "Retry-After": {
-                "description": "Seconds to wait before retrying",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "reports"
-        ]
-      }
-    },
-    "/internal/v1/report-jobs/claim": {
-      "post": {
-        "operationId": "InternalReports_claim",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EmptyBodyDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "allOf": [
-                        {
-                          "$ref": "#/components/schemas/ClaimedReportJobDto"
-                        }
-                      ],
-                      "nullable": true
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "data is null when no job is due; updates the worker heartbeat",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "429": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "RATE_LIMITED / REPORT_QUOTA_EXCEEDED",
-            "headers": {
-              "Retry-After": {
-                "description": "Seconds to wait before retrying",
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "tags": [
-          "internal"
-        ]
-      }
-    },
-    "/internal/v1/report-jobs/{id}/complete": {
-      "post": {
-        "operationId": "InternalReports_complete",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CompleteReportJobDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/JobStatusDto"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Success",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "413": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "PAYLOAD_TOO_LARGE",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "tags": [
-          "internal"
-        ]
-      }
-    },
-    "/internal/v1/report-jobs/{id}/fail": {
-      "post": {
-        "operationId": "InternalReports_fail",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FailReportJobDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/JobStatusDto"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "QUEUED (retry scheduled) or FAILED",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "tags": [
-          "internal"
-        ]
-      }
-    },
-    "/internal/v1/reports/scheduled": {
-      "post": {
-        "operationId": "InternalReports_scheduled",
-        "parameters": [],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EmptyBodyDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/ReportSummaryDto"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Today's scheduled report already exists",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "202": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/ReportSummaryDto"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/MetaDto"
-                    }
-                  },
-                  "required": [
-                    "data",
-                    "meta"
-                  ],
-                  "type": "object"
-                }
-              }
-            },
-            "description": "Created for today (Asia/Bangkok business day)",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "401": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "INTERNAL_ERROR",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "503": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorEnvelopeDto"
-                }
-              }
-            },
-            "description": "AI_NOT_CONFIGURED / AUTH_NOT_CONFIGURED / DEPENDENCY_UNAVAILABLE",
-            "headers": {
-              "X-Request-Id": {
-                "description": "Server-generated UUID for this request",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "tags": [
-          "internal"
         ]
       }
     }

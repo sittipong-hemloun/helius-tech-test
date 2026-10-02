@@ -1,8 +1,8 @@
-import { ADMIN, expect, resetData, rows, signIn, test } from './fixtures';
+import { expect, resetData, rows, test } from './fixtures';
 
 test.beforeEach(() => resetData());
 
-test('seed data: 5 records with all 7 fields; Bob Brown is In Active (AC-01, AC-03, AC-26)', async ({ admin: page }) => {
+test('seed data: 5 records with all 7 fields; Bob Brown is In Active (AC-01, AC-03, AC-26)', async ({ page }) => {
   await page.goto('/employees');
   await expect(rows(page)).toHaveCount(5);
   await expect(page.getByText('1–5 of 5 employees')).toBeVisible();
@@ -19,7 +19,7 @@ test('seed data: 5 records with all 7 fields; Bob Brown is In Active (AC-01, AC-
   await expect(page.getByRole('link', { name: 'Add employee' })).toBeVisible();
 });
 
-test('search and filters combine, live in the URL and clear back to 5 (AC-21, AC-22, AC-24)', async ({ admin: page }) => {
+test('search and filters combine, live in the URL and clear back to 5 (AC-21, AC-22, AC-24)', async ({ page }) => {
   await page.goto('/employees');
   await page.getByLabel('Search by name').fill('JOHN');
   await expect(page).toHaveURL(/q=JOHN/);
@@ -49,7 +49,7 @@ test('search and filters combine, live in the URL and clear back to 5 (AC-21, AC
   await expect(page).toHaveURL(/\/employees$/);
 });
 
-test('sort, page size and page reset (AC-24, AC-25)', async ({ admin: page }) => {
+test('sort, page size and page reset (AC-24, AC-25)', async ({ page }) => {
   await page.goto('/employees?pageSize=10');
   await page.getByRole('button', { name: /^Name/ }).click();
   await expect(page).toHaveURL(/sortBy=name/);
@@ -67,7 +67,7 @@ test('sort, page size and page reset (AC-24, AC-25)', async ({ admin: page }) =>
   await expect(rows(page)).toHaveCount(5);
 });
 
-test('create → edit → delete journey (AC-04, AC-12, AC-13, AC-17)', async ({ admin: page }) => {
+test('create → edit → delete journey (AC-04, AC-12, AC-13, AC-17)', async ({ page }) => {
   await page.goto('/employees/new');
   await expect(page.getByText('Assigned on save')).toHaveCount(2);
   await expect(page.getByLabel('Active')).toBeChecked();
@@ -113,7 +113,7 @@ test('create → edit → delete journey (AC-04, AC-12, AC-13, AC-17)', async ({
   await expect(page.getByText('This employee record is unavailable.')).toBeVisible();
 });
 
-test('Bob Brown checkbox from In Active to Active (AC-12)', async ({ admin: page }) => {
+test('Bob Brown checkbox from In Active to Active (AC-12)', async ({ page }) => {
   await page.goto('/employees/104/edit');
   await expect(page.getByLabel('Active')).not.toBeChecked();
   await page.getByLabel('Active').check();
@@ -123,13 +123,13 @@ test('Bob Brown checkbox from In Active to Active (AC-12)', async ({ admin: page
   await expect(page.locator('dl')).not.toContainText('In Active');
 });
 
-test('saving without changes is a no-op (AC-14)', async ({ admin: page }) => {
+test('saving without changes is a no-op (AC-14)', async ({ page }) => {
   await page.goto('/employees/101/edit');
   await page.getByRole('button', { name: 'Save changes' }).click();
   await expect(page.getByText('No changes to save.')).toBeVisible();
 });
 
-test('cancel delete and cancel a dirty edit leave data unchanged (AC-18)', async ({ admin: page }) => {
+test('cancel delete and cancel a dirty edit leave data unchanged (AC-18)', async ({ page }) => {
   await page.goto('/employees');
   await page.getByRole('button', { name: 'Delete John Doe' }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Cancel' }).click();
@@ -149,7 +149,6 @@ test('cancel delete and cancel a dirty edit leave data unchanged (AC-18)', async
 
 test('two tabs editing the same record: the stale tab gets a conflict (AC-16)', async ({ browser }) => {
   const context = await browser.newContext();
-  await signIn(context, ADMIN);
   const a = await context.newPage();
   const b = await context.newPage();
   await a.goto('/employees/102/edit');
@@ -166,7 +165,7 @@ test('two tabs editing the same record: the stale tab gets a conflict (AC-16)', 
   await context.close();
 });
 
-test('lost create response: retry with the same key lands on the same record, no duplicate (AC-20)', async ({ admin: page }) => {
+test('lost create response: retry with the same key lands on the same record, no duplicate (AC-20)', async ({ page }) => {
   let dropped = false;
   await page.route('**/api/v1/employees', async (route) => {
     if (route.request().method() === 'POST' && !dropped) {
@@ -190,13 +189,11 @@ test('lost create response: retry with the same key lands on the same record, no
   await expect(rows(page)).toHaveCount(1);
 });
 
-test('pagination: page links, URL state and step-back after deleting the last row of a page (AC-24, AC-25)', async ({ admin: page }) => {
+test('pagination: page links, URL state and step-back after deleting the last row of a page (AC-24, AC-25)', async ({ page }) => {
   // 12 records → pageSize 10 gives two pages (5 source rows + 7 created through the API).
-  const session = await page.request.get('/api/auth/session');
-  const csrf = (await session.json()).data.csrfToken as string;
   for (let i = 1; i <= 7; i += 1) {
     const res = await page.request.post('/api/v1/employees', {
-      headers: { 'X-CSRF-Token': csrf, 'Idempotency-Key': crypto.randomUUID() },
+      headers: { 'Idempotency-Key': crypto.randomUUID() },
       data: { name: `Paging Person ${i}`, departmentId: 'sales', salary: '1000.00', joinDate: '2025-01-0' + ((i % 9) + 1), isActive: true },
     });
     expect(res.status()).toBe(201);

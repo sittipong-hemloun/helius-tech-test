@@ -15,7 +15,6 @@ import { describeError } from '@/lib/api';
 import { plural } from '@/lib/format';
 import { DEFAULT_PARAMS, isFiltered, readListParams, toSearch, type ListParams, type SortBy } from '@/lib/list-params';
 import { useEmployees } from '@/lib/queries';
-import { useSession } from '@/lib/session';
 import { GuardedLink } from '@/lib/unsaved-changes';
 
 export function rememberListHref(href: string) {
@@ -27,12 +26,10 @@ export function lastListHref(): string {
 }
 
 export function EmployeesView() {
-  const { session } = useSession();
-  const isAdmin = session.permissions.canWriteEmployees;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const params = useMemo(() => readListParams(searchParams, session.permissions.canViewSalary), [searchParams, session.permissions.canViewSalary]);
+  const params = useMemo(() => readListParams(searchParams), [searchParams]);
   const [toDelete, setToDelete] = useState<Employee | null>(null);
 
   useEffect(() => rememberListHref(`${pathname}${toSearch(params)}`), [pathname, params]);
@@ -97,12 +94,10 @@ export function EmployeesView() {
           )
         }
         actions={
-          isAdmin ? (
-            <GuardedLink href="/employees/new" className={buttonVariants({ variant: 'primary' })}>
-              <Plus aria-hidden />
-              Add employee
-            </GuardedLink>
-          ) : null
+          <GuardedLink href="/employees/new" className={buttonVariants({ variant: 'primary' })}>
+            <Plus aria-hidden />
+            Add employee
+          </GuardedLink>
         }
       />
 
@@ -134,17 +129,17 @@ export function EmployeesView() {
                 <Button variant="secondary" onClick={clearAll}>
                   Clear filters
                 </Button>
-              ) : isAdmin ? (
+              ) : (
                 <GuardedLink href="/employees/new" className={buttonVariants({ variant: 'primary' })}>
                   <Plus aria-hidden />
                   Add employee
                 </GuardedLink>
-              ) : null}
+              )}
             </div>
           </div>
         ) : (
           <>
-            <EmployeeTable rows={rows} isAdmin={isAdmin} params={params} loading={query.isFetching} onSort={onSort} onDelete={setToDelete} />
+            <EmployeeTable rows={rows} params={params} loading={query.isFetching} onSort={onSort} onDelete={setToDelete} />
             {meta ? (
               <div className="border-t border-rule px-3 py-1.5">
                 <Pagination

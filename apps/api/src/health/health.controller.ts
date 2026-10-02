@@ -3,8 +3,8 @@ import { ApiExcludeController } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { existsSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
-import { Public, RateLimit } from '../auth/auth.decorators.js';
 import { PrismaService } from '../database/prisma.service.js';
+import { RateLimit } from '../rate-limit/rate-limit.js';
 
 /** Latest migration bundled with this build; readiness requires it to be applied. */
 function migrationsDir(): string {
@@ -38,7 +38,6 @@ export class HealthController {
   constructor(private readonly prisma: PrismaService) {}
 
   @Get('live')
-  @Public()
   @RateLimit('none')
   live(@Res() res: Response) {
     res.setHeader('Cache-Control', 'no-store');
@@ -46,7 +45,6 @@ export class HealthController {
   }
 
   @Get('ready')
-  @Public()
   @RateLimit('none')
   async ready(@Res() res: Response) {
     res.setHeader('Cache-Control', 'no-store');

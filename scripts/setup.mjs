@@ -45,9 +45,6 @@ function prepare(target, template, generated) {
 const common = {
   POSTGRES_PASSWORD: () => dbPassword(),
   APP_DB_PASSWORD: () => dbPassword(),
-  SESSION_SECRET: () => secret(48),
-  WORKER_SERVICE_TOKEN: () => secret(32),
-  SCHEDULER_SERVICE_TOKEN: () => secret(32),
 };
 
 const local = prepare('.env', '.env.example', {
@@ -55,31 +52,14 @@ const local = prepare('.env', '.env.example', {
   DATABASE_URL: (u) =>
     `postgresql://${u.get('APP_DB_USER') || 'employee_console_app'}:${u.get('APP_DB_PASSWORD')}@localhost:${u.get('POSTGRES_HOST_PORT') || 5432}/employee_console_dev`,
   TEST_DB_PASSWORD: () => dbPassword(),
-  N8N_DB_PASSWORD: () => dbPassword(),
-  N8N_ENCRYPTION_KEY: () => secret(32),
   JENKINS_ADMIN_PASSWORD: () => secret(18),
 });
 
-const staging = prepare('.env.staging', '.env.staging.example', {
+prepare('.env.staging', '.env.staging.example', {
   ...common,
   DATABASE_URL: (u) => `postgresql://${u.get('APP_DB_USER') || 'employee_console_app'}:${u.get('APP_DB_PASSWORD')}@postgres:5432/employee_console_staging`,
 });
 
-// Staging shares the external values (Google client, allowlist, Gemini model) with local
-// unless they were set explicitly in .env.staging.
-const shared = ['ADMIN_EMAILS', 'VIEWER_EMAILS', 'GEMINI_MODEL'];
-const stagingUpdates = new Map(staging);
-let copied = 0;
-for (const key of shared) {
-  if (!stagingUpdates.get(key) && local.get(key)) {
-    stagingUpdates.set(key, local.get(key));
-    copied += 1;
-  }
-}
-if (copied) {
-  writeEnvFile(resolve(ROOT, '.env.staging'), readFileSync(resolve(ROOT, '.env.staging'), 'utf8'), stagingUpdates);
-  info(`copied ${copied} external value(s) from .env to .env.staging`);
-}
 
 // ---- ports
 const ports = [
@@ -96,17 +76,6 @@ for (const [port, label] of ports) {
   }
 }
 
-// ---- external inputs
-const external = [
-  ['ADMIN_EMAILS', 'admin email(s) for the Admin role (optional; defaults to admin@chememan.com)'],
-  ['GEMINI_API_KEY', 'Gemini API key (only needed for AI reports via n8n)'],
-];
-const missing = external.filter(([k]) => !local.get(k));
-console.log('');
-if (missing.length) {
-  console.log('External values still empty in .env (set them yourself; they are never generated):');
-  for (const [k, label] of missing) console.log(`  - ${k}: ${label}`);
-} else ok('all external values are present in .env');
 
 if (problems.length) {
   console.log('\nFix before continuing:');

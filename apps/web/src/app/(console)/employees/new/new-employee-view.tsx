@@ -8,24 +8,14 @@ import { applyServerErrors, EMPTY_VALUES, EmployeeForm, toInput } from '@/compon
 import { Notice } from '@/components/notice';
 import { ApiError, describeError } from '@/lib/api';
 import { useCreateEmployee } from '@/lib/queries';
-import { useSession } from '@/lib/session';
 import { lastListHref } from '../employees-view';
 
 export function NewEmployeeView() {
-  const { session } = useSession();
   const router = useRouter();
   const create = useCreateEmployee();
   // One key per create intent; kept across retries until the outcome is known (PRD §10.5).
   const keyRef = useRef<string>(crypto.randomUUID());
   const [banner, setBanner] = useState<{ title: string; detail?: string; tone: 'error' | 'warning' } | null>(null);
-
-  if (!session.permissions.canWriteEmployees) {
-    return (
-      <Notice tone="error" title="Your role can't add employees.">
-        Viewers can search and read records. Ask an admin if you need a record added.
-      </Notice>
-    );
-  }
 
   return (
     <>

@@ -39,7 +39,6 @@ export class ErrorBodyDto {
   @ApiProperty({ example: 'Please correct the highlighted fields.' }) message: string;
   @ApiProperty({ format: 'uuid' }) requestId: string;
   @ApiPropertyOptional({ type: FieldErrorDto, isArray: true }) details?: FieldErrorDto[];
-  @ApiPropertyOptional({ format: 'uuid', nullable: true, description: 'REPORT_IN_PROGRESS only' }) currentReportId?: string | null;
   @ApiPropertyOptional({ description: 'VERSION_CONFLICT only' }) currentVersion?: number;
 }
 
@@ -83,15 +82,13 @@ export function ApiEnvelope(model: Type<unknown>, opts: EnvelopeOptions = {}) {
 
 const ERROR_TEXT: Record<number, string> = {
   400: 'VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY / MALFORMED_JSON',
-  401: 'UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN',
-  403: 'FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID',
-  404: 'EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND',
-  409: 'VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE / REPORT_ALREADY_COMPLETED',
+  404: 'EMPLOYEE_NOT_FOUND',
+  409: 'VERSION_CONFLICT / IDEMPOTENCY_CONFLICT',
   413: 'PAYLOAD_TOO_LARGE',
   415: 'UNSUPPORTED_MEDIA_TYPE',
   428: 'PRECONDITION_REQUIRED (If-Match missing)',
-  429: 'RATE_LIMITED / REPORT_QUOTA_EXCEEDED',
-  503: 'AI_NOT_CONFIGURED / AUTH_NOT_CONFIGURED / DEPENDENCY_UNAVAILABLE',
+  429: 'RATE_LIMITED',
+  503: 'DEPENDENCY_UNAVAILABLE',
 };
 
 export function ApiErrors(...statuses: number[]) {

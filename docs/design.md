@@ -52,4 +52,4 @@ Radius: control 6 px, sheet/dialog 8 px — ไม่มีปุ่มทรง
 
 ## ข้อความ
 
-ปุ่มบอกผลของการกระทำ (Save employee, Delete employee, Generate report), toast ใช้คำเดียวกับปุ่ม (Employee created / updated / deleted), error บอกวิธีแก้ ไม่ขอโทษ และไม่ใช้ ALL CAPS / eyebrow label
+ปุ่มบอกผลของการกระทำ (Save employee, Delete employee), toast ใช้คำเดียวกับปุ่ม (Employee created / updated / deleted), error บอกวิธีแก้ ไม่ขอโทษ และไม่ใช้ ALL CAPS / eyebrow label

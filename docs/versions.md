@@ -21,7 +21,6 @@
 | express | 5.2.1 | มากับ platform-express 12 |
 | prisma / @prisma/client / @prisma/adapter-pg | 7.10.0 | dist-tag `latest` ชี้ 8.0.0-rc.19 จึง pin 7.10.0 (D-14); generator `prisma-client`, `importFileExtension = "js"` |
 | openid-client | 6.8.8 | Authorization Code + PKCE + nonce; `enableNonRepudiationChecks` ตรวจลายเซ็น ID token |
-| express-session / connect-pg-simple | 1.19.0 / 10.0.0 | ตาราง `sessions` สร้างด้วย migration (ไม่ใช้ `createTableIfMissing`) |
 | class-validator / class-transformer | 0.15.1 / 0.5.1 | ValidationPipe + custom `@Rule()` |
 | zod | 4.6.5 | ตรวจ environment ตอน startup |
 | vitest / unplugin-swc / @swc/core | 5.0.3 / 2.0.0 / 1.16.13 | Nest 12 ESM ใช้ Vitest เป็นค่าเริ่มต้น; SWC จำเป็นเพื่อ emit decorator metadata (D-13) |
@@ -53,7 +52,6 @@
 | lighthouse | 13.5.0 |
 | Jenkins controller | `jenkins/jenkins:2.580.1-lts-jdk21` + plugin 78 ตัว pin เวอร์ชันตรงใน `infra/jenkins/plugins.txt` (ชุดที่ build #5 ผ่าน; `pnpm ci:up` ตรวจว่าติดตั้งตรงทุกตัว — D-44) |
 | Jenkins agent | Java 21 (OpenJDK 21.0.11) บนเครื่อง host |
-| n8n | `docker.n8n.io/n8nio/n8n:2.41.5` (stable) |
 
 ## Smoke test ที่ผ่านจริงตอนเลือกเวอร์ชัน
 

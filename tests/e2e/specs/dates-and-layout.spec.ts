@@ -1,11 +1,10 @@
-import { ADMIN, expect, resetData, rows, signIn, test } from './fixtures';
+import { expect, resetData, rows, test } from './fixtures';
 
 test.beforeEach(() => resetData());
 
 for (const timezoneId of ['UTC', 'Asia/Bangkok', 'America/Los_Angeles', 'Pacific/Kiritimati']) {
   test(`dates do not shift in ${timezoneId} (AC-11)`, async ({ browser }) => {
     const context = await browser.newContext({ timezoneId });
-    await signIn(context, ADMIN);
     const page = await context.newPage();
     await page.goto('/employees');
     const john = rows(page).filter({ hasText: 'John Doe' });
@@ -22,7 +21,6 @@ for (const timezoneId of ['UTC', 'Asia/Bangkok', 'America/Los_Angeles', 'Pacific
 
 test('mobile 375px: no page overflow, stacked filters, usable form (AC-35)', async ({ browser }) => {
   const context = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
-  await signIn(context, ADMIN);
   const page = await context.newPage();
   await page.goto('/employees');
   await expect(rows(page)).toHaveCount(5);
@@ -36,7 +34,7 @@ test('mobile 375px: no page overflow, stacked filters, usable form (AC-35)', asy
   expect(dept!.y).toBeGreaterThan(search!.y); // stacked vertically
 
   await page.getByRole('button', { name: 'Open menu' }).click();
-  await expect(page.getByRole('link', { name: 'Reports' })).toBeVisible();
+  await expect(page.locator('#mobile-nav').getByRole('link', { name: 'Employees' })).toBeVisible();
 
   await page.goto('/employees/new');
   await page.getByLabel('Name').fill('Mobile Person');
@@ -48,7 +46,7 @@ test('mobile 375px: no page overflow, stacked filters, usable form (AC-35)', asy
   await context.close();
 });
 
-test('keyboard only: focus order, visible focus, checkbox, dialog Escape, submit with Enter (AC-35)', async ({ admin: page }) => {
+test('keyboard only: focus order, visible focus, checkbox, dialog Escape, submit with Enter (AC-35)', async ({ page }) => {
   await page.goto('/employees');
   await expect(rows(page)).toHaveCount(5);
   await page.keyboard.press('Tab');
@@ -112,13 +110,11 @@ test('layout screenshots at 375 / 1024 / 1440 px for the manual review record (A
   test.skip(!dir, 'set E2E_SCREENSHOT_DIR to capture review screenshots');
   for (const width of [375, 1024, 1440]) {
     const context = await browser.newContext({ viewport: { width, height: 900 } });
-    await signIn(context, ADMIN);
     const page = await context.newPage();
     for (const [name, path] of [
       ['employees', '/employees'],
       ['detail', '/employees/104'],
       ['edit', '/employees/104/edit'],
-      ['reports', '/reports'],
     ] as const) {
       await page.goto(path);
       await page.waitForLoadState('networkidle');

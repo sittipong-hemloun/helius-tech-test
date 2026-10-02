@@ -12,7 +12,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError, describeError } from '@/lib/api';
 import { formatDateOnly, formatSalary } from '@/lib/format';
 import { useEmployee } from '@/lib/queries';
-import { useSession } from '@/lib/session';
 import { GuardedLink } from '@/lib/unsaved-changes';
 import { lastListHref } from '../employees-view';
 
@@ -47,7 +46,6 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 /** "Personnel card": the record number is the one large element; the forest-green rule echoes the register header. */
 export function EmployeeDetailView({ rawId }: { rawId: string }) {
   const id = parseEmployeeId(rawId);
-  const { session } = useSession();
   const router = useRouter();
   const query = useEmployee(id);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -62,7 +60,6 @@ export function EmployeeDetailView({ rawId }: { rawId: string }) {
   }
 
   const e = query.data;
-  const canWrite = session.permissions.canWriteEmployees;
 
   const fields = e
     ? [
@@ -70,11 +67,9 @@ export function EmployeeDetailView({ rawId }: { rawId: string }) {
         <Field key="status" label="Status">
           <StatusBadge isActive={e.isActive} />
         </Field>,
-        session.permissions.canViewSalary ? (
-          <Field key="salary" label="Salary">
-            <span className="figures">{formatSalary(e.salary)}</span>
-          </Field>
-        ) : null,
+        <Field key="salary" label="Salary">
+          <span className="figures">{formatSalary(e.salary)}</span>
+        </Field>,
         <Field key="join" label="Join date">
           <span className="figures">{formatDateOnly(e.joinDate)}</span>
         </Field>,
@@ -84,7 +79,7 @@ export function EmployeeDetailView({ rawId }: { rawId: string }) {
         <Field key="version" label="Version">
           <span className="figures text-ink-2">{e.version}</span>
         </Field>,
-      ].filter(Boolean)
+      ]
     : [];
 
   return (
@@ -92,7 +87,7 @@ export function EmployeeDetailView({ rawId }: { rawId: string }) {
       <PageBar
         back={{ href: lastListHref(), label: 'Employees' }}
         actions={
-          e && canWrite ? (
+          e ? (
             <>
               <GuardedLink href={`/employees/${e.id}/edit`} className={buttonVariants({ variant: 'primary' })}>
                 <Pencil aria-hidden />

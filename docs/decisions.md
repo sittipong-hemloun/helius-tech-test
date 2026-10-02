@@ -14,7 +14,7 @@ D-01 ถึง D-12 มาจาก PRD §20.1 และนำมาใช้ต
 | D-06 Delete | hard delete + confirmation dialog | `DeleteEmployeeDialog` |
 | D-07 Concurrency | `version` + `If-Match` (428/409), create ใช้ Idempotency-Key | `employees.service.ts`, `idempotency.service.ts` |
 | D-08 UI | UI อังกฤษ, เอกสาร/รายงานไทย, light theme, responsive | `apps/web` |
-| D-09 Reports | aggregate-only snapshot, คิวใน PostgreSQL, n8n worker | `apps/api/src/reports/*`, `workflows/n8n` |
+| D-09 Reports | aggregate-only snapshot, คิวใน PostgreSQL, n8n worker | `apps/api/src/reports/*`, `ai/n8n` |
 | D-10 Delivery | local staging :3100, Jenkins agent บน host, image tag = commit SHA | `compose.staging.yaml`, `scripts/staging.mjs`, `Jenkinsfile` |
 | D-11 Performance | 10k synthetic (seed 42), targets §15.2 | `apps/api/scripts/perf-seed.ts`, `tests/performance` |
 | D-12 ไม่ทำ | Redis, K8s, RAG, multi-tenant | — |
@@ -38,7 +38,7 @@ D-01 ถึง D-12 มาจาก PRD §20.1 และนำมาใช้ต
 | D-25 | Session fixture สำหรับ test/performance เป็น **CLI** (`pnpm test:session`) ไม่มี HTTP route; config ห้าม `AUTH_FIXTURES_ENABLED` นอก test/performance และตรวจ DB marker | ตาม PRD §11.5; มี test พิสูจน์ว่าไม่มี route และ staging เปิดไม่ได้ |
 | D-26 | Error 409 เมื่อ complete ซ้ำด้วยผลต่างจากเดิมใช้ code `REPORT_ALREADY_COMPLETED` | PRD ระบุเพียงว่า "ต่างตอบ 409"; แยก code จาก `STALE_LEASE` ให้ worker รู้สาเหตุ |
 | D-27 | Worker ตรวจตัวเลขในข้อความ AI เทียบกับ snapshot ก่อน complete | กันตัวเลขที่โมเดลแต่งขึ้น (ทุกตัวเลขต้องมีใน snapshot และต้องระบุจำนวนรวม) — ถ้าไม่ผ่านถือเป็น `INVALID_MODEL_OUTPUT` (retryable) |
-| D-28 | n8n workflow JSON สร้างจาก `workflows/n8n/build.mjs` | prompt/schema/validator มีแหล่งเดียวใน `prompts/employee-summary-v1` ทำให้ workflow กับ prompt ที่ประเมินแล้วไม่หลุดกัน |
+| D-28 | n8n workflow JSON สร้างจาก `ai/n8n/build.mjs` | prompt/schema/validator มีแหล่งเดียวใน `ai/prompts/employee-summary-v1` ทำให้ workflow กับ prompt ที่ประเมินแล้วไม่หลุดกัน |
 | D-29 | Jenkins controller ใน Docker + inbound agent (WebSocket) บน host, repo local mount ที่ path เดียวกัน | ไม่มี Git remote; controller ต้องอ่าน Jenkinsfile และ agent ต้อง checkout จาก `file://` path เดียวกัน |
 | D-30 | Dirty working tree ได้ image tag `<sha>-dirty` | image ไม่อ้างว่าเป็น commit ที่ตัวเองไม่ตรง |
 | D-31 | ช่อง Salary ไม่ reformat ตอน focus (format เฉพาะตอน blur และรับ comma ระหว่างพิมพ์) | Playwright เจอว่าการเปลี่ยนค่าใน onFocus ทับ selection แล้วข้อความต่อท้าย (`62000.0063000.00`) |
@@ -56,3 +56,4 @@ D-01 ถึง D-12 มาจาก PRD §20.1 และนำมาใช้ต
 | D-43 | Role ฐานข้อมูลแยก: app role `NOCREATEDB` และ test role (`employee_console_test`, `CREATEDB`) สำหรับ test/perf | least privilege — role ที่ dev/staging ใช้รันแอปสร้างหรือลบฐานข้อมูลไม่ได้; runner สร้าง/ลบได้เฉพาะฐานทิ้งได้ของตัวเอง `init-databases.sh` idempotent และรันซ้ำทุก `dev:up`/staging deploy เพื่อปรับ volume เดิม (audit finding) |
 | D-44 | Jenkins plugins pin ทุกตัว (รวม dependency) ตามชุดที่ build #5 ผ่าน และ install ล้ม = build image ล้ม | PRD §7.1 ห้ามใช้ latest แบบลอย; เดิมใช้ `\|\| true` กลบความล้มเหลว (audit finding) |
 | D-45 | Secret/token ของ test/perf สุ่มใหม่ทุกครั้งที่รัน; perf API ฟัง `127.0.0.1` (k6 ใน Docker เข้าทาง `host.docker.internal`) | ไม่มีค่าที่ใช้ซ้ำได้ฝังใน repo และไม่เปิด API ให้ LAN ระหว่าง benchmark; `tests/e2e/.auth/env.json` เก็บเฉพาะตัวแปรของแอป ไม่ใช่ environment ทั้ง shell (audit finding) |
+| D-46 | ตัดขอบเขต: เอาระบบ Login/สิทธิ์ (session, CSRF, Admin/Viewer) และ AI reports (n8n + Gemini, `/internal/v1`) ออก | ให้โปรเจกต์เรียบง่ายตรงโจทย์ (List + Search/Filter + CRUD); migration `20261003000000_remove_login_and_reports` ลบตาราง `users`, `sessions`, `reports`, `integration_state`; rate limit เปลี่ยนเป็นต่อ IP — แทนที่ D-03, D-04 (ส่วน Viewer), D-09, D-17, D-18, D-22 (`result_hash`), D-24–D-28, D-38–D-40 |

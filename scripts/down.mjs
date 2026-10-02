@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { ROOT, run } from './lib/sh.mjs';
 
-run('docker', ['compose', '--profile', 'automation', '--profile', 'ci', '--profile', 'ai-workspace', 'down'], { allowFailure: true });
+run('docker', ['compose', '--profile', 'ci', 'down', '--remove-orphans'], { allowFailure: true });
 const stagingEnv = resolve(ROOT, '.env.staging');
 if (existsSync(stagingEnv)) {
   run('docker', ['compose', '-f', 'compose.staging.yaml', '--env-file', stagingEnv, 'down'], {

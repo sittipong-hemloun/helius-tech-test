@@ -48,4 +48,4 @@
 ## สิ่งที่ AI ไม่ได้ทำแทน (ต้องใช้ข้อมูลจริงของผู้สมัคร)
 
 - Google OAuth client/secret, อีเมล Admin/Viewer, Gemini API key, Git remote — ไม่สร้างหรือเดาค่า
-- การ login Google จริง, การรันรายงานกับ Gemini จริง และการทดลองใน Google AI Studio ต้องทำด้วยบัญชีผู้สมัคร (ดู `docs/acceptance.md` สถานะ BLOCKED/NOT RUN)
+- การ login Google จริง, การรันรายงานกับ Gemini จริง และการทดลองใน Google AI Studio ต้องทำด้วยบัญชีผู้สมัคร

@@ -43,12 +43,12 @@ describe('salary input', () => {
 describe('list params ↔ URL', () => {
   const sp = (s: string) => new URLSearchParams(s);
   it('round-trips non-default state and drops invalid values', () => {
-    const p = readListParams(sp('q=john&departmentId=engineering&status=inactive&page=2&pageSize=10&sortBy=name&sortOrder=desc'), true);
+    const p = readListParams(sp('q=john&departmentId=engineering&status=inactive&page=2&pageSize=10&sortBy=name&sortOrder=desc'));
     expect(toSearch(p)).toBe('?q=john&departmentId=engineering&status=inactive&page=2&pageSize=10&sortBy=name&sortOrder=desc');
-    expect(readListParams(sp('pageSize=999&status=x&departmentId=Finance'), true)).toEqual(DEFAULT_PARAMS);
+    expect(readListParams(sp('pageSize=999&status=x&departmentId=Finance'))).toEqual(DEFAULT_PARAMS);
   });
-  it('ignores salary sort for viewers', () => {
-    expect(readListParams(sp('sortBy=salary'), false).sortBy).toBe('id');
-    expect(readListParams(sp('sortBy=salary'), true).sortBy).toBe('salary');
+  it('accepts known sort fields only', () => {
+    expect(readListParams(sp('sortBy=salary')).sortBy).toBe('salary');
+    expect(readListParams(sp('sortBy=password')).sortBy).toBe('id');
   });
 });

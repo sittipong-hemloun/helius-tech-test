@@ -13,7 +13,6 @@ interface Column {
   key: SortBy;
   label: string;
   align?: 'right' | 'center';
-  adminOnly?: boolean;
   width?: string;
 }
 
@@ -21,7 +20,7 @@ const COLUMNS: Column[] = [
   { key: 'id', label: 'ID', width: 'w-16' },
   { key: 'name', label: 'Name' },
   { key: 'department', label: 'Department' },
-  { key: 'salary', label: 'Salary', align: 'right', adminOnly: true },
+  { key: 'salary', label: 'Salary', align: 'right' },
   { key: 'joinDate', label: 'Join date' },
   { key: 'isActive', label: 'Status', align: 'center' },
   { key: 'lastUpdatedDate', label: 'Last updated' },
@@ -29,7 +28,6 @@ const COLUMNS: Column[] = [
 
 interface Props {
   rows: Employee[] | undefined;
-  isAdmin: boolean;
   params: ListParams;
   loading: boolean;
   onSort: (key: SortBy) => void;
@@ -42,9 +40,8 @@ const alignClass = { right: 'text-right', center: 'text-center' } as const;
  * The register: every cell ruled, filled sticky header, green-bar bands, tabular figures,
  * sortable headers (aria-sort). It scrolls inside its own box so wide columns never widen the page.
  */
-export function EmployeeTable({ rows, isAdmin, params, loading, onSort, onDelete }: Props) {
-  const columns = COLUMNS.filter((c) => !c.adminOnly || isAdmin);
-  const colCount = columns.length + (isAdmin ? 1 : 0);
+export function EmployeeTable({ rows, params, loading, onSort, onDelete }: Props) {
+  const colCount = COLUMNS.length + 1;
 
   return (
     <div className="relative max-h-[max(20rem,calc(100dvh-15rem))] overflow-auto overscroll-x-contain">
@@ -52,7 +49,7 @@ export function EmployeeTable({ rows, isAdmin, params, loading, onSort, onDelete
         <caption className="sr-only">Employees, sorted by {params.sortBy} {params.sortOrder === 'asc' ? 'ascending' : 'descending'}</caption>
         <thead>
           <tr>
-            {columns.map((c) => {
+            {COLUMNS.map((c) => {
               const active = params.sortBy === c.key;
               const Icon = active ? (params.sortOrder === 'asc' ? ArrowUp : ArrowDown) : ArrowUpDown;
               return (
@@ -81,11 +78,9 @@ export function EmployeeTable({ rows, isAdmin, params, loading, onSort, onDelete
                 </th>
               );
             })}
-            {isAdmin ? (
-              <th scope="col" className="w-28 whitespace-nowrap px-2.5 py-1.5 text-center font-semibold text-ink">
-                Actions
-              </th>
-            ) : null}
+            <th scope="col" className="w-28 whitespace-nowrap px-2.5 py-1.5 text-center font-semibold text-ink">
+              Actions
+            </th>
           </tr>
         </thead>
         <tbody className="greenbar">
@@ -108,32 +103,30 @@ export function EmployeeTable({ rows, isAdmin, params, loading, onSort, onDelete
                     </GuardedLink>
                   </td>
                   <td className="whitespace-nowrap px-2.5 py-1.5">{e.departmentName}</td>
-                  {isAdmin ? <td className="figures px-2.5 py-1.5 text-right">{formatSalary(e.salary)}</td> : null}
+                  <td className="figures px-2.5 py-1.5 text-right">{formatSalary(e.salary)}</td>
                   <td className="figures whitespace-nowrap px-2.5 py-1.5">{formatDateOnly(e.joinDate)}</td>
                   <td className="px-2.5 py-1.5 text-center">
                     <StatusBadge isActive={e.isActive} />
                   </td>
                   <td className="figures whitespace-nowrap px-2.5 py-1.5 text-ink-2">{formatDateOnly(e.lastUpdatedDate)}</td>
-                  {isAdmin ? (
-                    <td className="whitespace-nowrap px-2.5 py-1 text-center">
-                      <GuardedLink
-                        href={`/employees/${e.id}/edit`}
-                        className="rounded px-1 text-ledger underline-offset-2 hover:underline"
-                        aria-label={`Edit ${e.name}`}
-                      >
-                        Edit
-                      </GuardedLink>
-                      <span aria-hidden className="mx-1.5 text-rule-strong">|</span>
-                      <button
-                        type="button"
-                        onClick={() => onDelete(e)}
-                        className="rounded px-1 text-stamp underline-offset-2 hover:underline"
-                        aria-label={`Delete ${e.name}`}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  ) : null}
+                  <td className="whitespace-nowrap px-2.5 py-1 text-center">
+                    <GuardedLink
+                      href={`/employees/${e.id}/edit`}
+                      className="rounded px-1 text-ledger underline-offset-2 hover:underline"
+                      aria-label={`Edit ${e.name}`}
+                    >
+                      Edit
+                    </GuardedLink>
+                    <span aria-hidden className="mx-1.5 text-rule-strong">|</span>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(e)}
+                      className="rounded px-1 text-stamp underline-offset-2 hover:underline"
+                      aria-label={`Delete ${e.name}`}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
         </tbody>

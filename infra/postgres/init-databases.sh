@@ -1,5 +1,5 @@
 #!/bin/bash
-# Creates separate roles/databases for the app, the test runners and n8n (PRD §13.1).
+# Creates separate roles/databases for the app, and the test runners (PRD §13.1).
 # Runs once on an empty data volume (docker-entrypoint-initdb.d) and again on every `pnpm dev:up`
 # / staging deploy, so it is idempotent: existing volumes are brought to the same role layout.
 #   app role  — owns the app databases, cannot create databases (least privilege for dev/staging)
@@ -36,11 +36,3 @@ FROM pg_database WHERE datname ~ '^employee_console_(test|perf)' \gexec
 SQL
 fi
 
-if [[ -n "${N8N_DB_PASSWORD:-}" ]]; then
-  psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname postgres -v pw="$N8N_DB_PASSWORD" <<'SQL'
-SELECT format('CREATE ROLE n8n LOGIN PASSWORD %L', :'pw')
-WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'n8n') \gexec
-SELECT 'CREATE DATABASE n8n OWNER n8n'
-WHERE NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'n8n') \gexec
-SQL
-fi

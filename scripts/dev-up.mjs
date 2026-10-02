@@ -13,9 +13,6 @@ if (!existsSync(resolve(ROOT, '.env'))) {
 }
 const env = readEnvFile(resolve(ROOT, '.env'));
 
-if (!capture('docker', ['network', 'inspect', 'employee-console-shared'])) {
-  run('docker', ['network', 'create', 'employee-console-shared']);
-}
 run('docker', ['compose', 'up', '-d', 'postgres']);
 await waitFor(() => capture('docker', ['compose', 'ps', 'postgres', '--format', '{{.Health}}']) === 'healthy', {
   timeoutMs: 90_000,

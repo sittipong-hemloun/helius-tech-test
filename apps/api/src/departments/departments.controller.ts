@@ -17,7 +17,7 @@ export class DepartmentsController {
 
   @Get()
   @ApiEnvelope(DepartmentDto, { isArray: true })
-  @ApiErrors(401, 403, 429)
+  @ApiErrors(429)
   async list() {
     const rows = await this.prisma.department.findMany({ orderBy: { sortOrder: 'asc' } });
     return respond(rows.map((d) => ({ id: d.id, name: d.name, sortOrder: d.sortOrder })));

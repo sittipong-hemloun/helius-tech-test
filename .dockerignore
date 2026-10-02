@@ -13,7 +13,4 @@ playwright-report
 !.env.staging.example
 .backups
 .deploy
-docs/evidence/raw
-*.pdf
-*.docx
 *.xlsx

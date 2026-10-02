@@ -9,7 +9,7 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync
 import os from 'node:os';
 import { resolve } from 'node:path';
 import pg from 'pg';
-import { apiEnv, fixtureSession, freshDatabase, startProcess, TEST_ADMIN, waitHttp } from './lib/test-env.mjs';
+import { apiEnv, freshDatabase, startProcess, waitHttp } from './lib/test-env.mjs';
 import { capture, info, ok, ROOT, run, warn } from './lib/sh.mjs';
 
 const arg = (name, fallback) => process.argv.find((a) => a.startsWith(`--${name}=`))?.split('=').slice(1).join('=') ?? fallback;
@@ -40,7 +40,7 @@ const env = apiEnv({
   port: API_PORT,
   origin: `http://localhost:${WEB_PORT}`,
   appEnv: 'performance',
-  extra: { PERF_RATE_LIMIT_OVERRIDE: 'true', DB_POOL_MAX: '10', REPORT_MAINTENANCE_ENABLED: 'false', LOG_LEVEL: 'error' },
+  extra: { PERF_RATE_LIMIT_OVERRIDE: 'true', DB_POOL_MAX: '10', LOG_LEVEL: 'error' },
 });
 run('pnpm', ['--filter', '@employee-console/api', 'run', 'perf:seed', '--count=10000', '--seed=42'], { env });
 
@@ -62,8 +62,7 @@ const web = startProcess('node', ['server.js'], {
 const summary = { label: LABEL, startedAt: new Date().toISOString(), runs: [] };
 try {
   await waitHttp(`http://127.0.0.1:${API_PORT}/api/health/ready`, 'api');
-  await waitHttp(`http://127.0.0.1:${WEB_PORT}/login`, 'web');
-  const session = fixtureSession(env, TEST_ADMIN);
+  await waitHttp(`http://127.0.0.1:${WEB_PORT}/employees`, 'web');
 
   // ---- environment record
   const dockerInfo = capture('docker', ['info', '--format', '{{.NCPU}} cpus, {{.MemTotal}} bytes, {{.OperatingSystem}}']);
@@ -111,8 +110,6 @@ try {
   const k6 = (script, label, extraEnv = {}) => {
     const envArgs = Object.entries({
       BASE_URL: `http://host.docker.internal:${API_PORT}`,
-      COOKIE: session.cookieHeader,
-      CSRF: session.csrfToken,
       LABEL: label,
       STEADY,
       WARMUP,
@@ -133,10 +130,7 @@ try {
     const read = k6('read.js', `read-${i}`);
     info(`run ${i}/${RUNS}: write scenario (10 VUs)`);
     const write = k6('write.js', `write-${i}`);
-    await client.query('TRUNCATE reports, idempotency_keys'); // manual report quota is per hour
-    info(`run ${i}/${RUNS}: report enqueue`);
-    const enqueue = k6('enqueue.js', `enqueue-${i}`, { WORKER_TOKEN: env.WORKER_SERVICE_TOKEN });
-    summary.runs.push({ run: i, readThresholdsPassed: read.status === 0, writeThresholdsPassed: write.status === 0, enqueueThresholdsPassed: enqueue.status === 0 });
+    summary.runs.push({ run: i, readThresholdsPassed: read.status === 0, writeThresholdsPassed: write.status === 0 });
   }
   await client.end();
 
@@ -161,7 +155,6 @@ try {
               '--only-categories=performance,accessibility',
               '--output=json',
               `--output-path=${file}`,
-              `--extra-headers=${JSON.stringify({ Cookie: session.cookieHeader })}`,
               '--chrome-flags=--headless=new --no-first-run --no-default-browser-check',
               '--quiet',
             ],

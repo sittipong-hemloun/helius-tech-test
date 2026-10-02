@@ -18,15 +18,7 @@ pnpm dev:up
 
 แล้วเติมค่าภายนอกใน `.env` (ดู README "ค่าที่ต้องเติมเอง") และรัน `pnpm run setup` อีกครั้งเพื่อคัดลอกค่า Google/allowlist ไป `.env.staging`
 
-## 2. การล็อกอินและสิทธิ์ (Role-Based Authentication)
-
-ระบบใช้งานแบบ Local 1-Click Role Login โดยไม่ต้องพึ่งพา External OAuth:
-1. เปิด http://localhost:3000/login
-2. เลือก **Sign in as Admin** เพื่อเข้าใช้งานสิทธิ์ Admin (จัดการพนักงาน, ดูเงินเดือน, ขอรายงาน AI)
-3. หรือเลือก **Sign in as Viewer** เพื่อทดสอบสิทธิ์ Viewer (ดูรายการพนักงาน, ซ่อนเงินเดือน, ป้องกันการแก้ไข)
-4. (ตัวเลือกเสริม) สามารถระบุ `ADMIN_EMAILS` และ `VIEWER_EMAILS` ใน `.env` เพื่อกำหนดบัญชีเฉพาะได้ (มีค่าเริ่มต้นพร้อมใช้งาน)
-
-## 3. Dev
+## 2. Dev
 
 ```bash
 pnpm dev
@@ -35,19 +27,19 @@ pnpm dev
 - พอร์ต API มาจาก `PORT` — ถ้าพอร์ตชน ให้เปลี่ยนทั้ง `PORT` และ `API_INTERNAL_URL`
 - `pnpm run doctor` ตรวจทุกอย่างโดยไม่พิมพ์ secret
 
-## 4. Reset ข้อมูล demo
+## 3. Reset ข้อมูล demo
 
 ```bash
 pnpm demo:reset --confirm-reset
 ```
 
-ลบ employees/reports/idempotency แล้ว seed 5 records ใหม่ (ID ถัดไป = 106) เก็บ users/sessions ไว้ ทำได้เฉพาะ APP_ENV local/staging และฐานที่ mark ว่า demo — สำหรับ staging:
+ลบ employees/idempotency แล้ว seed 5 records ใหม่ (ID ถัดไป = 106) ทำได้เฉพาะ APP_ENV local/staging และฐานที่ mark ว่า demo — สำหรับ staging:
 
 ```bash
 node scripts/staging.mjs reset --confirm-reset
 ```
 
-## 5. Local staging (CD target)
+## 4. Local staging (CD target)
 
 ```bash
 pnpm staging:up
@@ -61,19 +53,19 @@ pnpm staging:up
 pnpm staging:smoke
 ```
 
-ตรวจ liveness, readiness (DB + migration), หน้า Login, static asset, API บังคับ auth (401), `/internal` ไม่ถูกเปิดผ่านเว็บ (404), และสถานะ authentication provider
+ตรวจ liveness, readiness (DB + migration), หน้า Employees, static asset, API ตอบผ่าน web origin (200) และ `/internal` ไม่ถูกเปิดผ่านเว็บ (404)
 
 ```bash
 pnpm staging:restart
 ```
 
-redeploy tag ปัจจุบันเพื่อให้ค่าใน `.env.staging` ที่แก้ (เช่น `REPORTS_ENABLED`) มีผล
+redeploy tag ปัจจุบันเพื่อให้ค่าใน `.env.staging` ที่แก้มีผล
 
 ```bash
 pnpm staging:rollback
 ```
 
-กลับไป tag ก่อนหน้า (`previous` ใน manifest) โดย **ไม่ย้อน schema** (migration ออกแบบให้ expand-compatible) ถ้าต้องย้อน schema ให้ restore backup ที่ทำไว้ก่อน migrate:
+กลับไป tag ก่อนหน้า (`previous` ใน manifest) โดย **ไม่ย้อน schema** (migration ออกแบบให้ expand-compatible) — ยกเว้น `20261003000000_remove_login_and_reports` ซึ่งลบตาราง: rollback ไป image ที่เก่ากว่า migration นี้ต้อง restore backup ที่ทำไว้ก่อน migrate:
 
 ```bash
 node scripts/staging.mjs restore --file=$HOME/.employee-console/staging/backups/<file>.sql --tag=<sha ที่ตรงกับ backup> --confirm-restore
@@ -81,24 +73,7 @@ node scripts/staging.mjs restore --file=$HOME/.employee-console/staging/backups/
 
 คำสั่งนี้หยุด api/web → drop + create `employee_console_staging` โดยให้ app role เป็นเจ้าของ → โหลด dump ด้วย app role (object ทั้งหมดเป็นของ app role) → deploy tag ที่ระบุ → smoke
 
-## 6. AI reports (n8n + Gemini)
-
-1. ใส่ `GEMINI_API_KEY` ใน `.env`
-2. เลือกปลายทาง: staging (ค่าเริ่มต้น `N8N_INTERNAL_API_URL=http://api-staging:3001/internal/v1`) หรือ dev (`http://host.docker.internal:<PORT>/internal/v1`) — บน Docker Desktop (macOS/Windows) container เข้าถึง loopback ของ host ผ่าน `host.docker.internal` ได้ จึงให้ API ฟัง `HOST=127.0.0.1` ตามเดิม **อย่าเปลี่ยนเป็น `0.0.0.0`** (จะเปิด dev API ให้ทั้ง LAN); บน Linux ให้ใช้ปลายทาง staging แทน
-3. ```bash
-   pnpm ai:up
-   ```
-   เปิด n8n (http://localhost:5678), import credentials (worker/scheduler bearer จาก env ของปลายทาง, Gemini key) และ workflows ทั้งสอง
-4. สร้างบัญชี owner ของ n8n ครั้งแรกในเบราว์เซอร์
-5. ตั้ง `REPORTS_ENABLED=true` ใน env ของปลายทาง แล้ว restart API (`pnpm staging:restart` หรือ `pnpm dev`)
-6. ```bash
-   pnpm ai:up --activate
-   ```
-7. ตรวจ: หน้า Integrations → Report worker = Available ภายใน 15 วินาที; Reports → Generate report → Ready พร้อมสรุปภาษาไทย
-
-ปิด n8n/Gemini (`docker compose stop n8n`) → CRUD ยังใช้ได้, รายงานใหม่ค้าง Queued แล้ว FAILED `REPORT_DEADLINE_EXCEEDED` หลัง 10 นาที
-
-## 7. Jenkins
+## 5. Jenkins
 
 ```bash
 pnpm ci:up
@@ -112,23 +87,20 @@ pnpm ci:up
 - เปลี่ยนเวอร์ชัน plugin: แก้ `infra/jenkins/plugins.txt` → `pnpm ci:up` → รัน pipeline → commit (D-44)
 - หยุด: `pnpm ci:up --stop`
 
-## 8. Performance
+## 6. Performance
 
 ```bash
 pnpm perf:run --label=baseline
 ```
 
-ใช้ฐาน `employee_console_perf` (สร้างใหม่ทุกครั้ง, mark performance), 10,000 synthetic records (seed 42), API production build 1 instance pool 10, k6 ใน Docker, Lighthouse desktop 3 รอบ ผลอยู่ใน `tests/performance/results/<label>/` สรุปใน `docs/performance.md` — หยุด Jenkins/n8n ก่อนวัด
+ใช้ฐาน `employee_console_perf` (สร้างใหม่ทุกครั้ง, mark performance), 10,000 synthetic records (seed 42), API production build 1 instance pool 10, k6 ใน Docker, Lighthouse desktop 3 รอบ ผลอยู่ใน `tests/performance/results/<label>/` สรุปใน `docs/performance.md` — หยุด Jenkins ก่อนวัด
 
-## 9. ปัญหาที่พบบ่อย
+## 7. ปัญหาที่พบบ่อย
 
 | อาการ | ตรวจ / แก้ |
 | --- | --- |
-| หน้าเว็บบอก "can't reach its API" | `pnpm run doctor` → API ไม่รันหรือพอร์ตชน; ตรวจ `API_INTERNAL_URL` |
+| หน้า Employees แสดง error ตอนโหลด | `pnpm run doctor` → API ไม่รันหรือพอร์ตชน; ตรวจ `API_INTERNAL_URL` |
 | Login แล้วกลับมาหน้า Login ด้วย `login_failed` | redirect URI ไม่ตรง, นาฬิกาเครื่องเพี้ยน, หรือ client secret ผิด (ดู log `oidc_callback_rejected`) |
-| Access denied `not_allowed` | อีเมลไม่อยู่ใน `ADMIN_EMAILS`/`VIEWER_EMAILS` (แก้แล้ว restart API) |
-| API start ไม่ได้ "Invalid configuration" | อ่านรายการปัญหาที่พิมพ์ออกมา (เช่น อีเมลซ้ำสองกลุ่ม, SESSION_SECRET สั้น) |
-| Reports ตอบ 503 `AI_NOT_CONFIGURED` | `REPORTS_ENABLED=false` |
-| Worker Unavailable | n8n ไม่รัน/ไม่ active หรือ token ไม่ตรงกับ API ปลายทาง (รัน `pnpm ai:up` ใหม่) |
+| API start ไม่ได้ "Invalid configuration" | อ่านรายการปัญหาที่พิมพ์ออกมา (เช่น `PUBLIC_APP_ORIGIN` เป็น HTTP นอก loopback) |
 | `ERR_PNPM_IGNORED_BUILDS` | `pnpm approve-builds` |
 | Test ล้มด้วย `TEST_DB_PASSWORD missing` หรือ `permission denied to create database` | `.env` สร้างก่อนมี test role → `pnpm run setup` (เติมค่าที่ขาด) แล้ว `pnpm dev:up` (ปรับ role ของ volume เดิม, D-43) |

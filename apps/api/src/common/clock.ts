@@ -1,4 +1,4 @@
-/** Injectable time source so lease/deadline/session rules can be tested with a fake clock. */
+/** Injectable time source so date rules (Bangkok business day) can be tested with a fake clock. */
 export abstract class Clock {
   abstract now(): Date;
 }

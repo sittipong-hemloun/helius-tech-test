@@ -1,15 +1,11 @@
-// Shared helpers for E2E/Postman/perf runs: an isolated database marked with its purpose,
-// an API process in APP_ENV=test|performance, and session fixtures via the CLI (no HTTP route).
+// Shared helpers for E2E/Postman/perf runs: an isolated database marked with its purpose and
+// an API process in APP_ENV=test|performance.
 import { spawn } from 'node:child_process';
-import { randomBytes } from 'node:crypto';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import pg from 'pg';
 import { readEnvFile } from './env.mjs';
 import { capture, ROOT, waitFor } from './sh.mjs';
-
-export const TEST_ADMIN = 'admin@example.test';
-export const TEST_VIEWER = 'viewer@example.test';
 
 /** Connection base for the test role (CREATEDB, owns only throwaway test/perf databases). */
 export function localDb() {
@@ -45,10 +41,6 @@ function runApi(args, env) {
   return out;
 }
 
-// Secrets are random per run: nothing reusable is baked into the repo, and a token from one run is
-// worthless against the next.
-const runSecret = () => randomBytes(32).toString('base64url');
-
 /** App variables for a test/performance API process (no inherited shell environment). */
 export function appEnv({ databaseUrl, port, origin, appEnv = 'test', extra = {} }) {
   return {
@@ -59,13 +51,8 @@ export function appEnv({ databaseUrl, port, origin, appEnv = 'test', extra = {} 
     HOST: '127.0.0.1',
     DATABASE_URL: databaseUrl,
     PUBLIC_APP_ORIGIN: origin,
-    SESSION_SECRET: runSecret(),
-    ADMIN_EMAILS: TEST_ADMIN,
-    VIEWER_EMAILS: TEST_VIEWER,
-    AUTH_FIXTURES_ENABLED: 'true',
-    REPORTS_ENABLED: 'true',
-    WORKER_SERVICE_TOKEN: runSecret(),
-    SCHEDULER_SERVICE_TOKEN: runSecret(),
+    // Every runner request comes from 127.0.0.1, i.e. one rate-limit key; limits have their own API test.
+    ...(appEnv === 'test' ? { RATE_LIMIT_ENABLED: 'false' } : {}),
     LOG_LEVEL: 'warn',
     ...extra,
   };
@@ -103,13 +90,6 @@ export async function waitHttp(url, label, timeoutMs = 90_000) {
     },
     { timeoutMs, intervalMs: 500, label },
   );
-}
-
-/** Issues a fixture session with the CLI, using the same env the API runs with. */
-export function fixtureSession(env, email) {
-  const out = capture('pnpm', ['--silent', 'run', 'test:session', `--email=${email}`], { cwd: resolve(ROOT, 'apps/api'), env });
-  if (!out) throw new Error(`test:session failed for ${email}`);
-  return JSON.parse(out.slice(out.indexOf('{')));
 }
 
 export function readJson(path) {

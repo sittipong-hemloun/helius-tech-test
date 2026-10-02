@@ -10,9 +10,8 @@ if (!process.env.API_INTERNAL_URL && existsSync(rootEnv)) {
   if (line?.[1]?.trim()) process.env.API_INTERNAL_URL = line[1].trim();
 }
 
-// /api/* is proxied to NestJS on the same origin so cookies stay first-party (PRD §7.2).
+// /api/* is proxied to NestJS on the same origin so the browser talks to a single origin (PRD §7.2).
 // Rewrites are resolved at build time: staging images are built with API_INTERNAL_URL=http://api:3001.
-// /internal/* is never rewritten — worker endpoints stay on the Docker network.
 const apiInternalUrl = process.env.API_INTERNAL_URL ?? 'http://127.0.0.1:3001';
 
 const securityHeaders = [

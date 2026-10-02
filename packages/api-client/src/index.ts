@@ -7,15 +7,6 @@ export type Employee = Schemas['EmployeeDto'];
 export type CreateEmployeeInput = Schemas['CreateEmployeeDto'];
 export type UpdateEmployeeInput = Schemas['UpdateEmployeeDto'];
 export type Department = Schemas['DepartmentDto'];
-export type SessionData = Schemas['SessionDataDto'];
-export type ReportSummary = Schemas['ReportSummaryDto'];
-export type ReportDetail = Schemas['ReportDetailDto'];
-export type Snapshot = Schemas['SnapshotDto'];
-export type Narrative = Schemas['NarrativeDto'];
-export type IntegrationStatus = Schemas['IntegrationStatusDto'];
-
-export type Role = SessionData['user']['role'];
-export type ReportStatus = 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED';
 
 export interface Envelope<T, M = Record<string, unknown>> {
   data: T;
@@ -40,7 +31,6 @@ export interface ApiErrorBody {
     message: string;
     requestId: string;
     details?: { field: string; code: string; message: string }[];
-    currentReportId?: string | null;
     currentVersion?: number;
   };
 }

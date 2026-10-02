@@ -1,5 +1,7 @@
 # Performance (PRD §15)
 
+> ผลด้านล่างวัดก่อนตัดระบบ Login และ AI reports ออก (แถว report enqueue ถูกลบแล้ว); ตัวเลข employees ยังใช้อ้างอิงได้เพราะ query ไม่เปลี่ยน
+>
 > Targets ในตารางนี้คือ **acceptance targets ของ PRD** ไม่ใช่ SLA และไม่ใช่ผลที่วัดได้ ผลจริงอยู่ในหัวข้อ "ผลการวัด" พร้อมไฟล์ raw ใน `tests/performance/results/`
 
 ## วิธีวัด
@@ -13,12 +15,11 @@ pnpm perf:run --label=baseline
 | Dataset | 10,000 synthetic employees, generator `apps/api/scripts/perf-seed.ts` (mulberry32 seed 42), แผนก 40/25/20/15 %, Active 80 % ทุกแผนก, กลุ่มค้นหา `searchwell` 200 records, checksum ใน `tests/performance/seed-manifest.json` |
 | Database | `employee_console_perf` (สร้างใหม่ทุกครั้ง, mark `performance`) — ไม่ใช่ฐาน demo |
 | API | production build (`node dist/main.js`), 1 instance, pool 10, `APP_ENV=performance`, `PERF_RATE_LIMIT_OVERRIDE=true` (เฉพาะ performance) |
-| Load | k6 `grafana/k6:2.3.0` ใน Docker → API ตรง (`host.docker.internal:3201`) ด้วย test-only session; warmup 30 s + steady 3 นาที |
+| Load | k6 `grafana/k6:2.3.0` ใน Docker → API ตรง (`host.docker.internal:3201`) ; warmup 30 s + steady 3 นาที |
 | Read scenario | 20 VUs: list (page สุ่ม 1–25), Department+Status filter เรียงชื่อ, detail, name search (≥3 ตัวอักษร) |
 | Write scenario | 10 VUs: create → PATCH (If-Match) → DELETE |
-| Report enqueue | POST /reports 10 ครั้ง (worker stub fail งานทันทีเพื่อปล่อยคิว) |
-| Frontend | Lighthouse 13.5 desktop preset, production build, `/employees` (Admin), median 3 runs |
-| Repeat | 3 รอบต่อ phase, เงื่อนไขเดียวกัน; หยุด Jenkins/n8n/Open WebUI ก่อนวัด |
+| Frontend | Lighthouse 13.5 desktop preset, production build, `/employees`, median 3 runs |
+| Repeat | 3 รอบต่อ phase, เงื่อนไขเดียวกัน; หยุด Jenkins ก่อนวัด |
 
 ## Targets
 
@@ -28,7 +29,6 @@ pnpm perf:run --label=baseline
 | Name contains search p95 | ≤ 500 ms ที่ 20 VUs |
 | Create/update/delete p95 | ≤ 500 ms ที่ 10 VUs |
 | Unexpected error rate | < 1 % |
-| Manual report enqueue p95 | ≤ 1,000 ms |
 | Listing payload (20 records) | ≤ 100 KB |
 | Lighthouse | Performance ≥ 90, Accessibility ≥ 95 (median 3) |
 | CLS | ≤ 0.1 (lab) |
@@ -44,7 +44,6 @@ pnpm perf:run --label=baseline
 | detail (control — plan ไม่เปลี่ยน) | ≤ 300 ms | 43.4 ms | 31.2 ms |
 | search (`searchwell`, `arin`, …) | ≤ 500 ms | 75.6 ms | 46.0 ms |
 | create / update / delete | ≤ 500 ms | 34.2 / 28.1 / 16.4 ms | 29.1 / 24.5 / 14.0 ms |
-| report enqueue | ≤ 1,000 ms | 30.0 ms | 21.8 ms |
 | unexpected error rate | < 1 % | 0.00 % | 0.00 % |
 | list payload (20 records) | ≤ 100 KB | 4,225 bytes | 4,225 bytes |
 | Lighthouse Performance / Accessibility | ≥ 90 / ≥ 95 | 100 / 96 | 100 / 96 |
@@ -89,7 +88,6 @@ commit `7d0a72e11f72` (+ uncommitted changes), Apple M3 × 8, 24 GiB, Darwin 25.
 | create | ≤ 500 | 14.2 / 31.2 | 15.4 / 34.2 | 15.5 / 34.8 | 34.2 | yes |
 | update | ≤ 500 | 11.6 / 25.8 | 12.5 / 28.1 | 12.7 / 28.7 | 28.1 | yes |
 | delete | ≤ 500 | 6.4 / 15.1 | 6.9 / 16.7 | 7.0 / 16.4 | 16.4 | yes |
-| report enqueue | ≤ 1000 | p95 168 | p95 27.9 | p95 30.0 | 30.0 | yes |
 
 | Run | Read requests (rps) | Read failed rate | Write requests (rps) | Write failed rate | List payload max (bytes) |
 | --- | --- | --- | --- | --- | --- |
@@ -121,7 +119,6 @@ commit `7d0a72e11f72`, Apple M3 × 8, 24 GiB, Darwin 25.0.0 arm64, Docker VM 8 c
 | create | ≤ 500 | 15.0 / 29.1 | 14.9 / 28.5 | 15.3 / 29.7 | 29.1 | yes |
 | update | ≤ 500 | 12.3 / 24.5 | 12.2 / 23.7 | 12.5 / 25.1 | 24.5 | yes |
 | delete | ≤ 500 | 6.7 / 14.0 | 6.7 / 13.6 | 6.8 / 14.4 | 14.0 | yes |
-| report enqueue | ≤ 1000 | p95 21.8 | p95 54.1 | p95 18.2 | 21.8 | yes |
 
 | Run | Read requests (rps) | Read failed rate | Write requests (rps) | Write failed rate | List payload max (bytes) |
 | --- | --- | --- | --- | --- | --- |
@@ -155,7 +152,6 @@ commit `8ed69ab06d17` (+ uncommitted changes), Apple M3 × 8, 24 GiB, Darwin 25.
 | create | ≤ 500 | 17.5 / 49.4 | 15.0 / 29.7 | 12.9 / 23.6 | 29.7 | yes |
 | update | ≤ 500 | 14.4 / 40.6 | 12.2 / 24.4 | 10.5 / 19.5 | 24.4 | yes |
 | delete | ≤ 500 | 7.9 / 23.7 | 6.7 / 14.3 | 5.8 / 11.3 | 14.3 | yes |
-| report enqueue | ≤ 1000 | p95 30.6 | p95 47.2 | p95 20.2 | 30.6 | yes |
 
 | Run | Read requests (rps) | Read failed rate | Write requests (rps) | Write failed rate | List payload max (bytes) |
 | --- | --- | --- | --- | --- | --- |

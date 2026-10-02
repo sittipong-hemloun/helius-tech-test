@@ -1,5 +1,5 @@
 {
-  "source": "Test Exam Data.xlsx → sheet \"Example Data\" A1:G6 (PRD Appendix C.3)",
+  "source": "test-exam-data.xlsx → sheet \"Example Data\" A1:G6 (PRD Appendix C.3)",
   "sha256": "39602a16768a42c44fbb2b4db91884a6647a6f7e57a9502da46a7ba19dbdc7fe",
   "departments": [
     { "id": "engineering", "name": "Engineering", "sortOrder": 1 },

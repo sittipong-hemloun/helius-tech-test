@@ -17,9 +17,8 @@
     "db:migrate": "pnpm --filter @employee-console/api run db:migrate",
     "db:seed": "pnpm --filter @employee-console/api run db:seed",
     "demo:reset": "pnpm --filter @employee-console/api run demo:reset",
-    "test:unit": "pnpm --filter @employee-console/api run test:unit && pnpm --filter @employee-console/web run test:unit && pnpm run test:prompt",
+    "test:unit": "pnpm --filter @employee-console/api run test:unit && pnpm --filter @employee-console/web run test:unit",
     "test:api": "pnpm --filter @employee-console/api run test:api",
-    "test:session": "pnpm --filter @employee-console/api run test:session",
     "test:postman": "node scripts/test-postman.mjs",
     "test:e2e": "node scripts/test-e2e.mjs",
     "lint": "pnpm -r --if-present run lint",
@@ -31,12 +30,9 @@
     "staging:smoke": "node scripts/staging.mjs smoke",
     "staging:rollback": "node scripts/staging.mjs rollback",
     "staging:down": "node scripts/staging.mjs down",
-    "ai:up": "node scripts/ai-up.mjs",
     "perf:seed": "pnpm --filter @employee-console/api run perf:seed",
     "perf:run": "node scripts/perf-run.mjs",
     "ci:up": "node scripts/ci-up.mjs",
-    "n8n:build": "node workflows/n8n/build.mjs",
-    "test:prompt": "mkdir -p test-results && node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=test-results/prompt-junit.xml prompts/employee-summary-v1/validate.test.mjs",
     "secrets:scan": "node scripts/secret-scan.mjs"
   },
   "devDependencies": {

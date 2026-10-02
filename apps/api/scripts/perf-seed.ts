@@ -91,7 +91,7 @@ try {
   const checksum = createHash('sha256').update(JSON.stringify(rows)).digest('hex');
   await prisma.$transaction(
     async (tx) => {
-      await tx.$executeRawUnsafe('TRUNCATE reports, idempotency_keys, employees RESTART IDENTITY');
+      await tx.$executeRawUnsafe('TRUNCATE idempotency_keys, employees RESTART IDENTITY');
       for (const d of DEPARTMENTS) {
         await tx.$executeRaw`INSERT INTO departments (id, name, sort_order) VALUES (${d.id}, ${d.name}, ${d.sortOrder}) ON CONFLICT (id) DO NOTHING`;
       }

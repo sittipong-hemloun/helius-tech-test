@@ -36,7 +36,7 @@ interface Readable {
   get(name: string): string | null;
 }
 
-export function readListParams(sp: Readable, canSortSalary: boolean): ListParams {
+export function readListParams(sp: Readable): ListParams {
   const int = (v: string | null, fallback: number, ok: (n: number) => boolean) => {
     const n = v && /^\d+$/.test(v) ? Number(v) : NaN;
     return Number.isFinite(n) && ok(n) ? n : fallback;
@@ -50,7 +50,7 @@ export function readListParams(sp: Readable, canSortSalary: boolean): ListParams
     status: status === 'active' || status === 'inactive' ? status : 'all',
     page: int(sp.get('page'), 1, (n) => n >= 1 && n <= 1_000_000),
     pageSize: int(sp.get('pageSize'), 20, (n) => (PAGE_SIZES as readonly number[]).includes(n)),
-    sortBy: sortBy && SORTS.includes(sortBy) && (sortBy !== 'salary' || canSortSalary) ? sortBy : 'id',
+    sortBy: sortBy && SORTS.includes(sortBy) ? sortBy : 'id',
     sortOrder: sp.get('sortOrder') === 'desc' ? 'desc' : 'asc',
   };
 }

@@ -10,8 +10,6 @@ import { loadConfig } from '../src/config/app-config.js';
 const config = loadConfig({
   APP_ENV: 'local',
   DATABASE_URL: 'postgresql://openapi:openapi@127.0.0.1:1/openapi',
-  SESSION_SECRET: 'openapi-generation-only-not-a-real-secret-value',
-  SESSION_COOKIE_NAME: 'employee_console.local.sid',
   APP_VERSION: process.env.APP_VERSION ?? '1.0.0',
 });
 const app = await createApp(config, { swagger: false, logger: new JsonLogger('local', 'error') });
