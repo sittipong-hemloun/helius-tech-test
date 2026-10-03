@@ -110,7 +110,6 @@ pnpm dev
 
 ## เอกสาร
 
-- [docs/learn/](docs/learn/README.md) — **คู่มือเรียนรู้ฉบับมือใหม่** (NestJS, OpenAPI, Docker, Jenkins, แนวคิดสำคัญ, สรุปเอกสารทุกไฟล์แบบอ่านง่าย) พร้อมแผนภาพ
 - [docs/architecture.md](docs/architecture.md) — สถาปัตยกรรม, flow, ความปลอดภัย
 - [docs/configuration.md](docs/configuration.md) — environment variables ทั้งหมด
 - [docs/prd.md](docs/prd.md) — สเปกตั้งต้น (REQ/USR/AC ที่โค้ดอ้างถึงเป็น `PRD §…`; ส่วน Login และ AI reports ถูกตัดออก)

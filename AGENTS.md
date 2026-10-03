@@ -51,11 +51,10 @@ pnpm lint && pnpm typecheck && pnpm test:unit && pnpm build
 
 | ไฟล์ | ใช้เมื่อ |
 | --- | --- |
-| `learn/` | อธิบายระบบให้คนที่ไม่คุ้น NestJS/OpenAPI/Docker/Jenkins ด้วยภาษาง่ายและแผนภาพ (สรุปจากโค้ดและเอกสารอื่น ไม่ใช่ฉบับอ้างอิง) |
 | `architecture.md` | service boundary, request lifecycle, data model, security |
 | `decisions.md` | บันทึก D-xx พร้อมเหตุผล — **เพิ่มแถวใหม่ทุกครั้งที่ตัดสินใจเรื่องที่ไม่ชัดจากโค้ด** (ห้ามแก้ของเดิม ให้ระบุว่าแทนที่ข้อไหน) |
 | `configuration.md` | env variables ทั้งหมด — เพิ่ม env ใหม่ต้องแก้ที่นี่และ `.env.example` |
 | `runbook.md` | เปิด/ปิด, reset, backup/restore, rollback, Jenkins |
 | `design.md` | กติกา UI แบบ ERP หนาแน่น (ดู [apps/web/AGENTS.md](apps/web/AGENTS.md)) |
-| `prd.md` | สเปกตั้งต้น 1,600 บรรทัด; โค้ดอ้างเป็น `PRD §…`, `REQ/USR/AC-xx`; ส่วน Login/AI reports ล้าสมัยแล้ว |
+| `prd.md` | สเปกตั้งต้น; โค้ดอ้างเป็น `PRD §…`, `REQ/USR/AC-xx`; ส่วน Login/AI reports เหลือแค่หัวข้อ (D-46) — ห้ามลบหัวข้อหรือเปลี่ยนเลขเพราะโค้ดและ migration อ้างอยู่ |
 | `performance.md`, `versions.md`, `ai-usage.md`, `demo-script.md` | ผล benchmark / เหตุผลที่ pin เวอร์ชัน / การใช้ AI / แผนนำเสนอ |
