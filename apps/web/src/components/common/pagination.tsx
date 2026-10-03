@@ -2,9 +2,9 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { PAGE_SIZES } from '@/lib/list-params';
-import { selectClass } from './employee-filters';
-import { Button } from './ui/button';
-import { cn } from './ui/cn';
+import { selectClass } from '@/components/ui/select-control';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/components/ui/cn';
 
 interface Props {
   page: number;

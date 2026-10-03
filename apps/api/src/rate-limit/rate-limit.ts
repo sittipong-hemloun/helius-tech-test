@@ -1,5 +1,5 @@
-import { CanActivate, ExecutionContext, Inject, Injectable, Module, SetMetadata } from '@nestjs/common';
-import { APP_GUARD, Reflector } from '@nestjs/core';
+import { CanActivate, ExecutionContext, Inject, Injectable, SetMetadata } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Errors } from '../common/api-exception.js';
 import type { AppRequest } from '../common/request-context.js';
 import { APP_CONFIG, type AppConfig } from '../config/app-config.js';
@@ -35,9 +35,3 @@ export class RateLimitGuard implements CanActivate {
     return true;
   }
 }
-
-@Module({
-  providers: [RateLimiter, { provide: APP_GUARD, useClass: RateLimitGuard }],
-  exports: [RateLimiter],
-})
-export class RateLimitModule {}

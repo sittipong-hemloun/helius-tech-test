@@ -2,12 +2,12 @@
 
 import type { Employee } from '@employee-console/api-client';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
+import { GuardedLink } from '@/components/common/unsaved-changes';
 import { formatDateOnly, formatSalary } from '@/lib/format';
 import type { ListParams, SortBy } from '@/lib/list-params';
-import { GuardedLink } from '@/lib/unsaved-changes';
-import { StatusBadge } from './status-badge';
-import { Skeleton } from './ui/skeleton';
-import { cn } from './ui/cn';
+import { StatusBadge } from '@/components/employees/status-badge';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/components/ui/cn';
 
 interface Column {
   key: SortBy;

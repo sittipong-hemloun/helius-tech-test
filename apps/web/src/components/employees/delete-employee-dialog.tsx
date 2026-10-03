@@ -3,7 +3,7 @@
 import { toast } from 'sonner';
 import { ApiError, describeError } from '@/lib/api';
 import { useDeleteEmployee } from '@/lib/queries';
-import { ConfirmDialog } from './ui/dialog';
+import { ConfirmDialog } from '@/components/ui/dialog';
 
 interface Target {
   id: number;

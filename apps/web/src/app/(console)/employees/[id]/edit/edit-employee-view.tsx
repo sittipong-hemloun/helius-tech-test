@@ -3,9 +3,9 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { PageHeader } from '@/components/app-shell';
-import { applyServerErrors, EmployeeForm, toInput, valuesFromEmployee, type EmployeeFormValues } from '@/components/employee-form';
-import { Notice } from '@/components/notice';
+import { Notice } from '@/components/common/notice';
+import { applyServerErrors, EmployeeForm, toInput, valuesFromEmployee, type EmployeeFormValues } from '@/components/employees/employee-form';
+import { PageHeader } from '@/components/layout/app-shell';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError, api, describeError } from '@/lib/api';

@@ -4,26 +4,18 @@ import type { Employee } from '@employee-console/api-client';
 import { Loader2, Plus } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { PageHeader } from '@/components/app-shell';
-import { DeleteEmployeeDialog } from '@/components/delete-employee-dialog';
-import { EmployeeFilters } from '@/components/employee-filters';
-import { EmployeeTable } from '@/components/employee-table';
-import { Notice } from '@/components/notice';
-import { Pagination } from '@/components/pagination';
+import { Notice } from '@/components/common/notice';
+import { GuardedLink } from '@/components/common/unsaved-changes';
+import { Pagination } from '@/components/common/pagination';
+import { DeleteEmployeeDialog } from '@/components/employees/delete-employee-dialog';
+import { EmployeeFilters } from '@/components/employees/employee-filters';
+import { EmployeeTable } from '@/components/employees/employee-table';
+import { PageHeader } from '@/components/layout/app-shell';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { describeError } from '@/lib/api';
 import { plural } from '@/lib/format';
-import { DEFAULT_PARAMS, isFiltered, readListParams, toSearch, type ListParams, type SortBy } from '@/lib/list-params';
+import { DEFAULT_PARAMS, isFiltered, readListParams, rememberListHref, toSearch, type ListParams, type SortBy } from '@/lib/list-params';
 import { useEmployees } from '@/lib/queries';
-import { GuardedLink } from '@/lib/unsaved-changes';
-
-export function rememberListHref(href: string) {
-  if (typeof window !== 'undefined') (window as unknown as { __ecListHref?: string }).__ecListHref = href;
-}
-export function lastListHref(): string {
-  if (typeof window === 'undefined') return '/employees';
-  return (window as unknown as { __ecListHref?: string }).__ecListHref ?? '/employees';
-}
 
 export function EmployeesView() {
   const router = useRouter();

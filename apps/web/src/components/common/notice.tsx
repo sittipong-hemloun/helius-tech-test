@@ -1,6 +1,6 @@
 import { CircleAlert, Info, TriangleAlert } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { cn } from './ui/cn';
+import { cn } from '@/components/ui/cn';
 
 const tones = {
   info: { box: 'border-rule bg-sheet', icon: 'text-ledger', Icon: Info },

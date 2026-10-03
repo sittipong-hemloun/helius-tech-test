@@ -3,12 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { PageHeader } from '@/components/app-shell';
-import { applyServerErrors, EMPTY_VALUES, EmployeeForm, toInput } from '@/components/employee-form';
-import { Notice } from '@/components/notice';
+import { Notice } from '@/components/common/notice';
+import { applyServerErrors, EMPTY_VALUES, EmployeeForm, toInput } from '@/components/employees/employee-form';
+import { PageHeader } from '@/components/layout/app-shell';
 import { ApiError, describeError } from '@/lib/api';
+import { lastListHref } from '@/lib/list-params';
 import { useCreateEmployee } from '@/lib/queries';
-import { lastListHref } from '../employees-view';
 
 export function NewEmployeeView() {
   const router = useRouter();

@@ -21,7 +21,7 @@
 │   │   ├── scripts/              seed, demo reset, OpenAPI, perf seed
 │   │   └── test/                 Vitest: unit + integration (PostgreSQL จริง)
 │   └── web/                      Next.js App Router (UI, /api rewrite → NestJS)
-│       └── src/                  app/ (pages) · components/ · lib/
+│       └── src/                  app/ (routes) · components/{ui,layout,employees,common} · lib/
 ├── packages/
 │   └── api-client/               OpenAPI document + generated TypeScript types
 ├── tests/
@@ -110,9 +110,11 @@ pnpm dev
 
 ## เอกสาร
 
+- [docs/learn/](docs/learn/README.md) — **คู่มือเรียนรู้ฉบับมือใหม่** (NestJS, OpenAPI, Docker, Jenkins, แนวคิดสำคัญ, สรุปเอกสารทุกไฟล์แบบอ่านง่าย) พร้อมแผนภาพ
 - [docs/architecture.md](docs/architecture.md) — สถาปัตยกรรม, flow, ความปลอดภัย
 - [docs/configuration.md](docs/configuration.md) — environment variables ทั้งหมด
 - [docs/prd.md](docs/prd.md) — สเปกตั้งต้น (REQ/USR/AC ที่โค้ดอ้างถึงเป็น `PRD §…`; ส่วน Login และ AI reports ถูกตัดออก)
 - [docs/runbook.md](docs/runbook.md) — เปิด/ปิด, reset, backup/restore, rollback, Jenkins setup
 - [docs/demo-script.md](docs/demo-script.md) — แผนนำเสนอ 15 นาทีและการซ้อม Live Coding
+- [AGENTS.md](AGENTS.md) — คู่มือสำหรับ AI agent (กฎข้าม repo, ขอบเขต D-46); แต่ละ folder หลักมี `AGENTS.md` ของตัวเอง และ `CLAUDE.md` ที่ import ไฟล์นั้น
 - [docs/decisions.md](docs/decisions.md), [docs/versions.md](docs/versions.md), [docs/performance.md](docs/performance.md), [docs/ai-usage.md](docs/ai-usage.md), [docs/design.md](docs/design.md)

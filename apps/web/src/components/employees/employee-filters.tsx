@@ -2,8 +2,9 @@
 
 import { Search, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { selectClass } from '@/components/ui/select-control';
 import { DEPARTMENT_OPTIONS, type ListParams, type StatusFilter } from '@/lib/list-params';
-import { Button } from './ui/button';
 
 interface Props {
   params: ListParams;
@@ -12,8 +13,6 @@ interface Props {
   onClear: () => void;
   filtered: boolean;
 }
-
-const selectClass = 'select-control';
 
 /** Search (debounced 300 ms) + Department + Status, combined with AND (PRD §8.3). */
 export function EmployeeFilters({ params, onSearch, onChange, onClear, filtered }: Props) {
@@ -112,5 +111,3 @@ export function EmployeeFilters({ params, onSearch, onChange, onClear, filtered 
     </form>
   );
 }
-
-export { selectClass };

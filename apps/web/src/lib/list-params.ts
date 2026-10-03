@@ -85,3 +85,13 @@ export function toApiQuery(params: ListParams): string {
 export function isFiltered(params: ListParams): boolean {
   return Boolean(params.q.trim() || params.departmentId || params.status !== 'all');
 }
+
+/** Where "back to Employees" goes: the list URL (with filters) the user last saw, kept per tab in memory. */
+export function rememberListHref(href: string) {
+  if (typeof window !== 'undefined') (window as unknown as { __ecListHref?: string }).__ecListHref = href;
+}
+
+export function lastListHref(): string {
+  if (typeof window === 'undefined') return '/employees';
+  return (window as unknown as { __ecListHref?: string }).__ecListHref ?? '/employees';
+}

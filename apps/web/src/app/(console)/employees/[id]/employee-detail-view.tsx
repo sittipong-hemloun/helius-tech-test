@@ -3,17 +3,17 @@
 import { ArrowLeft, Pencil, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { DeleteEmployeeDialog } from '@/components/delete-employee-dialog';
-import { Notice } from '@/components/notice';
-import { StatusBadge } from '@/components/status-badge';
-import { PageBar, pageTitleClass } from '@/components/app-shell';
+import { Notice } from '@/components/common/notice';
+import { GuardedLink } from '@/components/common/unsaved-changes';
+import { DeleteEmployeeDialog } from '@/components/employees/delete-employee-dialog';
+import { StatusBadge } from '@/components/employees/status-badge';
+import { PageBar, pageTitleClass } from '@/components/layout/app-shell';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError, describeError } from '@/lib/api';
 import { formatDateOnly, formatSalary } from '@/lib/format';
+import { lastListHref } from '@/lib/list-params';
 import { useEmployee } from '@/lib/queries';
-import { GuardedLink } from '@/lib/unsaved-changes';
-import { lastListHref } from '../employees-view';
 
 export function parseEmployeeId(raw: string): number | null {
   return /^[1-9]\d{0,9}$/.test(raw) ? Number(raw) : null;

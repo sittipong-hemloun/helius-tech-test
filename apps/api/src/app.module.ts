@@ -4,10 +4,10 @@ import type { JsonLogger } from './common/json-logger.js';
 import type { AppConfig } from './config/app-config.js';
 import { CoreModule } from './core.module.js';
 import { DatabaseModule } from './database/database.module.js';
-import { DepartmentsModule } from './departments/departments.controller.js';
+import { DepartmentsModule } from './departments/departments.module.js';
 import { EmployeesModule } from './employees/employees.module.js';
-import { HealthModule } from './health/health.controller.js';
-import { RateLimitModule } from './rate-limit/rate-limit.js';
+import { HealthModule } from './health/health.module.js';
+import { RateLimitModule } from './rate-limit/rate-limit.module.js';
 
 /** Modular monolith: Controller → Service → Prisma (PRD §7.2). */
 @Module({})

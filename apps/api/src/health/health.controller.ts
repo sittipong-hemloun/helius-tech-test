@@ -1,4 +1,4 @@
-import { Controller, Get, Module, Res } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
 import { ApiExcludeController } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { existsSync, readdirSync } from 'node:fs';
@@ -63,6 +63,3 @@ export class HealthController {
     }
   }
 }
-
-@Module({ controllers: [HealthController] })
-export class HealthModule {}

@@ -6,14 +6,14 @@ import { Loader2, Save } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
 import { Controller, useForm, type UseFormSetError } from 'react-hook-form';
 import { z } from 'zod';
+import { useUnsavedChanges } from '@/components/common/unsaved-changes';
 import { formatDateOnly } from '@/lib/format';
 import { DEPARTMENT_OPTIONS } from '@/lib/list-params';
 import { formatSalaryInput, parseSalaryInput } from '@/lib/salary';
 import type { EmployeeInput } from '@/lib/queries';
-import { useUnsavedChanges } from '@/lib/unsaved-changes';
 import type { FieldError } from '@/lib/api';
-import { Button } from './ui/button';
-import { cellInputClass, FormCell } from './ui/form-cell';
+import { Button } from '@/components/ui/button';
+import { cellInputClass, FormCell } from '@/components/ui/form-cell';
 
 const CONTROL = /[\p{Cc}\u2028\u2029]/u;
 const ISO = /^(\d{4})-(\d{2})-(\d{2})$/;

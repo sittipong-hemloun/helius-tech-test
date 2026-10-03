@@ -1,4 +1,4 @@
-import { cn } from './ui/cn';
+import { cn } from '@/components/ui/cn';
 
 /** Status as plain text plus a mark: solid dot for Active, hollow ring for In Active. Never colour alone. */
 export function StatusBadge({ isActive, className }: { isActive: boolean; className?: string }) {

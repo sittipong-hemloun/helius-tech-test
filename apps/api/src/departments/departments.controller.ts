@@ -1,4 +1,4 @@
-import { Controller, Get, Module } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { ApiEnvelope, ApiErrors } from '../common/openapi.js';
 import { respond } from '../common/envelope.js';
@@ -23,6 +23,3 @@ export class DepartmentsController {
     return respond(rows.map((d) => ({ id: d.id, name: d.name, sortOrder: d.sortOrder })));
   }
 }
-
-@Module({ controllers: [DepartmentsController] })
-export class DepartmentsModule {}

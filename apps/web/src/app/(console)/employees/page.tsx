@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { PageHeader } from '@/components/app-shell';
+import { PageHeader } from '@/components/layout/app-shell';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmployeesView } from './employees-view';
 

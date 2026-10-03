@@ -3,8 +3,8 @@
 import { ArrowLeft, Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
-import { GuardedLink } from '@/lib/unsaved-changes';
-import { cn } from './ui/cn';
+import { GuardedLink } from '@/components/common/unsaved-changes';
+import { cn } from '@/components/ui/cn';
 
 const NAV = [{ href: '/employees', label: 'Employees' }];
 
