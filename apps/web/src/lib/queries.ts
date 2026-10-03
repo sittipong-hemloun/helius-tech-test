@@ -1,6 +1,6 @@
 'use client';
 
-import type { Department, Employee, EmployeeListMeta } from '@employee-console/api-client';
+import type { Employee, EmployeeListMeta } from '@employee-console/api-client';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import { toApiQuery, type ListParams } from './list-params';
@@ -31,14 +31,6 @@ export function useEmployee(id: number | null, { editing = false }: { editing?: 
     enabled: id !== null,
     retry: (count, err) => (err as { status?: number }).status !== 404 && count < 1,
     ...(editing ? { refetchOnMount: 'always' as const, refetchOnWindowFocus: false, refetchOnReconnect: false } : {}),
-  });
-}
-
-export function useDepartments() {
-  return useQuery({
-    queryKey: ['departments'],
-    queryFn: ({ signal }) => api<Department[]>('/api/v1/departments', { signal }).then((r) => r.data),
-    staleTime: 60 * 60_000,
   });
 }
 

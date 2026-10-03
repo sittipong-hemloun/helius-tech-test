@@ -1,7 +1,7 @@
 // Shared helpers for E2E/Postman/perf runs: an isolated database marked with its purpose and
 // an API process in APP_ENV=test|performance.
 import { spawn } from 'node:child_process';
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import pg from 'pg';
 import { readEnvFile } from './env.mjs';
@@ -90,8 +90,4 @@ export async function waitHttp(url, label, timeoutMs = 90_000) {
     },
     { timeoutMs, intervalMs: 500, label },
   );
-}
-
-export function readJson(path) {
-  return JSON.parse(readFileSync(path, 'utf8'));
 }

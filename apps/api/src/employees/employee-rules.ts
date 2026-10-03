@@ -10,7 +10,6 @@ export const DEPARTMENT_IDS = ['engineering', 'marketing', 'sales', 'hr'] as con
 export type DepartmentId = (typeof DEPARTMENT_IDS)[number];
 
 export const NAME_MAX_CODE_POINTS = 100;
-export const SALARY_MAX = '9999999999.99';
 
 // C0/C1 controls (includes CR/LF/TAB) plus Unicode line/paragraph separators.
 const CONTROL_CHARS = /[\p{Cc}\u2028\u2029]/u;

@@ -9,5 +9,4 @@ export function pgErrorCode(err: unknown): string | undefined {
   );
 }
 
-export const isUniqueViolation = (err: unknown) => pgErrorCode(err) === '23505' || (err as { code?: string })?.code === 'P2002';
 export const isForeignKeyViolation = (err: unknown) => pgErrorCode(err) === '23503' || (err as { code?: string })?.code === 'P2003';

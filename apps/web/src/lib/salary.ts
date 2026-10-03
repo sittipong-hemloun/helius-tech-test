@@ -31,8 +31,3 @@ export function formatSalaryInput(raw: string): string {
   const [i, f] = parsed.canonical.split('.');
   return `${i.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}.${f}`;
 }
-
-/** Value shown while editing: commas removed so the caret math stays simple. */
-export function unformatSalaryInput(raw: string): string {
-  return raw.replace(/,/g, '');
-}
