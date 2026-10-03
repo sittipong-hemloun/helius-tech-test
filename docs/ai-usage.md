@@ -44,6 +44,7 @@
 | 18 | `buildWithParameters` ตอบ 400 "not parameterized" หลัง restart controller | JCasC สร้าง job ใหม่ทุกครั้งที่ start; parameters จาก Jenkinsfile หายจนกว่าจะรัน build หนึ่งครั้ง | ประกาศ parameters ใน job DSL ด้วย + `pnpm ci:up` ตรวจ job/parameters/node/plugin versions |
 | 19 | App role มี `CREATEDB` (ใช้ร่วมกับ test runner) — **reviewer subagent จับได้** | ใช้ role เดียวทั้งรันแอปและสร้างฐาน test | แยก test role (D-43); `init-databases.sh` idempotent รันซ้ำทุก `dev:up`/deploy เพื่อปรับ volume เดิม |
 | 20 | Playwright E2E error `Protocol error (Network.getResponseBody): No resource with given identifier found` ใน `viewer.spec.ts` | `page.on('response')` ดักอ่าน `res.text()` แบบ async ระหว่างที่ browser navigate ไปหน้าอื่น ทำให้ context/body หลุด | wrap `res.text()` ด้วย try-catch ละเว้นคำขอที่ถูก navigate หนีไปแล้ว |
+| 21 | Jenkins build #7 (`51ff45e`) ล้มที่ Static checks: `TS2307 Cannot find module '../../src/app/login/page.js'` ทั้งที่ gate ในเครื่องผ่านครบ | workspace ของ agent เก็บ `apps/web/.next` (gitignore, checkout ไม่ลบ) จาก build #6 ก่อน D-46 และ `tsconfig` include `.next/types` | ทำซ้ำในเครื่องด้วยการเติม route เก่าใน `validator.ts` → web `typecheck` = `next typegen && tsc` (D-47) |
 
 ## สิ่งที่ AI ไม่ได้ทำแทน (ต้องใช้ข้อมูลจริงของผู้สมัคร)
 
