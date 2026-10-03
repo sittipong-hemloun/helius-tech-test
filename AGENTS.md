@@ -51,6 +51,7 @@ pnpm lint && pnpm typecheck && pnpm test:unit && pnpm build
 
 | ไฟล์ | ใช้เมื่อ |
 | --- | --- |
+| `learn/` | อธิบายระบบให้คนที่ไม่คุ้น NestJS/OpenAPI/Docker/Jenkins ด้วยภาษาง่ายและแผนภาพ (สรุปจากโค้ดและเอกสารอื่น ไม่ใช่ฉบับอ้างอิง) |
 | `architecture.md` | service boundary, request lifecycle, data model, security |
 | `decisions.md` | บันทึก D-xx พร้อมเหตุผล — **เพิ่มแถวใหม่ทุกครั้งที่ตัดสินใจเรื่องที่ไม่ชัดจากโค้ด** (ห้ามแก้ของเดิม ให้ระบุว่าแทนที่ข้อไหน) |
 | `configuration.md` | env variables ทั้งหมด — เพิ่ม env ใหม่ต้องแก้ที่นี่และ `.env.example` |
