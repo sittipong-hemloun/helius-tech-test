@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import pg from 'pg';
 import { ROOT } from './sh.mjs';
 
-export async function withClient(connectionString, fn) {
+async function withClient(connectionString, fn) {
   const client = new pg.Client({ connectionString, connectionTimeoutMillis: 4000 });
   await client.connect();
   try {

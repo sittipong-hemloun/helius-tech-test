@@ -4,14 +4,6 @@ import type { components } from './schema.js';
 type Schemas = components['schemas'];
 
 export type Employee = Schemas['EmployeeDto'];
-export type CreateEmployeeInput = Schemas['CreateEmployeeDto'];
-export type UpdateEmployeeInput = Schemas['UpdateEmployeeDto'];
-export type Department = Schemas['DepartmentDto'];
-
-export interface Envelope<T, M = Record<string, unknown>> {
-  data: T;
-  meta: { requestId: string } & M;
-}
 
 export interface PageMeta {
   page: number;

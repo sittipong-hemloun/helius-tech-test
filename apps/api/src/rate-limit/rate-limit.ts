@@ -5,7 +5,7 @@ import type { AppRequest } from '../common/request-context.js';
 import { APP_CONFIG, type AppConfig } from '../config/app-config.js';
 import { RateLimiter } from './rate-limiter.js';
 
-export const RATE_LIMIT = 'rate-limit:policy';
+const RATE_LIMIT = 'rate-limit:policy';
 export type RateLimitPolicy = 'read' | 'write' | 'none';
 /** Override the default policy (reads vs. writes by HTTP method). */
 export const RateLimit = (policy: RateLimitPolicy) => SetMetadata(RATE_LIMIT, policy);

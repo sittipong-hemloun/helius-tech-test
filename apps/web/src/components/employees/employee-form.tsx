@@ -26,7 +26,7 @@ function isRealDate(v: string): boolean {
 }
 
 /** Same rules as the API (PRD §9.3); the server stays the final judge. */
-export const employeeSchema = z.object({
+const employeeSchema = z.object({
   name: z
     .string()
     .refine((v) => v.normalize('NFC').trim().length > 0, 'Name is required.')

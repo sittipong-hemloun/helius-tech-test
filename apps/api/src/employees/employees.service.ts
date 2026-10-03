@@ -184,7 +184,7 @@ function departmentInvalid(): ApiException {
   return Errors.validation([{ field: 'departmentId', code: 'DEPARTMENT_INVALID', message: 'Department does not exist.' }]);
 }
 
-export function normalizeAll(input: EmployeeFields): EmployeeFields {
+function normalizeAll(input: EmployeeFields): EmployeeFields {
   return {
     name: unwrap(EMPLOYEE_FIELD_RULES.name(input.name)),
     departmentId: unwrap(EMPLOYEE_FIELD_RULES.departmentId(input.departmentId)),
@@ -194,7 +194,7 @@ export function normalizeAll(input: EmployeeFields): EmployeeFields {
   };
 }
 
-export function normalizePartial(input: Partial<EmployeeFields>): Partial<EmployeeFields> {
+function normalizePartial(input: Partial<EmployeeFields>): Partial<EmployeeFields> {
   const out: Partial<EmployeeFields> = {};
   if (input.name !== undefined) out.name = unwrap(EMPLOYEE_FIELD_RULES.name(input.name));
   if (input.departmentId !== undefined) out.departmentId = unwrap(EMPLOYEE_FIELD_RULES.departmentId(input.departmentId));

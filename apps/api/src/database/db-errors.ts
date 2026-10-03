@@ -1,5 +1,5 @@
 /** Postgres SQLSTATE helpers for errors surfaced through Prisma raw queries / the pg adapter. */
-export function pgErrorCode(err: unknown): string | undefined {
+function pgErrorCode(err: unknown): string | undefined {
   const e = err as { code?: string; meta?: { code?: string; driverAdapterError?: { cause?: { originalCode?: string; code?: string } } }; cause?: { code?: string } };
   return (
     e?.meta?.driverAdapterError?.cause?.originalCode ??

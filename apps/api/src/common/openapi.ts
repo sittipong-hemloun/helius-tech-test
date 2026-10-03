@@ -7,11 +7,11 @@ import { ApiExtraModels, ApiProperty, ApiPropertyOptional, ApiResponse, getSchem
  * contract headers (X-Request-Id, ETag, Location, Idempotency-Replayed, Retry-After) are documented.
  */
 
-export class MetaDto {
+class MetaDto {
   @ApiProperty({ format: 'uuid' }) requestId: string;
 }
 
-export class PageMetaDto extends MetaDto {
+class PageMetaDto extends MetaDto {
   @ApiProperty({ example: 1 }) page: number;
   @ApiProperty({ example: 20 }) pageSize: number;
   @ApiProperty({ example: 5 }) total: number;
@@ -28,13 +28,13 @@ export class ChangedMetaDto extends MetaDto {
   changed: boolean;
 }
 
-export class FieldErrorDto {
+class FieldErrorDto {
   @ApiProperty({ example: 'salary' }) field: string;
   @ApiProperty({ example: 'DECIMAL_SCALE_EXCEEDED' }) code: string;
   @ApiProperty({ example: 'Salary must have at most 2 decimal places.' }) message: string;
 }
 
-export class ErrorBodyDto {
+class ErrorBodyDto {
   @ApiProperty({ example: 'VALIDATION_ERROR' }) code: string;
   @ApiProperty({ example: 'Please correct the highlighted fields.' }) message: string;
   @ApiProperty({ format: 'uuid' }) requestId: string;
@@ -42,7 +42,7 @@ export class ErrorBodyDto {
   @ApiPropertyOptional({ description: 'VERSION_CONFLICT only' }) currentVersion?: number;
 }
 
-export class ErrorEnvelopeDto {
+class ErrorEnvelopeDto {
   @ApiProperty({ type: ErrorBodyDto }) error: ErrorBodyDto;
 }
 

@@ -13,7 +13,7 @@ import { seedOriginal } from '../../src/seed/seed-original.js';
 
 export const ORIGIN = 'http://localhost:3000';
 
-export function testEnv(overrides: Record<string, string> = {}): NodeJS.ProcessEnv {
+function testEnv(overrides: Record<string, string> = {}): NodeJS.ProcessEnv {
   return {
     APP_ENV: 'test',
     NODE_ENV: 'test',
@@ -38,7 +38,7 @@ export interface TestContext {
 }
 
 /** Fixed "now": 2026-10-01 10:00 Bangkok (03:00Z), matching the PRD examples. */
-export const DEFAULT_NOW = '2026-10-01T03:00:00.000Z';
+const DEFAULT_NOW = '2026-10-01T03:00:00.000Z';
 
 export async function startApp(envOverrides: Record<string, string> = {}, now = DEFAULT_NOW): Promise<TestContext> {
   const config = loadConfig(testEnv(envOverrides));

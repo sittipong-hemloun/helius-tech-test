@@ -63,7 +63,7 @@ function writeManifest(m) {
   writeFileSync(LEGACY_MANIFEST, `${JSON.stringify(m, null, 2)}\n`);
 }
 
-export function commitTag() {
+function commitTag() {
   const sha = capture('git', ['rev-parse', '--short=12', 'HEAD']);
   if (!sha) throw new Error('not a git checkout: cannot derive the image tag');
   const dirty = capture('git', ['status', '--porcelain', '--untracked-files=no']);

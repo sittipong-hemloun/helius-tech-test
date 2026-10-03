@@ -4,7 +4,7 @@
  */
 export type SalaryParse = { ok: true; canonical: string } | { ok: false; message: string };
 
-export const SALARY_MESSAGES = {
+const SALARY_MESSAGES = {
   required: 'Salary is required.',
   scale: 'Salary must have at most 2 decimal places.',
   negative: 'Salary cannot be negative.',

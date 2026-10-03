@@ -6,7 +6,7 @@ const ORDER: Record<Level, number> = { debug: 10, info: 20, warn: 30, error: 40 
 /** Keys that must never reach logs (PRD §11.4). Values are replaced, not truncated. */
 const REDACT_KEYS = /^(cookie|authorization|set-cookie|password|secret|token|leasetoken|code|state|salary|body|apikey|api_key|x-csrf-token)$/i;
 
-export function redact(value: unknown, depth = 0): unknown {
+function redact(value: unknown, depth = 0): unknown {
   if (depth > 4 || value === null || typeof value !== 'object') return value;
   if (Array.isArray(value)) return value.map((v) => redact(v, depth + 1));
   const out: Record<string, unknown> = {};

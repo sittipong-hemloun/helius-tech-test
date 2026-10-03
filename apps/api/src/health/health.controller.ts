@@ -17,7 +17,7 @@ function migrationsDir(): string {
   return resolve(import.meta.dirname, '../../prisma/migrations');
 }
 
-export function latestMigrationName(dir = migrationsDir()): string | null {
+function latestMigrationName(dir = migrationsDir()): string | null {
   try {
     const names = readdirSync(dir, { withFileTypes: true })
       .filter((d) => d.isDirectory())

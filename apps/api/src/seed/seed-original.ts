@@ -69,7 +69,7 @@ export interface SeedSummary {
  * at least max(id) so new records get server IDs after the source range.
  */
 /** Seed body for an existing transaction (used by seed and by the atomic reset). */
-export async function seedOriginalTx(tx: Prisma.TransactionClient, source: SourceFile, now = new Date()): Promise<SeedSummary> {
+async function seedOriginalTx(tx: Prisma.TransactionClient, source: SourceFile, now = new Date()): Promise<SeedSummary> {
   let departmentsInserted = 0;
   for (const d of source.departments) {
     departmentsInserted += await tx.$executeRaw`

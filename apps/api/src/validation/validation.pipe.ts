@@ -5,7 +5,7 @@ import { decodeRuleMessage } from './field-rule.decorator.js';
 /** Fields the server owns; sending them is a contract error, not just "unknown". */
 const READ_ONLY_FIELDS = new Set(['id', 'lastUpdatedDate', 'version', 'createdAt', 'updatedAt', 'departmentName', 'role']);
 
-export function flattenErrors(errors: ValidationError[], parent = ''): FieldErrorDetail[] {
+function flattenErrors(errors: ValidationError[], parent = ''): FieldErrorDetail[] {
   const out: FieldErrorDetail[] = [];
   for (const err of errors) {
     const field = parent ? `${parent}.${err.property}` : err.property;

@@ -7,7 +7,7 @@ import { loadEnvFile } from '../../src/config/env-file.js';
  * Builds connection strings for a throwaway test database on the dev PostgreSQL container, as the
  * test role (CREATEDB). The app role used by dev/staging cannot create or drop databases.
  */
-export function testDatabaseUrls(runId: string) {
+function testDatabaseUrls(runId: string) {
   loadEnvFile();
   const user = process.env.TEST_DB_USER ?? 'employee_console_test';
   const password = process.env.TEST_DB_PASSWORD;

@@ -4,7 +4,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 
 export const GENERATE = '__generate__';
 
-export function parseEnv(text) {
+function parseEnv(text) {
   const values = new Map();
   for (const line of text.split(/\r?\n/)) {
     const m = /^\s*([A-Z][A-Z0-9_]*)\s*=(.*)$/.exec(line);

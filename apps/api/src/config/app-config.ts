@@ -5,7 +5,7 @@ import { z } from 'zod';
  * defined here with the PRD default so business code never carries magic numbers.
  * Validation runs at startup; an invalid environment stops the process.
  */
-export const APP_ENVS = ['local', 'staging', 'test', 'performance'] as const;
+const APP_ENVS = ['local', 'staging', 'test', 'performance'] as const;
 export type AppEnv = (typeof APP_ENVS)[number];
 
 export interface AppConfig {

@@ -37,7 +37,7 @@ export const statusFilterRule = (value: unknown): RuleResult<StatusFilter> => {
   return ok(s.value as StatusFilter);
 };
 
-export function intRule(field: string, min: number, max: number) {
+function intRule(field: string, min: number, max: number) {
   return (value: unknown): RuleResult<number> => {
     const s = single(value, field);
     if (!s.ok) return s;

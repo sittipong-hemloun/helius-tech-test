@@ -14,7 +14,7 @@ export const NAME_MAX_CODE_POINTS = 100;
 // C0/C1 controls (includes CR/LF/TAB) plus Unicode line/paragraph separators.
 const CONTROL_CHARS = /[\p{Cc}\u2028\u2029]/u;
 
-export function normalizeName(raw: string): string {
+function normalizeName(raw: string): string {
   return raw.normalize('NFC').trim();
 }
 
