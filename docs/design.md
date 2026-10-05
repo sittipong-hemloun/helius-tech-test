@@ -10,7 +10,6 @@
 | --- | --- | --- |
 | chememan-green (`ledger`) | `#09532d` | แถบเมนูบนสุด, ปุ่มหลัก, ลิงก์ชื่อ, focus ring |
 | cman-emerald (`ledger-hover`) | `#00805e` | hover ปุ่มหลัก, จุดทึบของสถานะ Active |
-| cman-navy (`navy`) | `#1b3564` | แถวรวมยอด (All employees) ในรายงาน |
 | ground | `#f3f7f5` | พื้นหลังหน้า |
 | sheet | `#ffffff` | แถบหัวหน้า ตาราง ฟอร์ม dialog |
 | head | `#e6ece5` | หัวตาราง, ช่อง label ของ property sheet, footer ของ dialog |
@@ -29,7 +28,7 @@ Radius: control 6 px, sheet/dialog 8 px — ไม่มีปุ่มทรง
 
 ## Layout
 
-- แถบเมนูเขียวเข้มเต็มความกว้าง (brand + แท็บโมดูล + ผู้ใช้/สิทธิ์ + Sign out) แทน sidebar
+- แถบเมนูเขียวเข้มเต็มความกว้าง (brand + แท็บโมดูล) แทน sidebar; จอเล็กกว่า md ยุบแท็บเป็นปุ่มเมนู
 - แถบหัวหน้าสีขาวใต้เมนู: ลิงก์ย้อนกลับ, ชื่อหน้า, จำนวนรายการ, ปุ่มคำสั่งทางขวา
 - ทะเบียนพนักงาน: กรอบเดียว = toolbar filter (label อยู่หน้าช่อง) + ตารางมีเส้นกริดทุกช่อง หัวตารางพื้นทึบ sticky + footer pagination; แถว ~32 px; คำสั่งในแถวเป็นข้อความ Edit | Delete; ลูกศร sort แสดงเฉพาะคอลัมน์ที่เรียงอยู่ (คอลัมน์อื่นแสดงเมื่อ hover/focus)
 - รายละเอียดพนักงาน: property sheet (ช่อง label สีเทาเขียว | ค่า) แบบกริด

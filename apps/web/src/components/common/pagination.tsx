@@ -2,7 +2,6 @@
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { PAGE_SIZES } from '@/lib/list-params';
-import { selectClass } from '@/components/ui/select-control';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/components/ui/cn';
 
@@ -32,7 +31,7 @@ export function Pagination({ page, pageSize, total, totalPages, onPage, onPageSi
       <div className="flex items-center gap-2 text-[0.8125rem] text-ink-2">
         <label htmlFor="page-size">Rows per page</label>
         <div className="w-16">
-          <select id="page-size" value={pageSize} onChange={(e) => onPageSize(Number(e.target.value))} className={selectClass}>
+          <select id="page-size" value={pageSize} onChange={(e) => onPageSize(Number(e.target.value))} className="select-control">
             {PAGE_SIZES.map((s) => (
               <option key={s} value={s}>
                 {s}

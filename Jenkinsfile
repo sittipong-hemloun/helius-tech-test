@@ -13,7 +13,6 @@ pipeline {
 
   parameters {
     booleanParam(name: 'DEPLOY_STAGING', defaultValue: false, description: 'Deploy to local staging even if this is not the default branch')
-    booleanParam(name: 'RUN_PERF', defaultValue: false, description: 'Run the k6/Lighthouse benchmark (slow; results are only comparable on an idle machine)')
   }
 
   environment {
@@ -75,25 +74,23 @@ pipeline {
       }
     }
 
-    stage('API / Postman') {
+    stage('API') {
       steps {
-        sh '''
-          export PATH="$WORKSPACE/.ci-bin:$PATH"
-          pnpm test:api
-          pnpm test:postman
-        '''
+        sh 'export PATH="$WORKSPACE/.ci-bin:$PATH"; pnpm test:api'
       }
     }
 
-    stage('Build') {
+    stage('Build + E2E') {
       steps {
-        sh 'export PATH="$WORKSPACE/.ci-bin:$PATH"; pnpm build'
-      }
-    }
-
-    stage('E2E') {
-      steps {
+        // test:e2e makes the production builds of API + web (the only build in this pipeline).
         sh 'export PATH="$WORKSPACE/.ci-bin:$PATH"; pnpm test:e2e'
+      }
+    }
+
+    stage('Postman') {
+      steps {
+        // Reuses the API build from the previous stage.
+        sh 'export PATH="$WORKSPACE/.ci-bin:$PATH"; POSTMAN_SKIP_BUILD=1 pnpm test:postman'
       }
     }
 
@@ -116,34 +113,10 @@ pipeline {
       steps {
         lock('employee-console-staging') {
           withCredentials([file(credentialsId: 'employee-console-staging-env', variable: 'STAGING_ENV_FILE')]) {
-            // Fails (and rolls back to the previous image) if the smoke checks fail.
+            // Runs the smoke checks; fails (and rolls back to the previous image) if they fail.
             sh 'export PATH="$WORKSPACE/.ci-bin:$PATH"; node scripts/staging.mjs up --tag=$GIT_SHA'
           }
         }
-      }
-    }
-
-    stage('Smoke') {
-      when {
-        anyOf {
-          expression { return (env.GIT_BRANCH ?: '').endsWith('main') }
-          expression { return params.DEPLOY_STAGING }
-        }
-      }
-      steps {
-        // pipefail: a failed smoke must fail the stage even though the output is also teed to a file.
-        sh '''#!/bin/bash
-          set -o pipefail
-          mkdir -p test-results
-          node scripts/staging.mjs smoke | tee test-results/staging-smoke.txt
-        '''
-      }
-    }
-
-    stage('Performance') {
-      when { expression { return params.RUN_PERF } }
-      steps {
-        sh 'export PATH="$WORKSPACE/.ci-bin:$PATH"; pnpm perf:run'
       }
     }
   }
@@ -151,7 +124,7 @@ pipeline {
   post {
     always {
       junit allowEmptyResults: true, testResults: 'test-results/*.xml'
-      archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**, playwright-report/**, tests/performance/results/**, .deploy/staging-manifest.json'
+      archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/**, playwright-report/**, .deploy/staging-manifest.json'
       // Removes only this build's Compose project and its volume — never dev or staging data.
       sh 'node scripts/ci-db.mjs down || true'
     }

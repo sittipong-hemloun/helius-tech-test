@@ -3,7 +3,7 @@
 # Runs once on an empty data volume (docker-entrypoint-initdb.d) and again on every `pnpm dev:up`
 # / staging deploy, so it is idempotent: existing volumes are brought to the same role layout.
 #   app role  — owns the app databases, cannot create databases (least privilege for dev/staging)
-#   test role — CREATEDB, owns only the throwaway employee_console_test_* / employee_console_perf databases
+#   test role — CREATEDB, owns only the throwaway employee_console_test_* databases
 set -euo pipefail
 
 : "${APP_DB_USER:?APP_DB_USER is required}"
@@ -32,7 +32,7 @@ WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = :'test_user') \gexec
 SELECT format('ALTER ROLE %I LOGIN CREATEDB PASSWORD %L', :'test_user', :'test_password') \gexec
 -- Throwaway databases left by older runs (created by the app role) move to the test role so it can drop them.
 SELECT format('ALTER DATABASE %I OWNER TO %I', datname, :'test_user')
-FROM pg_database WHERE datname ~ '^employee_console_(test|perf)' \gexec
+FROM pg_database WHERE datname ~ '^employee_console_test' \gexec
 SQL
 fi
 

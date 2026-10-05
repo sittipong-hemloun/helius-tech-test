@@ -53,7 +53,7 @@ jobs:
       def branchName = System.getenv('JENKINS_GIT_BRANCH') ?: 'main'
       def credId = System.getenv('GIT_CREDENTIAL_ID') ?: ''
       pipelineJob('employee-console') {
-        description('CI: lint, typecheck, OpenAPI drift, unit, API, Postman, build, E2E, images. CD: local staging on the default branch.')
+        description('CI: lint, typecheck, OpenAPI drift, unit, API, build + E2E, Postman, images. CD: local staging (with smoke + rollback) on the default branch.')
         properties {
           disableConcurrentBuilds()
         }
@@ -62,7 +62,6 @@ jobs:
         // these the job is "not parameterized" until a build runs once.
         parameters {
           booleanParam('DEPLOY_STAGING', false, 'Deploy to local staging even if this is not the default branch')
-          booleanParam('RUN_PERF', false, 'Run the k6/Lighthouse benchmark (slow; results are only comparable on an idle machine)')
         }
         definition {
           cpsScm {

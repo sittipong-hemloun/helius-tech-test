@@ -137,7 +137,7 @@ async function smoke() {
       results.push({ name, ok: false, detail: err.message });
     }
   };
-  const get = (path, init) => fetch(`${BASE}${path}`, { redirect: 'manual', signal: AbortSignal.timeout(8000), ...init });
+  const get = (path) => fetch(`${BASE}${path}`, { redirect: 'manual', signal: AbortSignal.timeout(8000) });
 
   await check('liveness', async () => {
     const r = await get('/api/health/live');
@@ -168,11 +168,6 @@ async function smoke() {
     const r = await get('/api/v1/employees');
     if (r.status !== 200) throw new Error(`expected 200, got ${r.status}`);
     return '200';
-  });
-  await check('internal API not exposed via web origin', async () => {
-    const r = await get('/internal/v1/report-jobs/claim', { method: 'POST' });
-    if (r.status !== 404) throw new Error(`expected 404, got ${r.status}`);
-    return '404';
   });
 
   for (const r of results) console.log(`${r.ok ? '✔' : '✖'} ${r.name}: ${r.detail}`);

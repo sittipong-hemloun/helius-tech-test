@@ -4,8 +4,7 @@
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import newman from 'newman';
-import pg from 'pg';
-import { apiEnv, freshDatabase, localDb, startProcess, waitHttp } from './lib/test-env.mjs';
+import { apiEnv, dropDatabase, freshDatabase, startProcess, waitHttp } from './lib/test-env.mjs';
 import { portInUse, ROOT, run } from './lib/sh.mjs';
 
 const API_PORT = Number(process.env.POSTMAN_API_PORT ?? 3031);
@@ -30,7 +29,7 @@ function runNewman(options) {
 let status = 1;
 let api;
 try {
-  const url = await freshDatabase(DB, 'test');
+  const url = await freshDatabase(DB);
   const env = apiEnv({ databaseUrl: url, port: API_PORT, origin: ORIGIN });
   api = startProcess('node', ['dist/main.js'], { cwd: resolve(ROOT, 'apps/api'), env, logFile: resolve(ROOT, '.tmp/postman-api.log') });
   await waitHttp(`${BASE_URL}/api/health/ready`, 'api');
@@ -59,13 +58,6 @@ try {
     api.kill('SIGTERM');
     await Promise.race([exited, new Promise((done) => setTimeout(done, 5000))]);
   }
-  if (!process.env.KEEP_TEST_DB) {
-    const admin = new pg.Client({ connectionString: localDb().admin });
-    await admin.connect();
-    await admin.query(`DROP DATABASE IF EXISTS "${DB}" WITH (FORCE)`);
-    await admin.end();
-  } else {
-    console.log(`KEEP_TEST_DB set — kept database ${DB}`);
-  }
+  await dropDatabase(DB);
 }
 process.exit(status);

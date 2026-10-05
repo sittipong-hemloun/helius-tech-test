@@ -4,12 +4,11 @@
 
 ```mermaid
 flowchart TB
-    P["Performance — k6 + Lighthouse<br/>เร็วพอไหมที่ 10,000 records<br/>pnpm perf:run"]
     E["E2E — Playwright<br/>ผู้ใช้กดในเบราว์เซอร์จริงแล้วได้ผลถูกไหม<br/>pnpm test:e2e"]
     C["Contract — Postman / Newman<br/>API ตอบ status, header, error code ตามสัญญาไหม<br/>pnpm test:postman"]
     I["Integration — Vitest + Supertest + PostgreSQL จริง<br/>API ทั้งก้อนกับฐานข้อมูลจริงทำงานถูกไหม<br/>pnpm test:api"]
     U["Unit — Vitest<br/>ฟังก์ชันเล็ก ๆ ถูกไหม ไม่ใช้ฐานข้อมูล<br/>pnpm test:unit"]
-    P --- E --- C --- I --- U
+    E --- C --- I --- U
 ```
 
 ยิ่งอยู่ล่าง ยิ่งเร็วและมีจำนวนเยอะ ยิ่งอยู่บน ยิ่งช้าแต่ใกล้ผู้ใช้จริง แต่ละชั้นจับปัญหาคนละแบบ ไม่ได้แทนกัน
@@ -20,7 +19,6 @@ flowchart TB
 | Integration | Vitest + Supertest | [apps/api/test/integration](../../apps/api/test/integration) | ใช่ | สร้างได้ ID 106 และวันนี้ตามเวลากรุงเทพ, ส่ง `id` มาใน body โดนปฏิเสธ, 5 คำขอพร้อมกันด้วย key เดียวได้ 1 แถว |
 | Contract | Newman (Postman CLI) | [tests/postman](../../tests/postman) | ใช่ | `q=%` ค้นแบบตัวอักษรจริง ไม่ใช่ wildcard, ส่ง salary เป็นตัวเลขได้ `SALARY_TYPE_INVALID` |
 | E2E | Playwright | [tests/e2e/specs](../../tests/e2e/specs) | ใช่ | สร้าง → แก้ → ลบ, สองแท็บชนกันได้ 409, วันที่ไม่เลื่อนในหลาย timezone, จอ 375 px ไม่ล้น |
-| Performance | k6 + Lighthouse | [tests/performance/k6](../../tests/performance/k6) | ใช่ | p95 ของ list ≤ 300 ms ที่ 20 ผู้ใช้พร้อมกัน, Lighthouse Performance ≥ 90 |
 
 ## Unit test — เร็วที่สุด
 
@@ -85,7 +83,7 @@ pnpm test:postman
 
 **Playwright** เปิดเบราว์เซอร์จริง (Chromium) แล้วคลิก พิมพ์ และตรวจหน้าจอเหมือนผู้ใช้ runner ([scripts/test-e2e.mjs](../../scripts/test-e2e.mjs)) build แอปแบบ production สร้างฐานทดสอบชั่วคราว แล้วเปิด web/API บนพอร์ต 3020/3021
 
-ตัวอย่าง test ใน [admin-crud.spec.ts](../../tests/e2e/specs/admin-crud.spec.ts) (ชื่อไฟล์มีคำว่า admin เหลือมาจากสมัยที่มีสิทธิ์ Admin/Viewer)
+ตัวอย่าง test ใน [employee-crud.spec.ts](../../tests/e2e/specs/employee-crud.spec.ts)
 
 - `seed data: 5 records with all 7 fields; Bob Brown is In Active (AC-01, AC-03, AC-26)`
 - `create → edit → delete journey (AC-04, AC-12, AC-13, AC-17)`
@@ -116,16 +114,6 @@ E2E_SCREENSHOT_DIR=./screenshots pnpm test:e2e
 grep -rn "AC-16" apps/api/test tests/
 ```
 
-## Performance test
-
-วัดด้วยข้อมูลสังเคราะห์ 10,000 records (สุ่มด้วย seed 42 จึงได้ชุดเดิมทุกครั้ง) **k6** จำลองผู้ใช้พร้อมกันยิง API ส่วน **Lighthouse** วัดความเร็วหน้าเว็บ ผลและการตีความอยู่ใน [performance.md](../performance.md) (สรุปแบบอ่านง่ายในบท 9)
-
-```bash
-pnpm perf:run --label=baseline
-```
-
-ใช้เวลานานและควรรันตอนเครื่องว่าง (หยุด Jenkins ก่อน)
-
 ## ก่อนบอกว่างานเสร็จ
 
 จาก [AGENTS.md](../../AGENTS.md)
@@ -137,6 +125,6 @@ pnpm lint && pnpm typecheck && pnpm test:unit && pnpm build
 - แก้ API → รัน `pnpm test:api` และ `pnpm openapi:generate` แล้วดูว่า `packages/api-client` ไม่มีอะไรค้าง
 - แก้ UI หรือ flow → รัน `pnpm test:e2e`
 
-> **กับดัก**: อย่ารัน `playwright test`, `newman` หรือ `k6` ตรง ๆ ให้ใช้คำสั่ง `pnpm` เสมอ เพราะ runner เป็นคนสร้างฐานข้อมูลชั่วคราว เปิดแอปบนพอร์ตเฉพาะ และเขียน env ให้ ถ้ารันตรง ๆ อาจไปลบข้อมูลในฐาน dev ([tests/AGENTS.md](../../tests/AGENTS.md))
+> **กับดัก**: อย่ารัน `playwright test` หรือ `newman` ตรง ๆ ให้ใช้คำสั่ง `pnpm` เสมอ เพราะ runner เป็นคนสร้างฐานข้อมูลชั่วคราว เปิดแอปบนพอร์ตเฉพาะ และเขียน env ให้ ถ้ารันตรง ๆ อาจไปลบข้อมูลในฐาน dev ([tests/AGENTS.md](../../tests/AGENTS.md))
 
 ต่อไป: [บท 9 — แผนที่เอกสาร](09-docs-guide.md)

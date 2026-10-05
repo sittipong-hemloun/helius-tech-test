@@ -51,7 +51,7 @@ pnpm staging:up
 pnpm staging:smoke
 ```
 
-ตรวจ liveness, readiness (DB + migration), หน้า Employees, static asset, API ตอบผ่าน web origin (200) และ `/internal` ไม่ถูกเปิดผ่านเว็บ (404)
+ตรวจ liveness, readiness (DB + migration), หน้า Employees, static asset และ API ตอบผ่าน web origin (200) — `pnpm staging:up` รันชุดนี้เองหลัง deploy ทุกครั้ง
 
 ```bash
 pnpm staging:restart
@@ -79,21 +79,13 @@ pnpm ci:up
 
 - เปิด controller (Docker, http://localhost:8080, ผู้ใช้ `admin`, รหัสผ่าน = `JENKINS_ADMIN_PASSWORD` ใน `.env`) และ agent บนเครื่องนี้ (label `employee-console`, มี Node 24/pnpm/Docker)
 - Job `employee-console` อ่าน `Jenkinsfile` จาก `JENKINS_GIT_URL` ถ้ามี ไม่งั้นใช้ repo ในเครื่อง (`file://<path>`, branch `main`) — commit ก่อน build
-- Build with Parameters: `DEPLOY_STAGING` (deploy แม้ไม่ใช่ main), `RUN_PERF`
+- Build with Parameters: `DEPLOY_STAGING` (deploy แม้ไม่ใช่ main)
 - Credentials: `employee-console-staging-env` (file) มาจาก `.env.staging` ที่ mount read-only
 - `pnpm ci:up` ตรวจหลัง start ว่า JCasC ถูก apply (job + parameters + node `host-agent`) และ plugin ทั้ง 78 ตัวตรงเวอร์ชันที่ pin ไม่ตรง = exit 1
 - เปลี่ยนเวอร์ชัน plugin: แก้ `infra/jenkins/plugins.txt` → `pnpm ci:up` → รัน pipeline → commit (D-44)
 - หยุด: `pnpm ci:up --stop`
 
-## 6. Performance
-
-```bash
-pnpm perf:run --label=baseline
-```
-
-ใช้ฐาน `employee_console_perf` (สร้างใหม่ทุกครั้ง, mark performance), 10,000 synthetic records (seed 42), API production build 1 instance pool 10, k6 ใน Docker, Lighthouse desktop 3 รอบ ผลอยู่ใน `tests/performance/results/<label>/` สรุปใน `docs/performance.md` — หยุด Jenkins ก่อนวัด
-
-## 7. ปัญหาที่พบบ่อย
+## 6. ปัญหาที่พบบ่อย
 
 | อาการ | ตรวจ / แก้ |
 | --- | --- |

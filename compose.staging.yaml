@@ -14,7 +14,6 @@ x-api-env: &api-env
   DATABASE_URL: ${DATABASE_URL:?run pnpm run setup}
   DB_POOL_MAX: ${DB_POOL_MAX:-10}
   TRUST_PROXY: loopback, linklocal, uniquelocal
-  PERF_RATE_LIMIT_OVERRIDE: "false"
 
 services:
   postgres:

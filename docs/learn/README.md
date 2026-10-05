@@ -15,7 +15,7 @@
 | 5 | [Docker](05-docker.md) | image, container, volume, compose และวิธีประกอบ staging |
 | 6 | [Jenkins และ CI/CD](06-jenkins.md) | Jenkinsfile ทีละ stage, controller กับ agent, การ deploy และ rollback |
 | 7 | [แนวคิดสำคัญของโปรเจกต์](07-key-concepts.md) | `If-Match`/version, `Idempotency-Key`, เงินที่เป็น string, วันที่ที่ไม่มีเวลา และรูปแบบ error |
-| 8 | [การทดสอบ](08-testing.md) | unit, integration, Postman, E2E และ performance ต่างกันอย่างไร |
+| 8 | [การทดสอบ](08-testing.md) | unit, integration, Postman และ E2E ต่างกันอย่างไร |
 | 9 | [แผนที่เอกสารใน `docs/`](09-docs-guide.md) | เอกสารแต่ละไฟล์บอกอะไร ควรอ่านตอนไหน (สรุปแบบอ่านง่าย) |
 | 10 | [เตรียมตอบคำถาม](10-qa-prep.md) | คำถามที่น่าจะโดนถามตอนนำเสนอ พร้อมคำตอบที่ชี้ไปที่โค้ด |
 | — | [อภิธานศัพท์](glossary.md) | คำศัพท์ทั้งหมดในที่เดียว เปิดดูได้เมื่อสงสัย |

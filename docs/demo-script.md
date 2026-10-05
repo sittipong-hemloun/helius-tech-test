@@ -5,18 +5,18 @@
 1. `pnpm install` และ `pnpm staging:up` ให้ images build เสร็จล่วงหน้า (ไม่ดาวน์โหลดใหญ่ระหว่าง demo)
 2. เปิด :3000 และ :3100 ให้หน้า Employees โหลดได้
 3. `pnpm staging:smoke` → ทุกข้อ ✔; `node scripts/staging.mjs reset --confirm-reset` ให้กลับเป็น 5 records
-4. เปิด Jenkins build ล่าสุดที่ผ่าน + `docs/performance.md` ไว้ในแท็บ (ไม่รัน load test ระหว่าง demo)
+4. เปิด Jenkins build ล่าสุดที่ผ่านไว้ในแท็บ
 5. เปิด repo ใน editor + AI coding assistant ให้พร้อม
 
 ## ลำดับนำเสนอ
 
 | เวลา | สิ่งที่ทำ | พูดถึง |
 | --- | --- | --- |
-| 0–1 | หน้า Employees :3100 | โจทย์ = Excel 5 แถว + 7 ฟิลด์ / ส่วนที่เพิ่มคือ CI/CD, tests และ performance (Login และ AI report ตัดออกเพื่อความเรียบง่าย) |
+| 0–1 | หน้า Employees :3100 | โจทย์ = Excel 5 แถว + 7 ฟิลด์ / ส่วนที่เพิ่มคือ CI/CD และ tests (Login, AI report และ performance test ตัดออกเพื่อความเรียบง่าย) |
 | 1–5 | Employees | ข้อมูลตรง Excel (Bob Brown = In Active, วันที่เดิม), ค้น `john`, Engineering + In Active → Bob, Clear → 5, Add **Dana Lee** (engineering, 62000, 2026-09-01) → ID 106 + วันนี้, Edit salary 63000 + uncheck Active → 63,000.00 / In Active / version 2, เปิดสองแท็บแก้ record เดียวกัน → แท็บเก่าได้ conflict, ลบ Dana → กลับเป็น 5 |
 | 5–7 | เปิดโค้ด | Next (UI) / Nest (API) / Postgres, `employee-rules.ts` (decimal string, date-only, `In Active` → false), `employees.service.ts` (If-Match, no-op) |
 | 7–9 | AI workflow | `docs/ai-usage.md` (วิธีสั่งงาน AI และปัญหาจริงที่ AI ทำพลาดและวิธีจับ) |
-| 9–11 | Jenkins + performance | stages, image tag = SHA, staging smoke/rollback; baseline vs index (EXPLAIN ก่อน–หลัง, ข้อเสีย write cost) |
+| 9–11 | Jenkins | stages, image tag = SHA, build ครั้งเดียวต่อ run, staging smoke/rollback |
 | 11–15 | Q&A | เปิดโค้ดตามคำถาม |
 
 ## Script CRUD (ผลที่ต้องเห็น)

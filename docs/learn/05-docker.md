@@ -108,14 +108,13 @@ flowchart TD
     API -->|"ไม่ healthy"| RB
 ```
 
-**smoke test** คือการตรวจเร็ว ๆ ว่าระบบ "ยังมีลมหายใจ" หลัง deploy ตรวจ 6 ข้อ
+**smoke test** คือการตรวจเร็ว ๆ ว่าระบบ "ยังมีลมหายใจ" หลัง deploy ตรวจ 5 ข้อ
 
 1. `/api/health/live` ตอบ 200
 2. `/api/health/ready` ตอบ `ready` (ฐานข้อมูลต่อได้ + migration ครบ)
 3. หน้า `/employees` โหลดได้
 4. ไฟล์ static (CSS/JS) โหลดได้
 5. `/api/v1/employees` ผ่าน web origin ตอบ 200
-6. path `/internal/...` ไม่ถูกเปิดผ่านเว็บ (ตอบ 404) — ข้อนี้เหลือมาจากสมัยที่มี AI reports ยังคงไว้เป็นการตรวจว่าไม่มี route ภายในหลุดออกมา
 
 สถานะการ deploy เก็บที่ `~/.employee-console/staging/` (`manifest.json` และ `backups/`) ใช้ร่วมกันระหว่างคำสั่งในเครื่องกับ Jenkins (D-41)
 

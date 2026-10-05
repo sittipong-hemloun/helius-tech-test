@@ -2,8 +2,7 @@
 // pnpm test:e2e — Playwright against production builds of web + API on an isolated test DB.
 import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import pg from 'pg';
-import { appEnv, freshDatabase, localDb, startProcess, waitHttp } from './lib/test-env.mjs';
+import { appEnv, dropDatabase, freshDatabase, startProcess, waitHttp } from './lib/test-env.mjs';
 import { ROOT, run } from './lib/sh.mjs';
 
 const WEB_PORT = Number(process.env.E2E_WEB_PORT ?? 3020);
@@ -12,7 +11,7 @@ const DB = `employee_console_test_e2e_${process.pid}`;
 const ORIGIN = `http://localhost:${WEB_PORT}`;
 const extraArgs = process.argv.slice(2);
 
-const url = await freshDatabase(DB, 'test');
+const url = await freshDatabase(DB);
 // App variables only: env.json must not capture the developer's whole shell environment.
 const app = appEnv({ databaseUrl: url, port: API_PORT, origin: ORIGIN });
 const env = { ...process.env, ...app };
@@ -57,11 +56,6 @@ try {
   api.kill('SIGTERM');
   web.kill('SIGTERM');
   rmSync(resolve(ROOT, 'tests/e2e/.runtime'), { recursive: true, force: true });
-  if (!process.env.KEEP_TEST_DB) {
-    const admin = new pg.Client({ connectionString: localDb().admin });
-    await admin.connect();
-    await admin.query(`DROP DATABASE IF EXISTS "${DB}" WITH (FORCE)`);
-    await admin.end();
-  }
+  await dropDatabase(DB);
 }
 process.exit(status);

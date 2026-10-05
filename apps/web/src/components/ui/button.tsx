@@ -12,12 +12,10 @@ const buttonVariants = cva(
         ghost: 'text-ink-2 hover:bg-bar hover:text-ink',
         danger: 'bg-stamp text-white hover:brightness-90',
         'danger-secondary': 'border border-stamp/40 bg-sheet text-stamp hover:bg-stamp-wash',
-        link: 'px-0 text-ledger underline-offset-4 hover:underline',
       },
       size: {
         sm: 'h-7 px-2.5 text-[0.8125rem]',
         md: 'h-8 px-3 text-[0.875rem]',
-        icon: 'size-8',
       },
     },
     defaultVariants: { variant: 'primary', size: 'md' },

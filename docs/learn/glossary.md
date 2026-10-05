@@ -116,9 +116,6 @@
 | Supertest | library ยิง HTTP เข้าแอป Nest ใน test | [8](08-testing.md) |
 | Postman / Newman | โปรแกรมยิง API / ตัวรัน collection ของ Postman จาก command line | [8](08-testing.md) |
 | Playwright | เครื่องมือควบคุมเบราว์เซอร์สำหรับ E2E | [8](08-testing.md) |
-| k6 | เครื่องมือจำลองผู้ใช้พร้อมกันเพื่อวัดความเร็ว API | [8](08-testing.md) |
-| Lighthouse | เครื่องมือวัดคะแนนความเร็วและ accessibility ของหน้าเว็บ | [8](08-testing.md) |
-| p95 | เวลาที่ 95 % ของคำขอเร็วกว่า | [9](09-docs-guide.md) |
 | FakeClock | นาฬิกาปลอมที่ตรึงเวลาไว้ใช้ใน test | [2](02-nestjs.md) |
 | AC-xx | รหัส acceptance criteria ใน PRD ที่ชื่อ test อ้างถึง | [8](08-testing.md) |
 
@@ -128,7 +125,7 @@
 | --- | --- | --- |
 | D-xx | รหัสการตัดสินใจใน [decisions.md](../decisions.md) | [9](09-docs-guide.md) |
 | PRD §x.y | อ้างถึงหัวข้อใน [prd.md](../prd.md) | [9](09-docs-guide.md) |
-| `APP_ENV` | ตัวแปรบอกว่ารันใน environment ไหน (`local`, `staging`, `test`, `performance`) | [1](01-big-picture.md) |
+| `APP_ENV` | ตัวแปรบอกว่ารันใน environment ไหน (`local`, `staging`, `test`) | [1](01-big-picture.md) |
 | `database_purpose` | ป้ายในตาราง `app_meta` บอกว่าฐานนี้ใช้ทำอะไร คำสั่งลบข้อมูลตรวจก่อนทุกครั้ง | [3](03-database-prisma.md) |
 | Business date | "วันนี้" ตามเขตเวลา `Asia/Bangkok` ใช้กับ Last Updated Date | [7](07-key-concepts.md) |
 | No-op update | กด Save โดยไม่ได้เปลี่ยนค่า ระบบไม่เขียนฐานข้อมูล | [7](07-key-concepts.md) |

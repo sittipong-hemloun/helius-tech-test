@@ -11,16 +11,16 @@ pnpm monorepo: **Next.js 16** (UI) + **NestJS 12** (API) + **PostgreSQL 17** (Pr
 | `apps/api` | NestJS API + Prisma schema/migrations + tests ของ API | [apps/api/AGENTS.md](apps/api/AGENTS.md), [prisma](apps/api/prisma/AGENTS.md) |
 | `apps/web` | Next.js App Router (ไม่มี DB, ไม่มี Server Actions) | [apps/web/AGENTS.md](apps/web/AGENTS.md) |
 | `packages/api-client` | OpenAPI + TypeScript types ที่ **generate** จาก API | [packages/api-client/AGENTS.md](packages/api-client/AGENTS.md) |
-| `tests/` | Playwright (e2e), Newman (postman), k6 (performance) | [tests/AGENTS.md](tests/AGENTS.md) |
+| `tests/` | Playwright (e2e), Newman (postman) | [tests/AGENTS.md](tests/AGENTS.md) |
 | `infra/` | Dockerfiles, Jenkins controller/agent, postgres init | [infra/AGENTS.md](infra/AGENTS.md) |
 | `scripts/` | task runner `.mjs` ที่ `package.json` เรียก | [scripts/AGENTS.md](scripts/AGENTS.md) |
 | `docs/` | architecture, decisions (D-xx), runbook, PRD | ดูหัวข้อ "เอกสาร" ด้านล่าง |
 
 `compose.yaml`, `compose.staging.yaml`, `Jenkinsfile`, `pnpm-workspace.yaml` และ Dockerfiles อ้าง path เหล่านี้ตรง ๆ — **อย่าย้าย top-level folder** โดยไม่แก้ไฟล์ทั้งหมดนี้พร้อมกัน
 
-## ขอบเขต (D-46)
+## ขอบเขต (D-46, D-52)
 
-ระบบ Login/สิทธิ์ (Admin/Viewer) และ AI reports (n8n + Gemini) **ถูกตัดออกโดยตั้งใจ** ทุกคนที่เข้าเว็บได้ใช้งานเต็มสิทธิ์ ส่วนที่พูดถึงสองเรื่องนี้ใน `docs/prd.md` และใน decision log (D-03, D-09, D-24–D-28 ฯลฯ) เป็นประวัติ ไม่ใช่งานที่ต้องทำ — **อย่านำกลับมา** (route, ตาราง, env, script) เว้นแต่ผู้ใช้สั่งโดยตรง
+ระบบ Login/สิทธิ์ (Admin/Viewer), AI reports (n8n + Gemini) และชุด performance test (k6/Lighthouse, perf seed, `APP_ENV=performance`) **ถูกตัดออกโดยตั้งใจ** ทุกคนที่เข้าเว็บได้ใช้งานเต็มสิทธิ์ ส่วนที่พูดถึงเรื่องเหล่านี้ใน `docs/prd.md` และใน decision log (D-03, D-09, D-11, D-24–D-28 ฯลฯ) เป็นประวัติ ไม่ใช่งานที่ต้องทำ — **อย่านำกลับมา** (route, ตาราง, env, script) เว้นแต่ผู้ใช้สั่งโดยตรง
 
 ## กฎที่ข้ามทั้ง repo
 
@@ -57,5 +57,5 @@ pnpm lint && pnpm typecheck && pnpm test:unit && pnpm build
 | `configuration.md` | env variables ทั้งหมด — เพิ่ม env ใหม่ต้องแก้ที่นี่และ `.env.example` |
 | `runbook.md` | เปิด/ปิด, reset, backup/restore, rollback, Jenkins |
 | `design.md` | กติกา UI แบบ ERP หนาแน่น (ดู [apps/web/AGENTS.md](apps/web/AGENTS.md)) |
-| `prd.md` | สเปกตั้งต้น; โค้ดอ้างเป็น `PRD §…`, `REQ/USR/AC-xx`; ส่วน Login/AI reports เหลือแค่หัวข้อ (D-46) — ห้ามลบหัวข้อหรือเปลี่ยนเลขเพราะโค้ดและ migration อ้างอยู่ |
-| `performance.md`, `versions.md`, `ai-usage.md`, `demo-script.md` | ผล benchmark / เหตุผลที่ pin เวอร์ชัน / การใช้ AI / แผนนำเสนอ |
+| `prd.md` | สเปกตั้งต้น; โค้ดอ้างเป็น `PRD §…`, `REQ/USR/AC-xx`; ส่วน Login/AI reports/performance เหลือแค่หัวข้อพร้อมเครื่องหมายยกเลิก (D-46, D-52) — ห้ามลบหัวข้อหรือเปลี่ยนเลขเพราะโค้ดและ migration อ้างอยู่ |
+| `versions.md`, `ai-usage.md`, `demo-script.md` | เหตุผลที่ pin เวอร์ชัน / การใช้ AI / แผนนำเสนอ |

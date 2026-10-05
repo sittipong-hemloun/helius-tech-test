@@ -5,7 +5,9 @@
 ภาษาอธิบาย: ไทย โดยเก็บข้อความต้นฉบับภาษาอังกฤษและภาษาไทยครบในภาคผนวก  
 สถานะ: สเปกสำหรับส่งต่อให้ AI implement; ยังไม่ได้พัฒนาแอปหรืออ้างผลทดสอบระบบ
 
-> **D-46:** ระบบ Login/สิทธิ์ (Admin/Viewer) และ AI reports (n8n + Gemini) ถูกตัดออกจากขอบเขต — §10.6 บางส่วน, §11.1–11.3, §11.5, §12 และ §16.4 จึงเหลือแค่หัวข้อ ส่วนที่ยังพูดถึงสองเรื่องนี้ในหัวข้ออื่นเป็นประวัติ ไม่ใช่งานที่ต้องทำ
+> **D-46:** ระบบ Login/สิทธิ์ (Admin/Viewer) และ AI reports (n8n + Gemini) ถูกตัดออกจากขอบเขต — §6.5, §10.6 บางส่วน, §11.1–11.3, §11.5, §12, §16.4 และรหัส USR-03, USR-06–08, AC-27–34, M2, M5, D-03, D-09 จึงเหลือแค่หัวข้อ/รหัสพร้อมป้าย “ตัดออกตาม D-46” (คงเลขหัวข้อและรหัสไว้เพราะโค้ดอ้างอยู่) ส่วนที่ยังพูดถึงสองเรื่องนี้ในคำขอเดิม (§1), บริบท JD (§5) และภาคผนวกเป็นประวัติ/ต้นฉบับ ไม่ใช่งานที่ต้องทำ
+>
+> **D-52:** ชุด performance test (k6, Lighthouse, synthetic seed 10,000 รายการ, `perf:seed`/`perf:run`, `APP_ENV=performance`, Jenkins `RUN_PERF`) ถูกตัดออก — §15, USR-09, AC-56, M6 และ D-11 เหลือแค่หัวข้อ/รหัสพร้อมป้าย “ตัดออกตาม D-52”; index จาก migration `20261002000000_perf_indexes` (trigram บนชื่อ, department+status) ยังอยู่
 
 ## 1. วัตถุประสงค์และวิธีใช้เอกสาร
 
@@ -25,7 +27,7 @@
 | **ข้อมูลต้นฉบับ** | ข้อมูลที่อ่านได้จากไฟล์ โดยไม่เปลี่ยนความหมาย |
 | **สเปกที่เลือกใช้ใน PRD** | กฎและแนวทางที่ผู้จัดทำตัดสินใจตามการมอบหมายของผู้ใช้ ใช้เป็น implementation baseline ในส่วน 6–20 ไม่ใช่เกณฑ์เพิ่มเติมจากนายจ้าง |
 | **ข้อเสนอแนะจากการสรุปต้นฉบับ** | ส่วน 2–5 ให้บริบทและแนวคิดเดิม; เมื่อมีรายละเอียดเฉพาะในส่วน 6–20 ให้ใช้สเปกนั้น |
-| **ข้อมูลภายนอกที่ต้องตั้งค่าจริง** | Credentials, email บัญชีที่อนุญาต, Git remote และวันสัมภาษณ์ ไม่สร้างค่าขึ้นเอง; มีค่าเริ่มต้นด้านเทคนิคและวิธีดำเนินต่อในส่วน 20.2 |
+| **ข้อมูลภายนอกที่ต้องตั้งค่าจริง** | Credentials, Git remote และวันสัมภาษณ์ ไม่สร้างค่าขึ้นเอง; มีค่าเริ่มต้นด้านเทคนิคและวิธีดำเนินต่อในส่วน 20.2 |
 
 ลำดับการอ่าน: เริ่มส่วน 6 เพื่อเข้าใจขอบเขต → อ่านส่วน 7–12 เพื่อ implement → ส่วน 13–18 สำหรับรัน ทดสอบ ส่งมอบและ demo → ใช้ prompt ส่วน 19 ส่งต่อ AI ส่วน 2–5 และภาคผนวก A–D เป็นแหล่งตรวจสอบกับโจทย์เดิม
 
@@ -34,9 +36,9 @@
 | 2–5 | เอกสารต้นทาง ข้อกำหนด REQ-01 ถึง REQ-18 ข้อมูล Excel และบริบท JD |
 | 6–7 | ขอบเขตผลิตภัณฑ์ USR-01 ถึง USR-09, personas, stack และ architecture |
 | 8–9 | หน้าจอ/UX, schema, validation, วันที่, decimal, concurrency และ seed |
-| 10–11 | API contract/DTO/error, Google Login, session, CSRF และ permissions |
-| 12 | AI report, snapshot, queue/lease/retry, n8n, AI Studio และ Open WebUI |
-| 13–15 | Environment/configuration, scripts, Jenkins/local staging และ performance |
+| 10–11 | API contract/DTO/error และ operational safeguards (§11.4) |
+| 12 | ตัดออกตาม D-46 |
+| 13–15 | Environment/configuration, scripts และ Jenkins/local staging (§15 ตัดออกตาม D-52) |
 | 16–18 | 60 acceptance criteria, milestones, deliverables และ demo/runbook |
 | 19–20 | Prompt implement, decision register และ inputs ภายนอก |
 | 21 | ภาคผนวกต้นฉบับครบทั้งสามไฟล์และค่าตรวจความครบถ้วน |
@@ -96,7 +98,7 @@
 
 คำว่า “deploy” ปรากฏในวัตถุประสงค์ แต่เงื่อนไขการนำเสนอที่ระบุชัดคือรันแอปในเครื่องได้ ไม่มีข้อกำหนดชัดเจนให้มี public URL หรือ cloud deployment
 
-การอัปโหลด Excel ผ่านหน้าจอ การ export กลับเป็น Excel ระบบ login/roles, dashboard, pagination, audit log, CI/CD และ LLM chatbot ไม่ได้ถูกระบุเป็นฟีเจอร์บังคับจากนายจ้าง การใช้ AI ช่วยเขียนโค้ดไม่ได้แปลว่าตัวแอปต้องเรียก LLM API อย่างไรก็ตาม ผู้ใช้เพิ่ม Google Login, CI/CD และเครื่องมือ AI ไว้ในขอบเขตโครงการนี้แล้ว จึงติดตามแยกใน USR-* โดยไม่แก้ความหมายของต้นฉบับ
+การอัปโหลด Excel ผ่านหน้าจอ การ export กลับเป็น Excel ระบบ login/roles, dashboard, pagination, audit log, CI/CD และ LLM chatbot ไม่ได้ถูกระบุเป็นฟีเจอร์บังคับจากนายจ้าง การใช้ AI ช่วยเขียนโค้ดไม่ได้แปลว่าตัวแอปต้องเรียก LLM API อย่างไรก็ตาม ผู้ใช้เพิ่ม CI/CD ไว้ในขอบเขตโครงการนี้แล้ว จึงติดตามแยกใน USR-* โดยไม่แก้ความหมายของต้นฉบับ
 
 ## 4. ข้อมูลและข้อกำหนดจาก Excel
 
@@ -171,19 +173,18 @@
 
 ผู้ใช้มอบหมายให้ผู้จัดทำตัดสินใจรายละเอียดแทนเพื่อให้ AI นำไป implement ได้ ดังนั้นส่วน 6–20 เป็น **สเปกที่เลือกใช้สำหรับโครงการนี้** ไม่ใช่เพียงรายการทางเลือก และไม่ใช่ข้อกำหนดที่นายจ้างเขียนเพิ่ม การเปลี่ยนสเปกภายหลังให้บันทึกเหตุผลใน decision log ไม่ถามผู้ใช้ซ้ำเรื่องที่ตัดสินใจไว้แล้ว
 
-ใช้ส่วน 3 และภาคผนวกเป็นหลักฐานโจทย์เดิม ใช้ส่วน 6–20 สำหรับรายละเอียดการทำงาน ช่องว่างทางเทคนิคเล็กน้อยให้ AI เลือกวิธีที่สอดคล้องกับสเปกและบันทึกไว้ ข้อมูลภายนอก เช่น OAuth credentials ไม่ให้แต่งขึ้น การร่าง PRD ครั้งนี้ยังไม่ได้ implement หรืออนุญาตให้เผยแพร่ระบบสู่สาธารณะ
+ใช้ส่วน 3 และภาคผนวกเป็นหลักฐานโจทย์เดิม ใช้ส่วน 6–20 สำหรับรายละเอียดการทำงาน ช่องว่างทางเทคนิคเล็กน้อยให้ AI เลือกวิธีที่สอดคล้องกับสเปกและบันทึกไว้ ข้อมูลภายนอก เช่น credentials ไม่ให้แต่งขึ้น การร่าง PRD ครั้งนี้ยังไม่ได้ implement หรืออนุญาตให้เผยแพร่ระบบสู่สาธารณะ
 
 ### 6.2 เป้าหมายผลิตภัณฑ์
 
-ชื่อโครงการ: **Employee Console** — เว็บจัดการข้อมูลพนักงานสำหรับผู้ดูแลและผู้ดูข้อมูล พร้อมรายงานสรุปด้วย AI
+ชื่อโครงการ: **Employee Console** — เว็บจัดการข้อมูลพนักงาน
 
 ผลลัพธ์ที่ต้องการ:
 
-1. ผู้ดูแลตรวจ ค้นหา เพิ่ม แก้ไข และลบข้อมูลตาม Excel ได้โดยไม่แก้ไฟล์ด้วยมือ
-2. ผู้ดูข้อมูลเข้าถึงเฉพาะข้อมูลที่ได้รับสิทธิ์ และไม่เปลี่ยนข้อมูล
-3. ผู้สมัครอธิบายการออกแบบ วิธีใช้ AI และผลตรวจสอบได้ รวมทั้งแก้ฟีเจอร์เล็ก ๆ สดได้
-4. ระบบตั้งขึ้นใหม่ในเครื่องได้จาก README และ seed ที่เชื่อถือได้
-5. มีหลักฐานว่า CI/CD, workflow AI และ performance tuning ทำงานจริงตามที่กล่าวอ้าง
+1. ผู้ใช้ตรวจ ค้นหา เพิ่ม แก้ไข และลบข้อมูลตาม Excel ได้โดยไม่แก้ไฟล์ด้วยมือ
+2. ผู้สมัครอธิบายการออกแบบ วิธีใช้ AI และผลตรวจสอบได้ รวมทั้งแก้ฟีเจอร์เล็ก ๆ สดได้
+3. ระบบตั้งขึ้นใหม่ในเครื่องได้จาก README และ seed ที่เชื่อถือได้
+4. มีหลักฐานว่า CI/CD ทำงานจริงตามที่กล่าวอ้าง
 
 ### 6.3 ขอบเขตจากผู้ใช้และสถานะเป้าหมาย
 
@@ -191,21 +192,21 @@
 | --- | --- | --- |
 | USR-01 | Next.js + NestJS | UI ใน Next.js และ API/business logic ใน NestJS |
 | USR-02 | PostgreSQL | Persistent storage, migrations, seed และ reset ที่แยกจากการรันปกติ |
-| USR-03 | Google Login | Google OIDC จริง, session, allowlist และ role ที่บังคับใช้ใน backend |
+| USR-03 | Google Login | ตัดออกตาม D-46 |
 | USR-04 | Postman | Collection/environment template และผล Newman ที่รันได้ |
 | USR-05 | CI/CD + Jenkins | Jenkinsfile, pipeline ที่รันจริง และ deploy ไป local staging |
-| USR-06 | Google AI Studio | Prompt ที่ทดลองจริงพร้อมตัวอย่าง input/output และการประเมิน |
-| USR-07 | n8n | Workflow สำหรับรายงานที่ import และรันได้ พร้อม retry/error handling |
-| USR-08 | Open WebUI | บริการทดลอง AI แยก ตั้งค่า Gemini ผ่าน compatible API และสาธิตได้ |
-| USR-09 | Performance tuning | Baseline, การปรับอย่างมีเหตุผล และผลเปรียบเทียบที่ทำซ้ำได้ |
+| USR-06 | Google AI Studio | ตัดออกตาม D-46 |
+| USR-07 | n8n | ตัดออกตาม D-46 |
+| USR-08 | Open WebUI | ตัดออกตาม D-46 |
+| USR-09 | Performance tuning | ตัดออกตาม D-52 |
 
 ### 6.4 ระดับความสำคัญ
 
 | ระดับ | สิ่งที่ต้องทำ | ความหมาย |
 | --- | --- | --- |
-| P0 — Core | ข้อมูลเดิม, CRUD, search/filter, input 7 ฟิลด์, Google Login/permissions, validation, tests หลัก และ local startup | ต้องผ่านก่อนเริ่ม polishing งานเสริม |
-| P1 — Delivery | Docker, OpenAPI/Postman, Jenkins/local staging, performance report และ AI report/n8n/AI Studio | ต้องมีเพื่อถือว่าขอบเขตโครงการฉบับสมบูรณ์ครบ |
-| P2 — AI workspace | Open WebUI และตัวอย่างสนทนาบนข้อมูลรวม | ทำท้ายสุด แต่ยังเป็นส่วนหนึ่งของขอบเขตผู้ใช้ |
+| P0 — Core | ข้อมูลเดิม, CRUD, search/filter, input 7 ฟิลด์, validation, tests หลัก และ local startup | ต้องผ่านก่อนเริ่ม polishing งานเสริม |
+| P1 — Delivery | Docker, OpenAPI/Postman และ Jenkins/local staging | ต้องมีเพื่อถือว่าขอบเขตโครงการฉบับสมบูรณ์ครบ |
+| P2 — AI workspace | ตัดออกตาม D-46 | — |
 
 P0/P1/P2 เป็นลำดับงาน ไม่ใช่การยกเลิกฟีเจอร์ หากหมดเวลาหรือ credentials ยังไม่พร้อม ให้รายงานสิ่งที่ผ่านและค้างแยกกัน ห้ามบอกว่าโครงการเสร็จทั้งหมดเมื่อ USR-* ยังไม่ครบ
 
@@ -213,14 +214,7 @@ P0/P1/P2 เป็นลำดับงาน ไม่ใช่การยก�
 
 ### 6.5 Personas และสิทธิ์ที่เลือก
 
-| Persona | เป้าหมาย | สิทธิ์ |
-| --- | --- | --- |
-| Admin | จัดการข้อมูลและสาธิตระบบ | อ่านครบทุกฟิลด์, CRUD, สร้าง/อ่านรายงาน, ดูสถานะ integration |
-| Viewer | อ่านและค้นหารายชื่อ | อ่านได้ทุกฟิลด์ยกเว้น Salary, ค้นหา/กรอง/เรียงฟิลด์ที่อนุญาต, อ่านรายงานข้อมูลรวม |
-| Workflow service | ทำรายงานผ่าน n8n | เฉพาะ internal report endpoints; ไม่มีสิทธิ์อ่าน employee รายคนหรือเปลี่ยน employees |
-| Unauthenticated | เริ่ม Login | เข้าหน้า Login และ health แบบไม่แสดงข้อมูลภายในเท่านั้น |
-
-ข้อมูลเงินเดือนของ Viewer ต้องถูกตัดออกจาก response จริง ไม่ใช่เพียงซ่อนคอลัมน์ ผู้ใช้ทุกคนที่ผ่าน Google ไม่ได้เป็นสมาชิกระบบโดยอัตโนมัติ ไม่มี tenant และข้อมูลพนักงานเป็นชุดกลางร่วมกัน
+ตัดออกตาม D-46 — ไม่มี role ทุกคนที่เข้าเว็บได้ใช้งานเต็มสิทธิ์ ไม่มี tenant และข้อมูลพนักงานเป็นชุดกลางร่วมกัน
 
 ## 7. Architecture และเทคโนโลยีที่เลือก
 
@@ -236,39 +230,31 @@ P0/P1/P2 เป็นลำดับงาน ไม่ใช่การยก�
 | Backend | NestJS 12 + Express adapter + TypeScript; ESM/NodeNext ให้สอดคล้องกับ dependencies |
 | Database | PostgreSQL 17; timezone ของ connection เป็น UTC |
 | ORM | Prisma ORM 7 และ pg adapter; ใช้ migrations ไม่ใช้ db push เป็น release workflow |
-| Authentication | openid-client 6 สำหรับ Google OIDC; express-session + connect-pg-simple เป็น PostgreSQL session store |
 | API validation | Nest ValidationPipe + DTO validation; whitelist และ reject unknown properties; ไม่เปลี่ยน string เป็น boolean อัตโนมัติ |
-| Tests | Jest/Supertest ฝั่ง API, Playwright ฝั่ง browser, Newman สำหรับ Postman, k6 และ Lighthouse สำหรับ performance |
-| Tool services | Jenkins LTS, n8n stable, Open WebUI stable; pin version/digest หลังทดสอบจริง ไม่ใช้ floating latest ใน delivery |
-| AI | Gemini ผ่าน n8n; default model `gemini-3.8-flash`, configurable ผ่าน GEMINI_MODEL |
+| Tests | Jest/Supertest ฝั่ง API, Playwright ฝั่ง browser และ Newman สำหรับ Postman |
+| Tool services | Jenkins LTS; pin version/digest หลังทดสอบจริง ไม่ใช้ floating latest ใน delivery |
 
 เวอร์ชันข้างต้นเป็น baseline ของ PRD ไม่ใช่ผลติดตั้งจริง ให้ทำ compatibility spike ก่อนสร้างฟีเจอร์ หาก release ที่ระบุหาไม่ได้หรือไม่เข้ากัน ให้เลือก stable ที่รองรับใกล้เคียงที่สุด บันทึก version/reason และ smoke test โดยไม่ถามผู้ใช้เรื่อง patch version ต้องได้ lockfile และไฟล์ `docs/versions.md` ที่ระบุสิ่งที่รันจริง
 
-พื้นฐานที่ตรวจจากเอกสาร: Next.js ใช้ App Router; Nest รุ่นใหม่มีข้อกำหนด ESM/runtime; Prisma 7 รองรับ Node 24; openid-client 6 เป็น ESM จึงเลือก runtime/module strategy ร่วมกัน [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Nest migration guide](https://docs.nestjs.com/migration-guide), [Prisma requirements](https://www.prisma.io/docs/orm/reference/system-requirements), [openid-client](https://github.com/panva/openid-client)
+พื้นฐานที่ตรวจจากเอกสาร: Next.js ใช้ App Router; Nest รุ่นใหม่มีข้อกำหนด ESM/runtime; Prisma 7 รองรับ Node 24 จึงเลือก runtime/module strategy ร่วมกัน [Next.js installation](https://nextjs.org/docs/app/getting-started/installation), [Nest migration guide](https://docs.nestjs.com/migration-guide), [Prisma requirements](https://www.prisma.io/docs/orm/reference/system-requirements)
 
 ### 7.2 Service boundaries
 
 ```mermaid
 flowchart TD
     B["Browser"] --> W["Next.js :3000 — UI และ /api rewrite"]
-    W --> A["NestJS :3001 — Auth / Employees / Reports"]
-    A --> DB[("PostgreSQL — App DB และ sessions")]
-    A <--> G["Google OIDC"]
-    N["n8n — claim งานรายงาน"] -->|"Internal bearer token"| A
-    N --> M["Gemini API"]
-    S["Google AI Studio — ทดลอง prompt"] -.-> M
-    O["Open WebUI :3002 — ทดลองแยก"] -->|"Compatible API"| M
+    W --> A["NestJS :3001 — Employees / Departments"]
+    A --> DB[("PostgreSQL — App DB")]
     J["Jenkins"] --> T["Tests / Build / Local staging :3100"]
 ```
 
-- Browser เรียก `/api/v1/*` และ `/api/auth/*` บน origin ของ Next.js; rewrite/proxy ไป NestJS คง path และ cookie
+- Browser เรียก `/api/v1/*` บน origin ของ Next.js; rewrite/proxy ไป NestJS คง path
 - Next.js ไม่เชื่อม PostgreSQL และไม่ทำ CRUD ผ่าน Server Actions อีกชุด
-- NestJS ตรวจ auth, role, input และ concurrency จากทุก caller; การซ่อน UI ไม่ใช่สิทธิ์จริง
-- Internal `/internal/v1/*` ไม่ถูก rewrite ออก browser; n8n ติดต่อ NestJS ผ่าน Docker network และ service token
+- NestJS ตรวจ input และ concurrency จากทุก caller
 - UI อ่านข้อมูลผ่าน TanStack Query; API response ข้อมูลผู้ใช้เป็น `Cache-Control: no-store`; ไม่มี shared cache ของ Salary
-- โมดูล API: Auth, Users/AccessPolicy, Employees, Departments, Reports, InternalReports, Health, Config
+- โมดูล API: Employees, Departments, Health, Config
 - ใช้ Controller → Service → Prisma; ไม่ต้องทำ generic repository หรือแยก microservices
-- Prisma migrations รวมตาราง session และ index/constraint ที่ Prisma schema แสดงไม่ได้ผ่าน SQL migration
+- Prisma migrations รวม index/constraint ที่ Prisma schema แสดงไม่ได้ผ่าน SQL migration
 
 ### 7.3 โครงสร้าง repository
 
@@ -278,10 +264,7 @@ apps/api/src/                  # Nest modules
 apps/api/prisma/               # schema, migrations, seed
 packages/api-client/           # Types/client ที่ generate จาก OpenAPI
 tests/e2e/                     # Playwright
-tests/performance/             # k6, synthetic seed, baseline commands
 postman/                       # collection + environment templates
-workflows/n8n/                 # worker + daily schedule exports
-prompts/employee-summary-v1/   # prompt, schema, evaluation fixtures
 infra/                        # Dockerfiles, Compose, Jenkins agent setup
 scripts/                      # doctor, bootstrap, reset, smoke, deploy
 docs/                         # architecture, decisions, evidence, runbook
@@ -298,7 +281,7 @@ README.md
 
 ### 8.1 UI conventions
 
-UI ใช้ภาษาอังกฤษเพื่อสอดคล้องกับ field ต้นฉบับ; README, demo notes และ AI report ใช้ภาษาไทย ไม่มี language switch ในรุ่นนี้ ใช้วันที่ `dd MMM yyyy` และปี ค.ศ.; API ใช้ ISO dates เงินแสดง `#,##0.00` โดยไม่มีสกุลเงิน
+UI ใช้ภาษาอังกฤษเพื่อสอดคล้องกับ field ต้นฉบับ; README และ demo notes ใช้ภาษาไทย ไม่มี language switch ในรุ่นนี้ ใช้วันที่ `dd MMM yyyy` และปี ค.ศ.; API ใช้ ISO dates เงินแสดง `#,##0.00` โดยไม่มีสกุลเงิน
 
 Desktop เป็นหลัก รองรับความกว้าง 375 px ถึง 1440 px: filter/form เรียงแนวตั้งบนมือถือ ตารางเลื่อนแนวนอนได้ มี label ทุก input, focus ที่เห็นได้, ใช้คีย์บอร์ดได้ และไม่สื่อสถานะด้วยสีอย่างเดียว แผนกเป็น select, Status เป็น checkbox, Join Date เป็น calendar/date input ที่กรอกด้วยคีย์บอร์ดได้
 
@@ -306,22 +289,17 @@ Desktop เป็นหลัก รองรับความกว้าง 3
 
 | Route | ผู้ใช้ | รายละเอียด |
 | --- | --- | --- |
-| `/` | ทุกคน | Redirect ไป `/employees` เมื่อ Login แล้ว หรือ `/login` เมื่อยังไม่ Login |
-| `/login` | Public | ชื่อ Employee Console, คำอธิบายสั้น, Sign in with Google, error ที่อ่านได้; ไม่มี username/password |
-| `/access-denied` | Public | แจ้งว่า account ไม่ได้รับอนุญาตหรือ role ไม่พอ พร้อมกลับหน้า Login/Employees ตาม session |
-| `/employees` | Admin/Viewer | ตาราง, search, Department/Status filters, clear filters, pagination, summary จำนวนตรงเงื่อนไข |
-| `/employees/new` | Admin | ฟอร์มสร้าง ไม่มี input ให้แก้ ID หรือ Last Updated Date |
-| `/employees/[id]` | Admin/Viewer | รายละเอียด; Viewer ไม่เห็น Salary; Admin มี Edit/Delete |
-| `/employees/[id]/edit` | Admin | ฟอร์มที่โหลดค่าล่าสุด มี ID/Last Updated Date แบบ read-only และ Cancel/Save |
-| `/reports` | Admin/Viewer | ประวัติรายงาน, status, เวลาถ่าย snapshot/สร้างสำเร็จ; Admin มี Generate report |
-| `/reports/[id]` | Admin/Viewer | ตารางตัวเลขจริงจาก snapshot, คำสรุป AI, แหล่งข้อมูล/เวลา, คำอธิบาย failure หรือ progress |
-| `/settings/integrations` | Admin | Read-only สถานะ Google configuration, worker heartbeat, Gemini model/config flag, version/build; ไม่แสดง secret |
+| `/` | ทุกคน | Redirect ไป `/employees` |
+| `/employees` | ทุกคน | ตาราง, search, Department/Status filters, clear filters, pagination, summary จำนวนตรงเงื่อนไข |
+| `/employees/new` | ทุกคน | ฟอร์มสร้าง ไม่มี input ให้แก้ ID หรือ Last Updated Date |
+| `/employees/[id]` | ทุกคน | รายละเอียด; มี Edit/Delete |
+| `/employees/[id]/edit` | ทุกคน | ฟอร์มที่โหลดค่าล่าสุด มี ID/Last Updated Date แบบ read-only และ Cancel/Save |
 
-Sidebar/navbar มี Employees, Reports และ Integrations สำหรับ Admin พร้อมชื่อผู้ใช้ role และ Logout; ไม่ฝัง Jenkins/n8n/Open WebUI ในหน้าแอปหรือแสดง internal URL ให้ Viewer
+Sidebar/navbar มี Employees; ไม่ฝัง Jenkins ในหน้าแอปหรือแสดง internal URL
 
 ### 8.3 หน้ารายการพนักงาน
 
-ลำดับคอลัมน์ Admin: ID, Name, Department, Salary, Join Date, Status, Last Updated Date, Actions; Viewer ตัด Salary และปุ่มแก้/ลบออก แสดง Status เป็น `Active` หรือ `In Active` ตามต้นฉบับ
+ลำดับคอลัมน์: ID, Name, Department, Salary, Join Date, Status, Last Updated Date, Actions; แสดง Status เป็น `Active` หรือ `In Active` ตามต้นฉบับ
 
 - เริ่มต้น sort `id asc`, page 1, pageSize 20; ตัวเลือกขนาดหน้า 10/20/50
 - Search ชื่ออย่างเดียว แบบ contains ไม่สนตัวพิมพ์ trim หัวท้าย; debounce 300 ms
@@ -336,7 +314,7 @@ Sidebar/navbar มี Employees, Reports และ Integrations สำหรั�
 
 ### 8.4 Create/Edit/Delete journeys
 
-**Create:** Admin เปิดฟอร์ม → กรอก Name, Department, Salary, Join Date, Active checkbox → ตรวจ client → Save → server ตรวจซ้ำ → สร้างรายการ → toast และไปหน้ารายละเอียด ID ใหม่ ไม่ให้ double click สร้างซ้ำด้วย pending state และ idempotency key
+**Create:** ผู้ใช้เปิดฟอร์ม → กรอก Name, Department, Salary, Join Date, Active checkbox → ตรวจ client → Save → server ตรวจซ้ำ → สร้างรายการ → toast และไปหน้ารายละเอียด ID ใหม่ ไม่ให้ double click สร้างซ้ำด้วย pending state และ idempotency key
 
 ค่าเริ่มต้นฟอร์ม: Name/Department/Salary/Join Date ว่าง, Status ติ๊ก Active; ID/Last Updated Date แสดง “Assigned on save” เมื่อสร้าง ไม่ใช้วันที่วันนี้เป็น Join Date อัตโนมัติ
 
@@ -350,18 +328,15 @@ Sidebar/navbar มี Employees, Reports และ Integrations สำหรั�
 
 | เหตุการณ์ | พฤติกรรม/ข้อความ |
 | --- | --- |
-| โหลดครั้งแรก | Skeleton ที่คง layout; ไม่แสดงค่า Salary ชั่วคราวก่อนรู้ role |
-| ไม่มีข้อมูลทั้งหมด | “No employees yet.” และ Add employee สำหรับ Admin |
+| โหลดครั้งแรก | Skeleton ที่คง layout |
+| ไม่มีข้อมูลทั้งหมด | “No employees yet.” และ Add employee |
 | ไม่พบตาม filter | “No matching employees.” พร้อม Clear filters |
 | Save สำเร็จ | “Employee created.” / “Employee updated.” |
 | Save แบบ no-op | “No changes to save.” |
 | Validation | Error ใต้ช่องและ focus ช่องแรกที่ผิด; ค่าที่กรอกไม่หาย |
-| Session หมดอายุ | ล้าง client cache ข้อมูลส่วนบุคคลแล้วไป Login; ไม่เก็บฟอร์มเงินเดือนใน localStorage |
-| Forbidden | แสดงไม่มีสิทธิ์โดยไม่โหลดข้อมูลที่ถูกจำกัด |
 | Not found | หน้า record unavailable พร้อม Back to employees |
 | Conflict | “This employee was changed by another user. Reload the latest version.” |
 | Network/5xx | ข้อความลองใหม่และ request ID; ไม่แสดง stack trace; mutation timeout ต้องตรวจผลก่อนส่งใหม่ |
-| AI ขัดข้อง | รายงานมีสถานะ Failed/Unavailable แต่ Employees ใช้งานได้ |
 
 ## 9. Data model และกฎธุรกิจที่ตัดสินใจแล้ว
 
@@ -374,7 +349,7 @@ Sidebar/navbar มี Employees, Reports และ Integrations สำหรั�
 | `id` / `id` | integer identity | PK; server generated; seed 101–105; sequence ปรับตาม max ID ไม่ใช้ max+1 ใน request |
 | `name` / `name` | varchar(100) | NOT NULL; trim/NFC; 1–100 Unicode code points; ไม่ห้ามชื่อซ้ำหรืออักษรไทย |
 | `department_id` / `departmentId` | varchar(20) FK | NOT NULL; ต้องอยู่ใน departments |
-| `salary` / `salary` | numeric(12,2) | NOT NULL; 0 ถึง 9,999,999,999.99; API เป็น decimal string สำหรับ Admin เท่านั้น |
+| `salary` / `salary` | numeric(12,2) | NOT NULL; 0 ถึง 9,999,999,999.99; API เป็น decimal string |
 | `join_date` / `joinDate` | date | NOT NULL; 1900-01-01 ถึง 2100-12-31; อนุญาตวันอนาคตในช่วงนี้ |
 | `is_active` / `isActive` | boolean | NOT NULL; true = Active, false = In Active; default true |
 | `last_updated_date` / `lastUpdatedDate` | date | NOT NULL; date ธุรกิจตาม Asia/Bangkok; system managed |
@@ -398,15 +373,9 @@ Salary เก็บด้วย exact decimal และ serialize เป็น s
 | Table | Fields สำคัญ / constraints |
 | --- | --- |
 | departments | id PK, name unique, sort_order; seed คงที่ 4 ค่า |
-| users | id UUID PK, google_sub unique NOT NULL, email unique NOT NULL (normalized lowercase), display_name, role ADMIN/VIEWER, is_enabled, created_at, last_login_at; role/enable ปรับจาก access configuration |
-| sessions | รูปแบบ sid/sess/expire ตาม session store; index expire; auth userId, csrf token, absolute expiry; เก็บใน PostgreSQL |
-| reports | id UUID PK, status enum, snapshot JSONB, narrative JSONB nullable, requested_by FK nullable, source MANUAL/SCHEDULED, generation_date date, prompt_version, model, created_at, completed_at, deadline_at, attempts, next_attempt_at, lease_token_hash, lease_expires_at, error_code nullable, generated_by GEMINI/TEMPLATE nullable |
-| idempotency_keys | scope, key UUID, actor_id UUID NOT NULL FK users, request_hash, response_status/body, created_at, expires_at; unique(scope, actor_id, key); manual keys เก็บ 24 ชั่วโมง; scheduled dedup ใช้ constraint ของ reports แยก |
-| integration_state | key PK, last_worker_seen_at, configured flags ที่ไม่เป็น secrets; heartbeat สำหรับรายงาน |
+| idempotency_keys | scope, key UUID, request_hash, response_status/body, created_at, expires_at; unique(scope, key); keys เก็บ 24 ชั่วโมง |
 
-Scheduled report unique ด้วย `(source, generation_date)` เฉพาะ source SCHEDULED เพื่อไม่สร้างซ้ำวันเดียวกัน; reports มี partial unique index อนุญาต QUEUED/RUNNING รวมกันได้หนึ่งงานทั่วระบบ ไม่มี report delete endpoint ในรุ่นนี้
-
-Foreign-key policy: employees.department_id เป็น RESTRICT; reports.requested_by เป็น nullable และใช้ SET NULL หากมีการดูแลบัญชีผ่าน maintenance ภายหลัง; ไม่มี delete-user endpoint ในรุ่นนี้ ตาราง users เก็บ role/is_enabled ไว้สำหรับตรวจสอบ แต่ runtime guard ต้อง reconcile กับ allowlist configuration ล่าสุดก่อนอนุญาต request และ SessionData ต้องคืน role ล่าสุดที่มีผลจริง
+Foreign-key policy: employees.department_id เป็น RESTRICT
 
 ### 9.3 Validation และ normalization
 
@@ -425,13 +394,13 @@ POST ต้องมีทั้ง 5 ฟิลด์ธุรกิจ; fronten
 ### 9.4 วันเวลา การเปลี่ยนข้อมูล และ concurrency
 
 - date-only เก็บ/รับ/คืนเป็นวันเดิม ไม่แปลงผ่าน timezone ของ browser จนวันเลื่อน
-- เวลา events/session/report เป็น UTC ISO timestamp; UI แสดง Asia/Bangkok โดยระบุ timezone ใน report
+- เวลา events เป็น UTC ISO timestamp; UI แสดง Asia/Bangkok
 - Create employee: lastUpdatedDate = วันปัจจุบัน Asia/Bangkok, version=1
 - Update ที่ข้อมูลเปลี่ยนจริง: lastUpdatedDate=วันนี้, updatedAt=now, version+1 ใน transaction เดียว
 - Update แบบ no-op: คืน record เดิมพร้อม `meta.changed=false`; ไม่เพิ่ม version/วันที่
-- Read/Search/Cancel/Failed validation/Failed authorization ไม่เปลี่ยนข้อมูล
+- Read/Search/Cancel/Failed validation ไม่เปลี่ยนข้อมูล
 - PATCH/DELETE ต้องส่ง `If-Match: "<version>"`; server compare-and-update/delete แบบ atomic
-- ไม่มี If-Match ตอบ 428; version เก่าตอบ 409; ไม่พบ ID ตอบ 404 หลังตรวจสิทธิ์แล้ว
+- ไม่มี If-Match ตอบ 428; version เก่าตอบ 409; ไม่พบ ID ตอบ 404
 - ลบแล้ว ID ไม่ถูกนำกลับมาใช้โดยปกติ; reset demo เป็นคำสั่งเฉพาะที่สร้างชุดใหม่อย่างตั้งใจ
 
 ### 9.5 Seed และ reset
@@ -440,52 +409,39 @@ POST ต้องมีทั้ง 5 ฟิลด์ธุรกิจ; fronten
 - map Status แบบ explicit: Active→true, In Active→false; เก็บชื่อและวันที่ตามภาคผนวก C ทุกค่า
 - lastUpdatedDate ต้องคงเดิม: 101=2026-01-10, 102=2025-12-05, 103=2026-02-14, 104=2026-03-01, 105=2026-04-20
 - หลัง seed ปรับ sequence ไม่น้อยกว่าค่าเดิมและ max ID; fresh fixture สร้างรายต่อไปเป็น 106
-- `demo:reset --confirm-reset` ใช้ได้เฉพาะ APP_ENV=local/staging และ database ที่ทำเครื่องหมายว่า demo; reset employees/reports/idempotency เท่านั้น เก็บบัญชี/session ไว้
-- Test/performance ใช้ฐานแยก ห้ามใช้ reset หรือ synthetic seed กับ database หลักโดยตรวจชื่อ/marker ก่อน
+- `demo:reset --confirm-reset` ใช้ได้เฉพาะ APP_ENV=local/staging และ database ที่ทำเครื่องหมายว่า demo; reset employees/idempotency เท่านั้น
+- Test ใช้ฐานแยก ห้ามใช้ reset กับ database หลักโดยตรวจชื่อ/marker ก่อน
 - ค่าตรวจรับ fresh seed: 5 records, 4 Active/1 In Active, 4 departments และ salary sum 290000.00
 
 ## 10. API contract
 
 ### 10.1 Conventions
 
-- Public API base: `/api/v1`; auth: `/api/auth`; internal worker: `/internal/v1`
-- JSON camelCase, Content-Type application/json; request body สูงสุด 32 KB; report callback สูงสุด 8 KB
+- Public API base: `/api/v1`
+- JSON camelCase, Content-Type application/json; request body สูงสุด 32 KB
 - Salary เป็น string ทศนิยมสองตำแหน่ง; date-only เป็น YYYY-MM-DD; timestamps เป็น UTC ISO 8601
 - Server สร้าง UUID request ID ทุก request และคืน `X-Request-Id`; ไม่เชื่อ header จาก caller ที่ไม่ใช่ trusted proxy
-- Auth ใช้ cookie session ไม่มี access token ใน localStorage
-- State-changing browser/API requests ต้องมี `X-CSRF-Token` ที่ผูกกับ session; POST/PATCH/DELETE ตรวจ origin ตามที่ตั้งค่า
-- ทุก endpoint ที่รับ body ใช้ reject unknown fields; service credentials ไม่ได้สิทธิ์ใช้ employee endpoints
+- POST/PATCH/DELETE ตรวจ origin ตามที่ตั้งค่า
+- ทุก endpoint ที่รับ body ใช้ reject unknown fields
 - Success envelope: `{ "data": ..., "meta": { "requestId": "..." } }`; list เพิ่ม pagination ใน meta
 - Error envelope ตามตัวอย่าง; field error มี path/code/message; ไม่คืน query, stack trace, token หรือข้อมูลเงินเดือนใน error
-- 204 ไม่มี body แต่มี request ID header; health/auth redirect เป็นข้อยกเว้นของ JSON envelope ตามตาราง
+- 204 ไม่มี body แต่มี request ID header; health เป็นข้อยกเว้นของ JSON envelope ตามตาราง
 
 ### 10.2 Endpoint inventory
 
 | Method/path | ผู้มีสิทธิ์ | Input หลัก | ผลสำเร็จ |
 | --- | --- | --- | --- |
-| GET `/api/auth/google` | Public | ไม่มี user-controlled return URL | 302 ไป Google; ถ้า session ถูกต้องอยู่แล้วไป /employees |
-| GET `/api/auth/google/callback` | Google browser callback | code/state หรือ provider error | 302 ไป /employees หรือหน้าข้อผิดพลาดที่กำหนด |
-| GET `/api/auth/session` | Authenticated | Cookie | 200 user + permissions + csrfToken; 401 ถ้าไม่มี session |
-| POST `/api/auth/logout` | Authenticated | CSRF; ไม่มี body | 204 ลบ session/cookie |
-| GET `/api/v1/departments` | Admin/Viewer | ไม่มี | 200 array 4 departments ตาม sortOrder |
-| GET `/api/v1/employees` | Admin/Viewer | Query ตาม 10.3 | 200 list + pagination |
-| GET `/api/v1/employees/:id` | Admin/Viewer | Positive integer ID | 200 Employee DTO; ETag เป็น version |
-| POST `/api/v1/employees` | Admin | Create body + Idempotency-Key UUID | 201 DTO + Location + ETag |
-| PATCH `/api/v1/employees/:id` | Admin | Partial body + If-Match | 200 DTO + ETag + meta.changed |
-| DELETE `/api/v1/employees/:id` | Admin | If-Match; ไม่มี body | 204 |
-| GET `/api/v1/reports` | Admin/Viewer | page/pageSize, status optional | 200 report summaries newest-first |
-| GET `/api/v1/reports/:id` | Admin/Viewer | UUID | 200 detail + immutable snapshot + narrative/status |
-| POST `/api/v1/reports` | Admin | `{}` + Idempotency-Key UUID | 202 queued report + Location |
-| GET `/api/v1/integrations/status` | Admin | ไม่มี | 200 flags/worker heartbeat/model/build ที่ไม่เป็น secrets |
-| GET `/api/docs` และ `/api/openapi.json` | Admin | Cookie session | Swagger UI และ OpenAPI document; ไม่มี interactive login bypass |
-| POST `/internal/v1/report-jobs/claim` | Worker bearer | `{}` | 200 job หรือ data:null; update heartbeat |
-| POST `/internal/v1/report-jobs/:id/complete` | Worker bearer | leaseToken + result ตาม 12.5 | 200 terminal status |
-| POST `/internal/v1/report-jobs/:id/fail` | Worker bearer | leaseToken + errorCode | 200 QUEUED หรือ FAILED ตาม retry policy |
-| POST `/internal/v1/reports/scheduled` | Scheduler bearer | `{}` | 202 งานใหม่ หรือ 200 งานของวันนี้ที่มีแล้ว |
+| GET `/api/v1/departments` | Public | ไม่มี | 200 array 4 departments ตาม sortOrder |
+| GET `/api/v1/employees` | Public | Query ตาม 10.3 | 200 list + pagination |
+| GET `/api/v1/employees/:id` | Public | Positive integer ID | 200 Employee DTO; ETag เป็น version |
+| POST `/api/v1/employees` | Public | Create body + Idempotency-Key UUID | 201 DTO + Location + ETag |
+| PATCH `/api/v1/employees/:id` | Public | Partial body + If-Match | 200 DTO + ETag + meta.changed |
+| DELETE `/api/v1/employees/:id` | Public | If-Match; ไม่มี body | 204 |
+| GET `/api/docs` และ `/api/openapi.json` | Public | ไม่มี | Swagger UI และ OpenAPI document |
 | GET `/api/health/live` | Public | ไม่มี | 200 `{ "status": "ok" }` เมื่อ process ยังตอบได้ |
 | GET `/api/health/ready` | Public | ไม่มี | 200 ready หรือ 503 not_ready โดยไม่เปิดเผยรายละเอียดระบบ |
 
-Internal worker token และ scheduler token แยกกันตาม scope ไม่ใช้ token เดียวกับ browser session endpoint ภายในไม่ผ่าน Next.js proxy และไม่เผยแพร่พอร์ต NestJS ต่อสาธารณะ
+ไม่เผยแพร่พอร์ต NestJS ต่อสาธารณะ
 
 ### 10.3 Search/filter/sort/pagination
 
@@ -496,18 +452,18 @@ Internal worker token และ scheduler token แยกกันตาม scop
 | status | all | all/active/inactive; map inactive ไป isActive=false และ UI label In Active |
 | page | 1 | Integer 1–1,000,000 |
 | pageSize | 20 | Integer 1–100; UI เลือก 10/20/50 |
-| sortBy | id | id/name/department/joinDate/isActive/lastUpdatedDate; salary สำหรับ Admin เท่านั้น |
+| sortBy | id | id/name/department/joinDate/isActive/lastUpdatedDate/salary |
 | sortOrder | asc | asc/desc เท่านั้น |
 
 ไม่รับ query key ที่ไม่รู้จัก ใช้ AND รวมเงื่อนไข และ escape search โดยไม่ต่อ input ลง SQL โดยตรง sort columns ใช้ whitelist; department sort ตาม label; name sort ตาม lower(name) ด้วย DB collation ที่บันทึกไว้ (เลือก C เพื่อผลคงที่) ตามด้วย id asc ถ้า primary sort ไม่ใช่ id
 
-Viewer ส่ง sortBy=salary ตอบ 403 แม้ไม่คืน Salary เพราะลำดับก็เปิดเผยข้อมูลได้ ไม่มี filter min/max Salary ในรุ่นนี้
+ไม่มี filter min/max Salary ในรุ่นนี้
 
 Query count และ page data ใช้ transaction snapshot เดียวกันเมื่อจำเป็นให้ meta ตรงข้อมูล; หน้าเกิน totalPages คืน data=[] และ total เดิม; total=0 ให้ totalPages=0 ไม่สร้างหน้าเทียม
 
 ### 10.4 ตัวอย่าง Employee API
 
-สร้างพนักงาน — header `Idempotency-Key: <UUID>` และ CSRF:
+สร้างพนักงาน — header `Idempotency-Key: <UUID>`:
 
 ```json
 {
@@ -544,7 +500,7 @@ Query count และ page data ใช้ transaction snapshot เดียว�
 { "salary": "63000.00", "isActive": false }
 ```
 
-ผลใช้ DTO เดิมโดย salary=63000.00, isActive=false, version=2 และ meta.changed=true; no-op ให้ changed=false/version เดิม Response Viewer มี keys เดียวกันยกเว้น **ไม่มี key salary** ไม่ส่ง null/0 แทน และ browser cache ต้องแยก user/role และล้างตอน logout
+ผลใช้ DTO เดิมโดย salary=63000.00, isActive=false, version=2 และ meta.changed=true; no-op ให้ changed=false/version เดิม
 
 ผล list ที่กรอง seed Engineering, pageSize=1:
 
@@ -597,18 +553,16 @@ Query count และ page data ใช้ transaction snapshot เดียว�
 | HTTP | Code ตัวอย่าง | ใช้เมื่อ |
 | --- | --- | --- |
 | 400 | VALIDATION_ERROR / INVALID_QUERY / INVALID_IDEMPOTENCY_KEY | Input ไม่ตรง contract; ไม่มี key ที่ POST บังคับ |
-| 401 | UNAUTHENTICATED / SESSION_EXPIRED / INVALID_SERVICE_TOKEN | ไม่มีตัวตนที่ใช้ได้ |
-| 403 | FORBIDDEN / ACCOUNT_NOT_ALLOWED / CSRF_INVALID | ไม่มีสิทธิ์หรือ CSRF ไม่ผ่าน |
-| 404 | EMPLOYEE_NOT_FOUND / REPORT_NOT_FOUND | ไม่มีรายการหลังตรวจสิทธิ์ |
-| 409 | VERSION_CONFLICT / IDEMPOTENCY_CONFLICT / REPORT_IN_PROGRESS / STALE_LEASE | ชนกับ state ปัจจุบัน |
+| 404 | EMPLOYEE_NOT_FOUND | ไม่มีรายการ |
+| 409 | VERSION_CONFLICT / IDEMPOTENCY_CONFLICT | ชนกับ state ปัจจุบัน |
 | 428 | PRECONDITION_REQUIRED | PATCH/DELETE ไม่มี If-Match |
-| 429 | RATE_LIMITED / REPORT_QUOTA_EXCEEDED | เกิน policy; มี Retry-After |
-| 503 | AI_NOT_CONFIGURED / DEPENDENCY_UNAVAILABLE | บริการที่ operation นั้นต้องใช้ยังไม่พร้อม |
+| 429 | RATE_LIMITED | เกิน policy; มี Retry-After |
+| 503 | DEPENDENCY_UNAVAILABLE | บริการที่ operation นั้นต้องใช้ยังไม่พร้อม |
 | 500 | INTERNAL_ERROR | ความผิดพลาดที่ไม่ได้คาดไว้; คืนข้อความทั่วไปและ request ID |
 
-POST employees/reports ต้องมี Idempotency-Key UUID ที่ client สร้างหนึ่งครั้งต่อ intent และเก็บใน memory จนรู้ผลสำเร็จ/ล้มเหลว ห้ามสร้าง key ใหม่เพียงเพราะ network timeout
+POST employees ต้องมี Idempotency-Key UUID ที่ client สร้างหนึ่งครั้งต่อ intent และเก็บใน memory จนรู้ผลสำเร็จ/ล้มเหลว ห้ามสร้าง key ใหม่เพียงเพราะ network timeout
 
-- Scope key ต่อ endpoint+user; normalized payload เดิมและ key เดิมคืน status/body เดิมพร้อม `Idempotency-Replayed: true` และไม่สร้างซ้ำ
+- Scope key ต่อ endpoint; normalized payload เดิมและ key เดิมคืน status/body เดิมพร้อม `Idempotency-Replayed: true` และไม่สร้างซ้ำ
 - Key เดิมแต่ payload ต่างตอบ 409; record และ idempotency response บันทึก transaction เดียวกัน
 - สองคำขอพร้อมกัน key เดียวต้อง serialize ผ่าน unique constraint/transaction และคืนผลเดียว ไม่สร้างสองแถว
 - อายุ key 24 ชั่วโมง; expiry cleanup; ไม่รับประกัน replay หลังหมดอายุ ให้ UI refresh ตรวจรายการก่อนเริ่ม intent ใหม่
@@ -645,7 +599,7 @@ interface DepartmentDto { id: string; name: string; sortOrder: number }
 - CORS ปิดสำหรับ origin อื่น; browser ใช้ same-origin proxy
 - Origin ถ้ามีต้องตรง PUBLIC_APP_ORIGIN
 - ใช้ parameterized queries และ whitelist sort; render ชื่อเป็น text ไม่ใช้ raw HTML
-- API read limit 300 requests/minute/session, writes 60/minute/session; มี config เฉพาะ performance environment
+- API read limit 300 requests/minute, writes 60/minute ต่อ client IP
 - หนึ่ง API instance ในรุ่นนี้จึงใช้ in-process throttler ได้; ไม่อ้างว่า limiter รองรับหลาย instance
 - Redact Cookie, Authorization, secrets, salary และ form bodies ใน logs
 - เก็บ secrets ผ่าน environment/credentials store ไม่ลง git หรือ NEXT_PUBLIC_*
@@ -694,50 +648,30 @@ interface DepartmentDto { id: string; name: string; sortOrder: number }
 | --- | --- | --- | --- | --- |
 | local dev | http://localhost:3000 | localhost:3001 | employee_console_dev | พัฒนาและ Live Coding |
 | local staging | http://localhost:3100 | ไม่ publish host port | employee_console_staging | Production build สำหรับ demo และ CD |
-| test | localhost port ที่ test runner จัดสรร | ภายใน test network | employee_console_test_<run> | Automated checks และ auth fixtures |
-| performance | http://localhost:3200 | เฉพาะ benchmark runner | employee_console_perf | Production build + synthetic data |
+| test | localhost port ที่ test runner จัดสรร | ภายใน test network | employee_console_test_<run> | Automated checks |
 
-พอร์ตเครื่องมือเมื่อเปิด profile: Jenkins 8080, n8n 5678, Open WebUI 3002; bind 127.0.0.1 บน host ไม่เปิด LAN โดย default Profile core มี web/api/postgres; automation มี n8n; ci มี Jenkins; ai-workspace มี Open WebUI
+พอร์ตเครื่องมือเมื่อเปิด profile: Jenkins 8080; bind 127.0.0.1 บน host ไม่เปิด LAN โดย default Profile core มี web/api/postgres; ci มี Jenkins
 
-PostgreSQL อาจใช้ instance เดียวในเครื่องแต่แยก database และ DB role ของแอป, n8n, test/staging; ไม่ให้ workflow credential query schema แอปโดยตรง Open WebUI ใช้ persistence ของตัวเองแยก volume การรัน core ไม่ต้องรอ Jenkins/n8n/Open WebUI
+PostgreSQL อาจใช้ instance เดียวในเครื่องแต่แยก database และ DB role ของแอป, test/staging; การรัน core ไม่ต้องรอ Jenkins
 
 ### 13.2 Environment variables
 
-ค่าลับในตารางเป็นชื่อที่จะต้องตั้ง ไม่ใช่ secret จริง `config:bootstrap` สร้าง random secrets สำหรับ local ลงไฟล์ที่ gitignore และไม่พิมพ์ค่าออก console ไม่สร้าง OAuth/Gemini credentials แทนเจ้าของบัญชี
+ค่าลับในตารางเป็นชื่อที่จะต้องตั้ง ไม่ใช่ secret จริง `config:bootstrap` สร้าง random secrets สำหรับ local ลงไฟล์ที่ gitignore และไม่พิมพ์ค่าออก console
 
 | Variable | Default/ตัวอย่างที่ไม่ใช่ค่าลับ | ผู้ใช้ค่า/พฤติกรรม |
 | --- | --- | --- |
-| APP_ENV | local | local/staging/test/performance; คุม runtime guards |
+| APP_ENV | local | local/staging/test; คุม runtime guards |
 | NODE_ENV | development สำหรับ dev; production สำหรับ staged build | ไม่ใช้แทน APP_ENV |
-| APP_TIMEZONE | Asia/Bangkok | กฎ lastUpdatedDate, report date และ UI |
-| PUBLIC_APP_ORIGIN | http://localhost:3000 | ต้องตรง origin/callback ของ environment |
+| APP_TIMEZONE | Asia/Bangkok | กฎ lastUpdatedDate และ UI |
+| PUBLIC_APP_ORIGIN | http://localhost:3000 | ต้องตรง origin ของ environment |
 | API_INTERNAL_URL | http://api:3001 ใน Compose | Next rewrite; local process ใช้ http://localhost:3001 |
 | PORT | 3001 | Nest listener ภายใน container |
 | DATABASE_URL | postgresql://<user>:<password>@postgres:5432/employee_console_dev | API/Prisma; generated local config |
-| SESSION_SECRET | random≥32 bytes | secret ต่อ environment ไม่ share staging/test |
-| SESSION_COOKIE_NAME | employee_console.local.sid | ใช้ employee_console.staging.sid สำหรับ staging เพื่อไม่ชน cookie localhost ข้าม port |
-| GOOGLE_CLIENT_ID | ต้องตั้งจาก Google project | ถ้าไม่มี start login คืน 503 AUTH_NOT_CONFIGURED |
-| GOOGLE_CLIENT_SECRET | ต้องตั้งจริง | server only |
-| GOOGLE_REDIRECT_URI | http://localhost:3000/api/auth/google/callback | staging ใช้ 3100; ต้องลงทะเบียนทั้งคู่ถ้าใช้ client เดียวกัน |
-| ADMIN_EMAILS | รายชื่อจริง comma-separated | ไม่มี default email ที่แต่งขึ้น; ผู้สมัครใส่บัญชีตนเอง |
-| VIEWER_EMAILS | empty | ใส่บัญชี viewer เมื่อต้องการทดสอบด้วย Google จริง |
-| REPORTS_ENABLED | false จนตั้งค่า integration | เปิด true เมื่อ worker/Gemini config พร้อม; code/workflow ยังต้องสร้างครบ |
-| GEMINI_MODEL | gemini-3.8-flash | model ของ worker และรายงาน; เปลี่ยนเมื่อ access หรือ version เปลี่ยนโดยบันทึกหลักฐาน |
-| GEMINI_API_KEY | secret จากบัญชีผู้ใช้ | นำเข้า n8n/Open WebUI credentials; ไม่ส่งเข้า frontend |
-| WORKER_SERVICE_TOKEN | random≥32 bytes | claim/complete/fail; credential แยก |
-| SCHEDULER_SERVICE_TOKEN | random≥32 bytes | scheduled report endpoint เท่านั้น |
-| INTERNAL_API_URL | http://api:3001/internal/v1 | n8n caller ภายใน environment นั้น |
-| N8N_ENCRYPTION_KEY | random secret ที่คงเดิมบน volume | n8n credentials persistence |
-| WEBUI_SECRET_KEY | random secret ที่คงเดิมบน volume | Open WebUI persistence |
 | JENKINS_GIT_URL | existing repository URL เมื่อมี | ค่า external; ไม่สร้าง remote/public repo โดยอัตโนมัติ |
 | GIT_CREDENTIAL_ID | Jenkins credential reference เมื่อจำเป็น | ไม่ใช้ raw PAT ใน Jenkinsfile |
 | LOG_LEVEL | info | JSON logs; debug ไม่พิมพ์ secrets/body |
-| AUTH_FIXTURES_ENABLED | false | true ได้เฉพาะ test/performance พร้อม DB marker; release ต้องไม่มี HTTP fixture route |
-| PERF_RATE_LIMIT_OVERRIDE | false | true เฉพาะ performance เพื่อวัด throughput โดยไม่ชน user limiter |
 
-กำหนดเวลา lease/retry/session/quota จาก PRD เป็น typed config พร้อม defaults; validate startup ไม่กระจาย magic numbers ทั่ว code ตัวอย่าง .env ต้องมีคำอธิบายและไม่มีค่าลับจริง
-
-เมื่อไม่มี Google credentials เซิร์ฟเวอร์ยังเปิดหน้า Login และ health ได้ แต่แสดง configuration unavailable และไม่มีสิทธิ์เข้า Employees ไม่มี fallback password หรือ demo login ใน local/staging ทั้งนี้ไม่ถือว่า Google Login feature ผ่านจนทดสอบจริง
+กำหนดเวลาและ limit จาก PRD เป็น typed config พร้อม defaults; validate startup ไม่กระจาย magic numbers ทั่ว code ตัวอย่าง .env ต้องมีคำอธิบายและไม่มีค่าลับจริง
 
 ### 13.3 คำสั่งที่ implementation ต้องจัดให้
 
@@ -751,28 +685,24 @@ PostgreSQL อาจใช้ instance เดียวในเครื่อ�
 | `pnpm db:migrate` | Apply committed migrations ให้ database ที่กำหนด |
 | `pnpm db:seed` | เติมข้อมูลต้นฉบับแบบไม่ทับ record ที่มีอยู่ |
 | `pnpm demo:reset --confirm-reset` | Reset เฉพาะข้อมูล demo ตาม 9.5 พร้อม guard |
-| `pnpm test:unit` | Unit tests กฎ normalization, mapping, date, role, queue policy |
+| `pnpm test:unit` | Unit tests กฎ normalization, mapping, date |
 | `pnpm test:api` | Supertest/integration บน PostgreSQL จริงแยกฐาน |
-| `pnpm test:postman` | Newman พร้อม env ชั่วคราวและ cookie fixture ที่ถูกต้อง |
-| `pnpm test:e2e` | Playwright login fixture/Admin/Viewer และเส้นทางหลัก |
-| `pnpm test:session` | สร้าง test session เฉพาะ test/performance; ไม่รันกับ demo |
+| `pnpm test:postman` | Newman พร้อม env ชั่วคราว |
+| `pnpm test:e2e` | Playwright เส้นทางหลัก |
 | `pnpm lint` / `pnpm typecheck` / `pnpm build` | ตรวจและ build ทั้ง web/api |
 | `pnpm openapi:generate` | สร้าง spec และ client types; ตรวจ drift ใน CI |
 | `pnpm staging:up` | Build/เริ่ม core production containers ที่ 3100; apply migrations ก่อนพร้อมใช้งาน |
-| `pnpm staging:smoke` | Health และ route checks ไม่แต่งว่า Google จริงผ่านถ้าไม่มี interactive smoke |
-| `pnpm ai:up` | เริ่ม n8n/Open WebUI profiles; แจ้ง credential setup/import ที่ยังต้องทำ |
-| `pnpm perf:seed` / `pnpm perf:run` | สร้าง/ทดสอบข้อมูลสังเคราะห์ใน perf DB เท่านั้น |
-| `pnpm doctor` | ตรวจ process/DB/config presence/worker โดยไม่แสดง secret |
+| `pnpm staging:smoke` | Health และ route checks |
+| `pnpm doctor` | ตรวจ process/DB/config presence โดยไม่แสดง secret |
 | `pnpm down` | หยุดบริการของ project โดยไม่ลบ volumes |
 
 ### 13.4 Health, logging และ recovery
 
-- Liveness ตรวจ process; readiness ตรวจ DB และ schema version ที่ app ต้องใช้ ไม่ผูกกับ Gemini/n8n/Open WebUI
-- Integration page แยก core ready, Google configured, worker last seen และ report enabled; configured ไม่เท่ากับผ่าน live test
-- JSON logs fields: timestamp, level, appEnv, service, requestId, method, routeTemplate, status, durationMs, errorCode; report job เพิ่ม reportId/attempt แต่ไม่ log payload
+- Liveness ตรวจ process; readiness ตรวจ DB และ schema version ที่ app ต้องใช้
+- JSON logs fields: timestamp, level, appEnv, service, requestId, method, routeTemplate, status, durationMs, errorCode
 - ปิด verbose query logging ใน demo; ปิดการเก็บ raw provider response โดย default
 - Core DB ล่ม: API คืน 503 ที่อ่านได้และ UI ให้ retry; ไม่แสดงข้อมูลสำเร็จจาก mutation ที่ไม่ได้ commit
-- Restart app ไม่ลบ sessions/employee data; report queue กู้ตาม lease/deadline หลัง restart
+- Restart app ไม่ลบ employee data
 - เก็บ backup staging ก่อน migration ที่มีความเสี่ยงในโฟลเดอร์ที่ gitignore; จัดคำสั่ง restore แบบ explicit พร้อมตรวจ DB เป้าหมายและหยุด writes ก่อน restore
 - Shutdown สุภาพ: หยุดรับ request ใหม่ ปิด DB pool; ให้ Docker health ตรวจ ready ก่อน routing
 
@@ -793,14 +723,14 @@ Git remote ใช้ existing remote เมื่อมี ถ้าไม่ม
 | Checkout | checkout commit ที่ระบุ, บันทึก SHA/runtime | หยุด |
 | Dependencies | install --frozen-lockfile, ตรวจ tool versions | หยุด ไม่แก้ lockfile เงียบ ๆ |
 | Static checks | lint/typecheck/OpenAPI client drift | หยุด |
-| Unit | กฎ business/auth/queue tests | หยุด |
+| Unit | กฎ business tests | หยุด |
 | Test DB | Compose project เฉพาะ build, migrate, fixture seed | หยุดและเก็บ log |
-| API/Postman | integration tests + Newman cookie/CSRF tests | หยุด |
+| API/Postman | integration tests + Newman | หยุด |
 | Build | Next production build และ Nest artifact | หยุด |
-| E2E | Run built app กับ test DB และ test-only sessions; Playwright | หยุด เก็บ trace เมื่อ fail |
+| E2E | Run built app กับ test DB; Playwright | หยุด เก็บ trace เมื่อ fail |
 | Images | multi-stageimages tag commit SHA, ไม่ฝัง.env | หยุด |
 | Deploy staging | default branch หรือ manual deploy parameter ที่อนุญาต; migrate/เปลี่ยน containers | ถ้าล้มไม่ทำเครื่องหมายสำเร็จ |
-| Smoke | health, login page, static assets, DB schema readiness; auth จริงแยก manual evidence | revert app images เมื่อทำได้และแจ้งผล |
+| Smoke | health, static assets, DB schema readiness | revert app images เมื่อทำได้และแจ้งผล |
 | Evidence/cleanup | JUnit/Newman/Playwright reports, manifest, logs; ลบเฉพาะ CI resources | cleanup ต้องไม่ลบ staging volume |
 
 Branch checks ทำ CI เท่านั้น; default branch/main ทำ localstagingCD หลัง gates ผ่าน ระบุ branch จริงจาก repo ห้ามสร้างการเผยแพร่ภายนอก ทุก deploy serialize ด้วย Jenkins lock/disableConcurrentBuilds เพื่อไม่ให้ migrations ชนกัน
@@ -819,44 +749,21 @@ Test project ชื่อ `employee-console-ci-<buildNumber>` และ database
 
 ส่งมอบ Jenkinsfile, setup guide, build หนึ่งครั้งที่ผ่านจริง, test reports และ SHA ที่ deploy Postman collection ต้องอ่าน API contract เดียวกับแอป โดยมี assertion ผลและ negative cases ไม่ใช่เพียงรายการ requests
 
-Performance full benchmark ใช้ pipeline parameter `RUN_PERF=true` หรือรัน local ที่มีสภาพแวดล้อมควบคุม ไม่ทำให้ผล load test ซึ่งแชร์ CPU กับ build ถูกอ้างเทียบ baseline ที่ต่างเครื่อง Jenkins รองรับ pipeline as code และ Newman ใช้รัน collection ใน CI ได้ [Jenkins Pipeline](https://www.jenkins.io/doc/book/pipeline/), [Postman Newman](https://learning.postman.com/docs/reference/newman-cli/command-line-integration-with-newman)
+Jenkins รองรับ pipeline as code และ Newman ใช้รัน collection ใน CI ได้ [Jenkins Pipeline](https://www.jenkins.io/doc/book/pipeline/), [Postman Newman](https://learning.postman.com/docs/reference/newman-cli/command-line-integration-with-newman)
 
 ## 15. Performance specification
 
 ### 15.1 ชุดข้อมูลและวิธีวัด
 
-ใช้ synthetic employees 10,000 รายการแบบ deterministic seed เช่น seed42 แบ่งแผนก 40/25/20/15 เปอร์เซ็นต์ สถานะ Active 80 เปอร์เซ็นต์โดยกระจายทุกแผนก ชื่อ synthetic ที่ไม่มีข้อมูลบุคคลจริง Salary เป็น exact decimal และมีชื่อบางกลุ่มสำหรับ search benchmark อย่างทำซ้ำได้ เก็บ generator parameters และ checksum
-
-Perf DB แยก seed ต้นฉบับทั้งหมด ไม่รวม reports AI ใน latency ของ CRUD ใช้ production build, one API instance, pool 10 connections เริ่มต้น; ก่อนวัดหยุด Jenkins build และ Open WebUI/n8n ถ้าไม่เกี่ยวข้อง พร้อมบันทึก CPU/RAM/OS/container limits/commit SHA
-
-Warmup 30 วินาที วัด steady 3 นาทีที่ 20virtualusers; แยก read scenario กับ write scenario ใช้ test sessions ที่ pre-create และยังไม่หมดอายุ ไม่รวม Google network ใน CRUD benchmark เปิด rate override เฉพาะ performance และระบุใน report
+ตัดออกตาม D-52
 
 ### 15.2 เป้าหมายเริ่มต้นที่เลือกสำหรับโครงการ
 
-ตัวเลขต่อไปนี้เป็น **acceptance targets ของ PRD ไม่ใช่ผลที่วัดแล้วหรือ SLA จากนายจ้าง** หากเครื่องมีข้อจำกัดให้รายงานเป้าหมายเดิม ผลจริง และสาเหตุ ไม่แก้ target ให้ผ่านเงียบ ๆ
-
-| Metric | Target |
-| --- | --- |
-| API list/filter/detail p95 | ≤300ms ที่ 20VUs บน 10krecords |
-| Name contains search p95 | ≤500ms ที่ 20VUs; query ยาวอย่างน้อย 3 ตัวสำหรับ scenario หลัก |
-| Create/update/delete p95 | ≤500ms ที่ 10VUs ใน scenario แยก |
-| Unexpected error rate | <1%; expected 4xx ที่แยกออกต้องรายงานแยก ไม่ซ่อน 500/timeout |
-| Manual report enqueue p95 | ≤1,000ms ไม่รวมเวลารัน Gemini |
-| Listing payload | ≤100KB สำหรับ 20records ปกติ ไม่มีข้อมูลซ้ำ/field ที่ไม่ใช้ |
-| Frontend Lighthouse | Performance≥90, Accessibility≥95 ใน desktop profile/production build median 3 runs |
-| Main page layout shift | CLS≤0.1 ใน lab run; ไม่อ้างว่าเป็น field metric ของผู้ใช้จริง |
+ตัดออกตาม D-52
 
 ### 15.3 สิ่งที่จะปรับและหลักฐาน
 
-1. เก็บ baseline ก่อนเพิ่ม index หรือ cache บันทึก SQL และ query plan ของ list/search/filter
-2. ใช้ pagination ตั้งแต่แรก จำกัด pageSize และเลือกเฉพาะ fields ที่ต้องใช้
-3. ทดสอบ index ที่ตรง query เช่น department_id/is_active หรือ pg_trgm สำหรับ contains โดยใช้ EXPLAIN ANALYZE บน perf DB ก่อน–หลัง เลือกเพิ่มเมื่อผลดีจริง
-4. ไม่คาดว่า B-tree ชื่อจะแก้ทุก contains query หรือ status index จะคุ้มทุก distribution; ชื่อสั้น 1–2 ตัวใช้ fallback query ที่ยังมี limit
-5. หลีกเลี่ยง N+1 ในการดึง department; ตรวจ pool และ query count/request
-6. Frontend: debounce 300ms, cancel stale responses, avoid unnecessary rerender, ไม่โหลด AI tools SDK ใน employee UI
-7. วัดซ้ำ 3 รอบเงื่อนไขเดิม รายงาน p50/p95/error rate/throughput และความแปรปรวน; ถ้าไม่พบคอขวดให้รายงานว่าไม่ต้องปรับเพิ่ม
-
-`docs/performance.md` ต้องมีคำสั่ง,seed,environment,baseline commit,optimized commit,raw results และข้อสรุป รวมทั้งข้อเสียที่เกิดขึ้นเช่น index storage หรือ write cost [PostgreSQL EXPLAIN](https://www.postgresql.org/docs/current/using-explain.html), [pg_trgm](https://www.postgresql.org/docs/17/pgtrgm.html), [k6 metrics](https://grafana.com/docs/k6/latest/using-k6/metrics/), [Lighthouse](https://developer.chrome.com/docs/lighthouse/overview)
+ตัดออกตาม D-52 — index ที่เลือกจากรอบวัดเดิมยังอยู่ใน migration `20261002000000_perf_indexes`: trigram GIN บน `lower(name)` สำหรับค้นหาชื่อแบบ contains และ `(department_id, is_active)` สำหรับ filter แผนก+สถานะ
 
 ## 16. Acceptance criteria และแผนทดสอบ
 
@@ -864,7 +771,7 @@ Warmup 30 วินาที วัด steady 3 นาทีที่ 20virtualu
 
 รหัส AC-* เป็นเกณฑ์ตรวจรับที่กำหนดใน PRD ภายใต้การมอบหมายของผู้ใช้ ไม่ใช่ rubric ทางการจากนายจ้าง ให้แต่ละรายการมีผล PASS/FAIL/BLOCKED/NOT RUN พร้อมชื่อ test หรือหลักฐาน ห้ามตีความ checkbox ในเอกสารว่าได้ทดสอบแล้ว
 
-Unit tests ใช้กับกฎที่แยกได้; integration ใช้ PostgreSQL จริง; browser tests ใช้ built app; external Google/Gemini/n8n/Open WebUI ต้องมี live smoke แยกจาก mocks ไม่จำเป็นต้องไล่ coverage 100% แต่ต้องครอบคลุมพฤติกรรมสำคัญในตาราง
+Unit tests ใช้กับกฎที่แยกได้; integration ใช้ PostgreSQL จริง; browser tests ใช้ built app ไม่จำเป็นต้องไล่ coverage 100% แต่ต้องครอบคลุมพฤติกรรมสำคัญในตาราง
 
 ### 16.2 Core data และ CRUD
 
@@ -872,7 +779,7 @@ Unit tests ใช้กับกฎที่แยกได้; integration ใ�
 | --- | --- | --- | --- |
 | AC-01 | Fresh DB → migrate+seed | มี 5records ID 101–105, departments 4, Active 4/In Active 1, Salary รวม 290000.00 | REQ-01/03; integration |
 | AC-02 | Seed ซ้ำหลังแก้ชื่อ 101 | ไม่เพิ่มแถวและไม่ทับชื่อ/วันที่ที่แก้ | REQ-01; integration |
-| AC-03 | เปิด employee 101–105 ด้วย Admin | ค่าทั้ง 7 ฟิลด์ตรงภาคผนวก รวม Last Updated Date เดิม | REQ-03; API+E2E |
+| AC-03 | เปิด employee 101–105 | ค่าทั้ง 7 ฟิลด์ตรงภาคผนวก รวม Last Updated Date เดิม | REQ-03; API+E2E |
 | AC-04 | Create ข้อมูลถูกต้องบน fresh fixture | 201, ID 106, version 1, today Bangkok, persisted หลัง restart | REQ-05/12/18; integration |
 | AC-05 | POST พร้อม id หรือ lastUpdatedDate | 400, ไม่มีแถวเพิ่ม | REQ-12/18; API |
 | AC-06 | ชื่อไทย/อังกฤษ/เครื่องหมายตามชื่อ, trim | บันทึกชื่อ normalize ถูกต้อง; whitespace ล้วน/control/101codepoints ปฏิเสธ | REQ-13; unit+API |
@@ -886,7 +793,7 @@ Unit tests ใช้กับกฎที่แยกได้; integration ใ�
 | AC-14 | PATCH ค่าทั้งหมดเท่าเดิมหลัง normalize | changed=false; version/วันที่/timestamps ไม่เปลี่ยน | กฎ 9.4; integration |
 | AC-15 | GET/search/cancel/validation fail | ไม่มี field เปลี่ยนใน DB | REQ-18; integration |
 | AC-16 | PATCH/DELETE ไม่มี If-Match หรือ version เก่า | 428/409 ตามกรณี; ไม่ทับการแก้อีกคน | กฎ 9.4; concurrent integration |
-| AC-17 | Admin ยืนยันลบหนึ่งรายการ | 204, row หาย, GET ตอบ 404, รายการอื่นคงเดิม; ID ไม่ reuse | REQ-05; API+E2E |
+| AC-17 | ยืนยันลบหนึ่งรายการ | 204, row หาย, GET ตอบ 404, รายการอื่นคงเดิม; ID ไม่ reuse | REQ-05; API+E2E |
 | AC-18 | Cancel Delete หรือ Cancel Edit | ไม่เปลี่ยนข้อมูล; ฟอร์ม dirty มีการยืนยันก่อนทิ้ง | REQ-05; E2E |
 | AC-19 | สอง POST พร้อม key/payload เดียวกัน | สร้างเพียงหนึ่งแถวและ replay ผลเดิม; key เดิม payload ต่าง 409 | กฎ 10.5; concurrency test |
 | AC-20 | DB commit สำเร็จแต่ client ไม่ได้ response | Retry key เดิมไม่สร้างซ้ำ; UI ตรวจผลและไป record เดิม | กฎ 10.5; fault test |
@@ -900,15 +807,15 @@ Unit tests ใช้กับกฎที่แยกได้; integration ใ�
 | AC-23 | Search มี%/_ หรือ SQL-like ข้อความ | ตีความ literal ไม่กลายเป็น wildcard/SQL | กฎ 10.3; API |
 | AC-24 | Sort/เปลี่ยนหน้า/reload/back | ลำดับ stable, query URL คงอยู่, filter เปลี่ยนกลับ page1 | REQ-03/04; E2E |
 | AC-25 | ไม่พบผล/page เกิน/ลบแถวสุดท้ายของหน้า | empty/total ถูกต้องและ UI กลับหน้าที่มีข้อมูลได้ | REQ-03; API+E2E |
-| AC-26 | Admin อ่านรายการ/detail | มี Salary และ CRUD actions ครบ | REQ-03/05; API+E2E |
-| AC-27 | Viewer อ่านรายการ/detail | ไม่มี salary key ใน network response, ไม่มี CRUD actions, sort salary ตอบ 403 | USR-03; API+E2E |
-| AC-28 | Viewer เรียก mutation/API โดยตรง | 403 และ DB ไม่เปลี่ยน; ไม่พึ่งการซ่อนปุ่ม | USR-03; API |
-| AC-29 | Google account ไม่อยู่ allowlist | เข้า Employees ไม่ได้และไม่มีสิทธิ์ผ่าน direct API | USR-03; mock OIDC+manual real |
-| AC-30 | Invalid state/nonce/issuer/audience/expired token | Login ล้มเหลวและไม่สร้าง authenticated session | USR-03; auth integration |
-| AC-31 | Login/Logout/session หมดอายุ | rotate ID, logout invalidate, idle 30m/absolute 8h มีผล; client cache ล้าง | USR-03; fake clock+E2E |
-| AC-32 | mutation ที่ยืนยันตัวตนด้วย cookie ไม่มี/ผิด CSRF หรือ origin อื่น | 403 และไม่มี side effect | USR-03; API |
-| AC-33 | เปลี่ยน allowlist/role แล้ว apply config | request ถัดไปใช้สิทธิ์ใหม่ ไม่ใช้ role เก่าใน session | USR-03; integration |
-| AC-34 | เปิด AUTH_FIXTURES_ENABLED ใน staging | start fail หรือ fixture command ถูกปฏิเสธ; ไม่มี HTTP bypass route | ขอบเขต 11.5; configuration test |
+| AC-26 | อ่านรายการ/detail | มี Salary และ CRUD actions ครบ | REQ-03/05; API+E2E |
+| AC-27 | ตัดออกตาม D-46 | — | — |
+| AC-28 | ตัดออกตาม D-46 | — | — |
+| AC-29 | ตัดออกตาม D-46 | — | — |
+| AC-30 | ตัดออกตาม D-46 | — | — |
+| AC-31 | ตัดออกตาม D-46 | — | — |
+| AC-32 | ตัดออกตาม D-46 | — | — |
+| AC-33 | ตัดออกตาม D-46 | — | — |
+| AC-34 | ตัดออกตาม D-46 | — | — |
 | AC-35 | Desktop/mobile 375px/keyboard | form ใช้งานได้, labels/focus ชัด, table ไม่ทำ page แตก, errors ไม่พึ่งสี | UX ส่วน 8; E2E+manual |
 
 ### 16.4 AI workflow และ failure modes
@@ -920,21 +827,21 @@ AC-36 ถึง AC-50 ตัดออกตาม D-46 (ไม่ใช้รห
 | AC | Given / When | Then | แหล่ง |
 | --- | --- | --- | --- |
 | AC-51 | เครื่องที่มี prerequisites ทำตาม README | setup/migrate/seed/start สำเร็จและเปิด local demo ได้ | REQ-08/11 |
-| AC-52 | เปิด/ปิด core โดยไม่เปิด tools profiles | Employees ไม่ขึ้นกับ Jenkins/n8n/Open WebUI | USR-01/02 |
+| AC-52 | เปิด/ปิด core โดยไม่เปิด tools profiles | Employees ไม่ขึ้นกับ Jenkins | USR-01/02 |
 | AC-53 | รัน Postman/Newman บน test env | positive/negative assertions ผ่าน, ไม่มี secrets ใน export | USR-04 |
 | AC-54 | Jenkins รัน commit จริง | gates ผ่าน,เก็บ artifacts,images ตรง SHA และ staging ready | USR-05 |
 | AC-55 | CI ล้ม/cleanup/rollback exercise | ไม่ deploy build เสีย, ไม่ลบ staging data,previous image กู้ได้เมื่อ schema compatible | USR-05 |
-| AC-56 | Benchmark ก่อน–หลังตาม 15 | มี raw results/conditions และผล targets; ไม่อ้างว่าเป้าหมายคือผลจริง | USR-09 |
-| AC-57 | ตรวจ logs/env/repository | ไม่มี secrets/Salary/OAuth payload; placeholders ระบุชัด | กฎ 11/13 |
+| AC-56 | ตัดออกตาม D-52 | — | — |
+| AC-57 | ตรวจ logs/env/repository | ไม่มี secrets/Salary; placeholders ระบุชัด | กฎ 11/13 |
 | AC-58 | ผู้สมัครซ้อม demo | ≤15 นาทีรวม Q&A และอธิบายโค้ดที่ AI ทำได้ | REQ-06/07/09/10 |
-| AC-59 | ตรวจไฟล์ส่งมอบทั้งหมด | README,PRD,migrations,seed,OpenAPI,collections,workflows,prompt,evidence ครบ | USR-* |
+| AC-59 | ตรวจไฟล์ส่งมอบทั้งหมด | README,PRD,migrations,seed,OpenAPI,collections,evidence ครบ | USR-* |
 | AC-60 | รายงานสถานะงาน | แยก PASS/FAIL/BLOCKED/NOT RUN และไม่ใช้ mock แทน live verification | ความถูกต้องของหลักฐาน |
 
 ### 16.6 Release gates
 
-**Core-ready:** AC01–35 และ 51–52 ผ่าน รวม manualGoogleLogin จริงบนเครื่อง; REQ ทุกข้อที่เป็นตัวระบบครบ
+**Core-ready:** AC01–35 และ 51–52 ผ่าน (ไม่นับรหัสที่ตัดออก); REQ ทุกข้อที่เป็นตัวระบบครบ
 
-**Full-scope-ready:** Core-ready + AC36–60 ผ่านตามวิธีตรวจ โดยมีหลักฐานจริงของ Jenkins, n8n/Gemini, AI Studio, Open WebUI และผล performance ถ้าขาด credentials หรือเครื่องมือใดให้ใช้สถานะ implementation-ready/external-verification-pending สำหรับส่วนนั้น ไม่เรียก full-scope-ready
+**Full-scope-ready:** Core-ready + AC51–60 ผ่านตามวิธีตรวจ (ไม่นับรหัสที่ตัดออก) โดยมีหลักฐานจริงของ Jenkins ถ้าขาด credentials หรือเครื่องมือใดให้ใช้สถานะ implementation-ready/external-verification-pending สำหรับส่วนนั้น ไม่เรียก full-scope-ready
 
 Coverage report ใช้ช่วยหาจุดตกหล่น แต่ไม่แทน functional acceptance ไม่เขียน test ที่ยืนยัน implementation ตัวเองโดยไม่ตรวจผลที่ผู้ใช้ได้รับ
 
@@ -944,16 +851,16 @@ Coverage report ใช้ช่วยหาจุดตกหล่น แต่
 
 | Milestone | งาน | Exit criteria |
 | --- | --- | --- |
-| M0 — Bootstrap | ตรวจ repo เดิม, versions, Node/ESM/Prisma/session compatibility; สร้าง workspace, Compose core, config validation และ decision log | build web/api, DB connection, smoke ผ่าน; เวอร์ชันจริง pin แล้ว |
+| M0 — Bootstrap | ตรวจ repo เดิม, versions, Node/ESM/Prisma compatibility; สร้าง workspace, Compose core, config validation และ decision log | build web/api, DB connection, smoke ผ่าน; เวอร์ชันจริง pin แล้ว |
 | M1 — Data/API | schema/migrations/departments/seed; employee CRUD/validation/version/idempotency/search; OpenAPI แรก | AC01–25 ในระดับ API ผ่านและ source fixture ตรง |
-| M2 — Auth | Google OIDC/session/CSRF/allowlist, projections ตาม role และ tests | AC26–34 ผ่าน; Google จริงทำเมื่อ credentials พร้อม |
-| M3 — UI | หน้าจอทั้งหมดของ Employees/Login, URL state, pending/error/empty, responsive | CRUD journey ผ่าน Playwright; AC35 ผ่าน |
+| M2 — Auth | ตัดออกตาม D-46 | — |
+| M3 — UI | หน้าจอทั้งหมดของ Employees, URL state, pending/error/empty, responsive | CRUD journey ผ่าน Playwright; AC35 ผ่าน |
 | M4 — Delivery | Postman/Newman, Dockerproductionbuild, Jenkinsfile/local staging, README/runbook | CI ผ่านจริงเมื่อ remote พร้อม; staging smoke/rollback มีหลักฐาน |
-| M5 — Reports | snapshot/API/queue/lease/n8n worker/daily, reports UI, AIStudiofixtures | AC36–49 ผ่านทั้ง mocks และ live workflow ตามที่กำหนด |
-| M6 — Performance/workspace | benchmark baseline→tune→remeasure, OpenWebUIsetup/chat | ผลวัดจริงและ AC50/56 ครบ |
+| M5 — Reports | ตัดออกตาม D-46 | — |
+| M6 — Performance/workspace | ตัดออกตาม D-46 และ D-52 | — |
 | M7 — Final audit/demo | ตรวจทุก REQ/USR/AC, clean startup, docs,15minrehearsal | สถานะ release ตาม 16.6 พร้อม evidence |
 
-เพิ่ม tests พร้อมพฤติกรรมแต่ละส่วน ไม่รอเขียนทั้งหมดท้ายงาน M1 ใช้ test fixtures ได้ก่อน Google พร้อม แต่ไม่มี unauthenticated CRUD ใน final runtime งานที่ไม่ขึ้นกับ credentials ทำต่อได้โดยไม่รอผู้ใช้
+เพิ่ม tests พร้อมพฤติกรรมแต่ละส่วน ไม่รอเขียนทั้งหมดท้ายงาน งานที่ไม่ขึ้นกับ credentials ทำต่อได้โดยไม่รอผู้ใช้
 
 ### 17.2 ข้อปฏิบัติสำหรับ AI coding assistant
 
@@ -964,20 +871,19 @@ Coverage report ใช้ช่วยหาจุดตกหล่น แต่
 - เก็บ prompt ที่มีประโยชน์และการแก้ข้อผิดพลาดจริง ไม่สร้างเรื่องว่าพบ bug ที่ไม่ได้พบ
 - หลังเปลี่ยนส่วนสำคัญรัน checks ที่สัมพันธ์กัน; ไม่อ้างว่าทดสอบจริงหากเพียงอ่านโค้ด
 - ไม่เปลี่ยน scope/stack เพื่อความสะดวกโดยเงียบ; routine patch version และรายละเอียด code เลือกเองพร้อมบันทึกได้
-- ไม่มี credentials ให้ทำ adapter,config template และ mocks แล้วทำส่วนอื่นต่อ ขอเฉพาะค่า external เมื่อถึงขั้นจำเป็นจริง ไม่ถามซ้ำเรื่อง role/schema/UI ที่ PRD เลือกแล้ว
+- ไม่มี credentials ให้ทำ adapter,config template และ mocks แล้วทำส่วนอื่นต่อ ขอเฉพาะค่า external เมื่อถึงขั้นจำเป็นจริง ไม่ถามซ้ำเรื่อง schema/UI ที่ PRD เลือกแล้ว
 
 ### 17.3 Deliverable manifest
 
 | Deliverable | เนื้อหาที่ต้องมี |
 | --- | --- |
 | Source code | Next.js/NestJS, typed config, modules และ DTO ตาม contract |
-| Database | Prisma schema, SQL migrations รวม partial indexes/session, seed original, guarded reset, synthetic generator |
-| API | OpenAPI spec+admin-only docs, generated client, Postman collection/env templates |
+| Database | Prisma schema, SQL migrations, seed original, guarded reset |
+| API | OpenAPI spec+docs, generated client, Postman collection/env templates |
 | Automated tests | unit/integration/E2E/concurrency/failure fixtures และ reports |
 | Infrastructure | Dockerfiles/Compose profiles, Jenkinsfile, localstagingdeploy/smoke/rollback guide |
-| AI | n8n exports 2 workflows, prompt/schema/evaluation fixtures, OpenWebUIsetup และ live evidence |
 | Documentation | README, architecture diagram, decisions, versions, configuration, runbook, demo script |
-| Evidence | commit SHA, test results, pipeline build, benchmarkrawresults, external integration verification |
+| Evidence | commit SHA, test results, pipeline build |
 
 `docs/acceptance.md` ต้อง map REQ/USR/AC → code/test/evidence → status และรายการ known limitations ที่ยังมี ไม่มี checkbox ที่ถูกติ๊กไว้ล่วงหน้าจากการสร้างไฟล์เอกสารเพียงอย่างเดียว
 
@@ -986,40 +892,35 @@ Coverage report ใช้ช่วยหาจุดตกหล่น แต่
 ### 18.1 เตรียมเครื่องก่อนวันสัมภาษณ์
 
 1. ติดตั้ง prerequisites ตาม versions ที่ pin และ build images/dependencies ให้เสร็จก่อน ไม่ดาวน์โหลดใหญ่ระหว่าง demo
-2. ตั้ง Google callback ของ local/staging และ allowlist บัญชี Admin จริง ทดลอง Login/Logout ทั้งสอง origin
-3. ถ้ามีบัญชี Viewer จริงให้ทดสอบ หากไม่มีใช้ automated tests เป็นหลักฐาน role และระบุว่าไม่ได้ manual test Viewer กับ Google จริง
-4. เปิด localstaging3100, health ready, migrate และ reset demo อย่างตั้งใจให้กลับ 5records ก่อนซ้อม
-5. ตั้ง n8n credentials/import/activate ตรวจ worker heartbeat และสร้าง report จริงหนึ่งงาน
-6. เปิด Open WebUI ทดลอง snapshot หนึ่งครั้ง แล้วปิดเมื่อไม่ใช้เพื่อคืนทรัพยากร
-7. เปิด Jenkins build ล่าสุดและ performance before/after ที่บันทึกไว้ ไม่รัน load test หนักระหว่างสาธิต
-8. ทดสอบ AI coding assistant พร้อมบัญชี/เครือข่ายและเปิด repo ที่ถูกต้อง
-9. เตรียม README, architecture, seed และ acceptance status ไว้เข้าถึงง่าย
+2. เปิด localstaging3100, health ready, migrate และ reset demo อย่างตั้งใจให้กลับ 5records ก่อนซ้อม
+3. เปิด Jenkins build ล่าสุดที่บันทึกไว้
+4. ทดสอบ AI coding assistant พร้อมบัญชี/เครือข่ายและเปิด repo ที่ถูกต้อง
+5. เตรียม README, architecture, seed และ acceptance status ไว้เข้าถึงง่าย
 
 ### 18.2 แผนนำเสนอ 15 นาทีรวม Q&A
 
 | เวลา | สิ่งที่สาธิต/เล่า |
 | --- | --- |
 | 0–1 นาที | ปัญหา ขอบเขต และการแยกข้อสอบเดิมจากส่วนที่เพิ่ม |
-| 1–5 นาที | Google Login, seed 5 records, search/filter, สร้าง Dana Lee, แก้ Status/Salary และลบตัวอย่าง |
-| 5–7 นาที | Next/Nest/Postgres, schema, date/decimal, permissions และ concurrency หนึ่งตัวอย่าง |
-| 7–9 นาที | วิธีสั่ง AI coding assistant/ตรวจงาน และ Workforce Snapshot พร้อมอธิบายข้อมูลที่ส่ง AI |
-| 9–11 นาที | Jenkins build และผล performance จริง พร้อมข้อแลกเปลี่ยน |
+| 1–5 นาที | seed 5 records, search/filter, สร้าง Dana Lee, แก้ Status/Salary และลบตัวอย่าง |
+| 5–7 นาที | Next/Nest/Postgres, schema, date/decimal และ concurrency หนึ่งตัวอย่าง |
+| 7–9 นาที | วิธีสั่ง AI coding assistant/ตรวจงาน |
+| 9–11 นาที | Jenkins build |
 | 11–15 นาที | Q&A และเปิดโค้ดตามคำถาม |
 
-Open WebUI แสดงเป็นหลักฐานสั้นเมื่อเกี่ยวข้อง ไม่ใช้เวลาจนเสีย CRUD/Q&A ส่วน Live Coding ต้นฉบับไม่ได้ระบุชัดว่าอยู่ใน 15 นาทีเดียวกัน ต้องเตรียมพร้อมแต่ไม่แต่งเวลาสัมภาษณ์เพิ่ม
+ส่วน Live Coding ต้นฉบับไม่ได้ระบุชัดว่าอยู่ใน 15 นาทีเดียวกัน ต้องเตรียมพร้อมแต่ไม่แต่งเวลาสัมภาษณ์เพิ่ม
 
 ### 18.3 Script สำหรับ CRUD demo
 
 | ขั้น | ผลที่คาด |
 | --- | --- |
-| เปิด fresh seed ด้วย Admin | เห็น 5records และ 7businessfields; Bob Brown เป็น In Active |
+| เปิด fresh seed | เห็น 5records และ 7businessfields; Bob Brown เป็น In Active |
 | ค้น john | เห็น John Doe |
 | ล้างแล้วเลือก Engineering+In Active | เห็น Bob Brown |
 | สร้าง Dana Lee ตามตัวอย่าง API | fresh seed ได้ ID 106; date วันนี้จากระบบ |
 | แก้ Salary เป็น 63000.00/Status false | แสดง 63,000.00/In Active; version เพิ่ม |
 | เปิด 2 แท็บแล้วแก้ record เดียวกัน | แท็บเก่ารับ conflict ไม่ทับค่าใหม่ |
 | ลบ Dana Lee | กลับ 5records เดิม; ID sequence ไม่จำเป็นกลับ 105 |
-| Generate report | แสดง queued/running แล้ว snapshot 5,4,1 จากข้อมูลจริง |
 
 หลังซ้อมต้องใช้ reset demo เฉพาะเมื่ออยากได้ fixture/ID 106 ซ้ำ ไม่แสร้งว่าการลบทำให้ sequence กลับอัตโนมัติ
 
@@ -1027,18 +928,16 @@ Open WebUI แสดงเป็นหลักฐานสั้นเมื่
 
 | ปัญหา | การตอบสนองที่เลือก |
 | --- | --- |
-| Google/network ใช้งานไม่ได้ | ถ้ามี session จริงยังใช้ได้ให้แสดงตามอายุจริง; หากไม่มีให้แสดง recorded login/evidence และอธิบายข้อจำกัด ไม่มี auth bypass ใน demo |
-| Gemini/n8n ล่ม | สาธิต CRUD ต่อ เปิดรายงานที่สร้างไว้พร้อม timestamp และแสดง state ของงานใหม่ตามจริง |
 | Jenkins ไม่เปิด | ใช้ build log/artifact ที่เก็บจริงพร้อม commit SHA; ไม่เรียกว่ารันสด |
 | Database ไม่พร้อม | ใช้ doctor/logs แก้ connection; restore เฉพาะ demo เมื่อจำเป็นและระบุว่า reset/restore |
 | AI coding tool หมด quota/เชื่อมต่อไม่ได้ | อธิบายสถานะจริง ใช้โค้ดและบันทึก prompt ที่เตรียมไว้; ไม่มีการอ้างว่า AI กำลังรัน |
-| เวลาน้อย | แสดง P0 ก่อน ตามด้วยหลักฐาน 1–2 จุด; ระบุงาน P1/P2 ที่ยังไม่เสร็จ |
+| เวลาน้อย | แสดง P0 ก่อน ตามด้วยหลักฐาน 1–2 จุด; ระบุงาน P1 ที่ยังไม่เสร็จ |
 
 ### 18.5 Live Coding rehearsal
 
-เลือกซ้อมสามแบบ: เพิ่ม filter Join Date ช่วงเริ่ม/จบ, เพิ่ม validation อีกหนึ่งข้อพร้อม error UI, และเพิ่ม field read-only ในรายงาน อย่าทำล่วงหน้าทุกฟีเจอร์จนโค้ดบวม ให้ซ้อม flow อ่านโจทย์ → ระบุ contract ที่เปลี่ยน → prompt AI → inspect diff → run targeted test → demo
+เลือกซ้อมสองแบบ: เพิ่ม filter Join Date ช่วงเริ่ม/จบ และเพิ่ม validation อีกหนึ่งข้อพร้อม error UI อย่าทำล่วงหน้าทุกฟีเจอร์จนโค้ดบวม ให้ซ้อม flow อ่านโจทย์ → ระบุ contract ที่เปลี่ยน → prompt AI → inspect diff → run targeted test → demo
 
-คำถามที่ควรตอบได้: ทำไม Next และ Nest แยกกัน, ทำไมเงินเป็น decimalstring, Google Login ต่างจากสิทธิ์อย่างไร, ทำไม seed ไม่ stamp วันที่ใหม่, ป้องกัน lost update อย่างไร, ทำไม AI ไม่คำนวณตัวเลขหลัก, ใช้หลักฐานใดตัดสินใจเพิ่ม index และพบข้อผิดพลาดอะไรจาก AI จริง
+คำถามที่ควรตอบได้: ทำไม Next และ Nest แยกกัน, ทำไมเงินเป็น decimalstring, ทำไม seed ไม่ stamp วันที่ใหม่, ป้องกัน lost update อย่างไร, ใช้หลักฐานใดตัดสินใจเพิ่ม index และพบข้อผิดพลาดอะไรจาก AI จริง
 
 ## 19. Prompt สำหรับส่งต่อ AI implement
 
@@ -1047,20 +946,17 @@ Open WebUI แสดงเป็นหลักฐานสั้นเมื่
 ```text
 ฉันต้องการให้คุณ implement Employee Console ตาม PRD Markdown ที่แนบทั้งหมด
 ผู้ใช้ได้มอบหมายให้เลือกแนวทางไว้แล้ว ให้ใช้สเปกส่วน 6–20 เป็นค่าเริ่มต้นที่ตัดสินใจแล้ว
-ไม่ต้องถามซ้ำว่าจะใช้ stack อะไร ออกแบบ role อย่างไร หรือเลือก schema แบบใด
+ไม่ต้องถามซ้ำว่าจะใช้ stack อะไร หรือเลือก schema แบบใด
 
 ขอบเขต:
-1. ทำ REQ-01 ถึง REQ-18 และ USR-01 ถึง USR-09 ตาม PRD
+1. ทำ REQ-01 ถึง REQ-18 และ USR-01 ถึง USR-09 ตาม PRD (ยกเว้นรหัสที่ตัดออก)
 2. ใช้ Next.js + NestJS + TypeScript + PostgreSQL + Prisma
-   พร้อม Google OIDC, PostgreSQL sessions, allowlist และ Admin/Viewer
 3. ทำหน้าจอ กฎข้อมูล API contract idempotency และ concurrency ตามส่วน 8–11
 4. เก็บต้นฉบับ Excel ทั้ง 5records และวันที่เดิมตามภาคผนวก C
-   Salary ใน API เป็น decimalstring และ Viewer ต้องไม่ได้รับ salary field
-5. ทำ Postman/Newman, OpenAPI, Docker Compose, Jenkins/local staging,
-   meaningful tests และ performance baseline ก่อนปรับ
-6. ทำรายงาน Workforce Snapshot ด้วย n8n+Gemini ตาม queue/lease/retry/schema ที่กำหนด
-   ใช้ Google AI Studio ทดลอง prompt และ Open WebUI เป็น workspace แยก
-7. ทำ README, migrations/seed/reset, workflow exports, prompt fixtures,
+   Salary ใน API เป็น decimalstring
+5. ทำ Postman/Newman, OpenAPI, Docker Compose, Jenkins/local staging
+   และ meaningful tests
+6. ทำ README, migrations/seed/reset,
    decision log, evidence และ demo runbook
 
 วิธีทำงาน:
@@ -1068,10 +964,10 @@ Open WebUI แสดงเป็นหลักฐานสั้นเมื่
 - หาก package patch หรือ library compatibility เปลี่ยน ให้เลือก stable ที่รองรับ
   บันทึกเหตุผลและผล smoke test ไม่ต้องถามฉันเรื่องรายละเอียดปลีกย่อย
 - ทำงานต่อในส่วนที่ไม่ต้องใช้ credentials ระหว่างรอค่าภายนอกที่จำเป็น
-- ห้ามแต่ง Google/Gemini credentials, account emails, repo URL หรือผลทดสอบ
+- ห้ามแต่ง credentials, repo URL หรือผลทดสอบ
 - Mock/test fixtures ใช้เฉพาะ environment ที่ PRD อนุญาต ไม่ใช้เป็นหลักฐานว่า
-  Google/Gemini/Jenkins/Open WebUI จริงผ่านแล้ว
-- ใช้ API และ authorization จริงสำหรับทุกช่องทาง ไม่มี demo auth backdoor
+  Jenkins จริงผ่านแล้ว
+- ใช้ API จริงสำหรับทุกช่องทาง
 - บันทึกผลแต่ละ AC เป็น PASS/FAIL/BLOCKED/NOT RUN พร้อมหลักฐาน
 - อธิบายโค้ดและการตัดสินใจเป็นภาษาไทยให้ฉันเข้าใจพอสำหรับ Live Coding
 - อย่าเพิ่ม feature นอก scope หรือส่งข้อมูล/เผยแพร่ระบบสาธารณะโดยไม่มีคำขอ
@@ -1090,15 +986,15 @@ Open WebUI แสดงเป็นหลักฐานสั้นเมื่
 | --- | --- | --- |
 | D-01 Stack | Next/Nest/PostgreSQL; TypeScript/Prisma | ตรงผู้ใช้และแยกหน้าที่ชัด |
 | D-02 Storage | Relational DB+durable volumes; seed แบบไม่ทับ | ข้อมูล CRUD คงอยู่และ demo ทำซ้ำได้ |
-| D-03 Auth | Google OIDC, sessions, allowlist,2roles | ขอบเขตเล็กแต่ตรวจตัวตน/สิทธิ์ครบ |
-| D-04 Salary | numeric(12,2), JSON string, Viewer ไม่เห็น | ค่าทศนิยมแน่นอนและสิทธิ์ชัด |
+| D-03 Auth | ตัดออกตาม D-46 | — |
+| D-04 Salary | numeric(12,2), JSON string | ค่าทศนิยมแน่นอน |
 | D-05 Time | date-only สำหรับ business dates, UTC timestamp, Bangkokbusinessday | คงข้อมูล Excel และไม่เลื่อนวัน |
 | D-06 Delete | Hard delete พร้อมยืนยัน | ตรง CRUD และอธิบายง่าย |
 | D-07 Concurrency | version+If-Match, create idempotency | ป้องกัน lost update และ duplicate create |
-| D-08 UI | English UI, Thai docs/reports, light responsive | สอดคล้องชื่อ field และการเตรียมสัมภาษณ์ |
-| D-09 Reports | Aggregate-only, read-only AI, durable DB queue/n8n | มี use case จริงและไม่ผูก CRUD กับโมเดล |
+| D-08 UI | English UI, Thai docs, light responsive | สอดคล้องชื่อ field และการเตรียมสัมภาษณ์ |
+| D-09 Reports | ตัดออกตาม D-46 | — |
 | D-10 Delivery | localstaging3100, Jenkins agent, image SHA | ทำ CD ได้โดยไม่ต้องซื้อ cloud |
-| D-11 Performance | 10ksyntheticrecords และ targets ส่วน 15 | แสดงวิธีวัดแทนกล่าวอ้างลอย ๆ |
+| D-11 Performance | ตัดออกตาม D-52 | — |
 | D-12 Future work | ไม่มี Redis/K8s/RAG/multi-tenant ในรุ่นนี้ | ลดภาระที่ไม่ช่วยโจทย์ |
 
 ค่าเหล่านี้เป็นสเปกที่ผู้จัดทำเลือกตามอำนาจที่ผู้ใช้มอบ ไม่ต้องขออนุมัติซ้ำเพื่อเริ่มทำตาม PRD ในรอบ implementation ที่ผู้ใช้สั่ง
@@ -1107,8 +1003,6 @@ Open WebUI แสดงเป็นหลักฐานสั้นเมื่
 
 | External input | ค่าเริ่มต้น/การดำเนินต่อเมื่อยังไม่มี |
 | --- | --- |
-| Google OAuth client/secret และบัญชี Admin จริง | ทำ flow/config/tests ก่อน; .env placeholder; ไม่มี demo Login ปลอม |
-| Gemini API key และ model access จริง | default model ตาม 7.1; ทำ fixtures/workflow ก่อน แล้ว live verify เมื่อได้ key |
 | Git remote/credential สำหรับ Jenkins SCM | ใช้ remote เดิมถ้ามี; เตรียม pipeline/local checks; ไม่สร้าง remote สาธารณะเอง |
 | วันสัมภาษณ์/เวลาที่มี | ใช้ milestone priority ไม่แต่ง deadline; core ก่อนงานเสริม |
 
@@ -1118,16 +1012,15 @@ Open WebUI แสดงเป็นหลักฐานสั้นเมื่
 
 แหล่งอ้างอิงในแต่ละส่วนใช้ยืนยันความสามารถ/ข้อจำกัดเครื่องมือ ส่วนกฎธุรกิจและ targets เป็นการออกแบบของ PRD เอง ไม่ได้มาจาก vendor หรือนายจ้าง
 
-- [Next.js authentication](https://nextjs.org/docs/app/guides/authentication) และ [Backend for Frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
-- [NestJS sessions](https://docs.nestjs.com/techniques/session), [validation](https://docs.nestjs.com/techniques/validation) และ [OpenAPI](https://docs.nestjs.com/openapi/introduction)
+- [Next.js Backend for Frontend](https://nextjs.org/docs/app/guides/backend-for-frontend)
+- [NestJS validation](https://docs.nestjs.com/techniques/validation) และ [OpenAPI](https://docs.nestjs.com/openapi/introduction)
 - [Prisma Migrate](https://www.prisma.io/docs/orm/migrations/how-migrations-work)
 - [Docker Compose](https://docs.docker.com/compose/intro/features-uses/)
-- [n8n workflows](https://docs.n8n.io/build-your-first-workflow.md)
 - [Playwright](https://playwright.dev/docs/intro)
 
 ## 21. ภาคผนวกต้นฉบับและการตรวจความครบถ้วน
 
-ภาคผนวก A–D เก็บเนื้อหาต้นฉบับและข้อมูล Excel ทั้งหมดเพื่อใช้ตรวจย้อนกลับ สเปก PRD ด้านบนเติมรายละเอียดการทำงานและไม่แก้ถ้อยคำข้อสอบ นายจ้างไม่ได้เป็นผู้กำหนด API, roles, queue policy หรือ performance targets ที่เพิ่มใน PRD
+ภาคผนวก A–D เก็บเนื้อหาต้นฉบับและข้อมูล Excel ทั้งหมดเพื่อใช้ตรวจย้อนกลับ สเปก PRD ด้านบนเติมรายละเอียดการทำงานและไม่แก้ถ้อยคำข้อสอบ นายจ้างไม่ได้เป็นผู้กำหนด API หรือกฎที่เพิ่มใน PRD
 
 
 ### ภาคผนวก A — AI-Augmented Developer JD.pdf

@@ -7,8 +7,8 @@ import { useEffect, type ReactNode } from 'react';
 import { Controller, useForm, type UseFormSetError } from 'react-hook-form';
 import { z } from 'zod';
 import { useUnsavedChanges } from '@/components/common/unsaved-changes';
-import { formatDateOnly } from '@/lib/format';
-import { DEPARTMENT_OPTIONS } from '@/lib/list-params';
+import { DEPARTMENT_OPTIONS, isDepartmentId } from '@/lib/departments';
+import { formatDateOnly, statusLabel } from '@/lib/format';
 import { formatSalaryInput, parseSalaryInput } from '@/lib/salary';
 import type { EmployeeInput } from '@/lib/queries';
 import type { FieldError } from '@/lib/api';
@@ -32,7 +32,7 @@ const employeeSchema = z.object({
     .refine((v) => v.normalize('NFC').trim().length > 0, 'Name is required.')
     .refine((v) => !CONTROL.test(v), 'Name cannot contain line breaks or control characters.')
     .refine((v) => [...v.normalize('NFC').trim()].length <= 100, 'Name must be at most 100 characters.'),
-  departmentId: z.string().refine((v) => DEPARTMENT_OPTIONS.some((d) => d.id === v), 'Choose a department.'),
+  departmentId: z.string().refine((v) => isDepartmentId(v), 'Choose a department.'),
   salary: z.string().superRefine((v, ctx) => {
     const r = parseSalaryInput(v);
     if (!r.ok) ctx.addIssue({ code: 'custom', message: r.message });
@@ -45,7 +45,10 @@ const employeeSchema = z.object({
   isActive: z.boolean(),
 });
 
-export type EmployeeFormValues = z.infer<typeof employeeSchema>;
+/** What the inputs hold; `departmentId` is '' until a department is chosen. */
+export type EmployeeFormFields = z.input<typeof employeeSchema>;
+/** After validation: `departmentId` is narrowed to the API's department ids. */
+export type EmployeeFormValues = z.output<typeof employeeSchema>;
 
 export function toInput(values: EmployeeFormValues): EmployeeInput {
   const salary = parseSalaryInput(values.salary);
@@ -58,7 +61,7 @@ export function toInput(values: EmployeeFormValues): EmployeeInput {
   };
 }
 
-export function valuesFromEmployee(e: Employee): EmployeeFormValues {
+export function valuesFromEmployee(e: Employee): EmployeeFormFields {
   return {
     name: e.name,
     departmentId: e.departmentId,
@@ -68,12 +71,12 @@ export function valuesFromEmployee(e: Employee): EmployeeFormValues {
   };
 }
 
-export const EMPTY_VALUES: EmployeeFormValues = { name: '', departmentId: '', salary: '', joinDate: '', isActive: true };
+export const EMPTY_VALUES: EmployeeFormFields = { name: '', departmentId: '', salary: '', joinDate: '', isActive: true };
 
 const FIELDS = ['name', 'departmentId', 'salary', 'joinDate', 'isActive'] as const;
 
 /** Puts server-side field errors under the matching inputs; returns false when none matched. */
-export function applyServerErrors(details: FieldError[], setError: UseFormSetError<EmployeeFormValues>): boolean {
+export function applyServerErrors(details: FieldError[], setError: UseFormSetError<EmployeeFormFields>): boolean {
   let matched = false;
   for (const d of details) {
     const field = FIELDS.find((f) => f === d.field);
@@ -88,17 +91,17 @@ export function applyServerErrors(details: FieldError[], setError: UseFormSetErr
 interface Props {
   mode: 'create' | 'edit';
   employee?: Employee;
-  defaultValues: EmployeeFormValues;
+  defaultValues: EmployeeFormFields;
   pending: boolean;
   banner?: ReactNode;
-  onSubmit: (values: EmployeeFormValues, setError: UseFormSetError<EmployeeFormValues>, markClean: (v?: EmployeeFormValues) => void) => void;
+  onSubmit: (values: EmployeeFormValues, setError: UseFormSetError<EmployeeFormFields>, markClean: (v?: EmployeeFormFields) => void) => void;
   onCancel: () => void;
   /** Changes when the server copy is reloaded, so the form can reset to it. */
   resetKey?: string | number;
 }
 
 export function EmployeeForm({ mode, employee, defaultValues, pending, banner, onSubmit, onCancel, resetKey }: Props) {
-  const form = useForm<EmployeeFormValues>({
+  const form = useForm<EmployeeFormFields, unknown, EmployeeFormValues>({
     resolver: zodResolver(employeeSchema),
     defaultValues,
     mode: 'onTouched',
@@ -113,8 +116,8 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
   }, [resetKey]);
 
   const guard = useUnsavedChanges(isDirty && !pending);
-  const markClean = (v?: EmployeeFormValues) => reset(v ?? form.getValues());
-  const describedBy = (field: keyof EmployeeFormValues) => (errors[field] ? `emp-${field}-error` : undefined);
+  const markClean = (v?: EmployeeFormFields) => reset(v ?? form.getValues());
+  const describedBy = (field: keyof EmployeeFormFields) => (errors[field] ? `emp-${field}-error` : undefined);
 
   return (
     <form noValidate onSubmit={handleSubmit((v) => onSubmit(v, setError, markClean))} className="max-w-3xl" aria-busy={pending}>
@@ -183,10 +186,10 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
           />
           <div>
             <label htmlFor="emp-isActive" className="font-medium">
-              Active
+              {statusLabel(true)}
             </label>
             <p id="emp-isActive-hint" className="text-[0.75rem] text-ink-2">
-              Unchecked means In Active.
+              Unchecked means {statusLabel(false)}.
             </p>
           </div>
         </div>

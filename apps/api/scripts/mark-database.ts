@@ -1,5 +1,5 @@
-// pnpm db:mark --purpose=demo|test|performance — records what a database is for.
-// Reset and synthetic seed refuse to run on the wrong kind of database.
+// pnpm db:mark --purpose=demo|test — records what a database is for.
+// Reset and test fixtures refuse to run on the wrong kind of database.
 import { loadEnvFile } from '../src/config/env-file.js';
 import { createPrismaClient } from '../src/database/prisma.service.js';
 import { databasePurpose } from '../src/seed/seed-original.js';
@@ -7,8 +7,8 @@ import { databasePurpose } from '../src/seed/seed-original.js';
 loadEnvFile();
 const purpose = process.argv.find((a) => a.startsWith('--purpose='))?.split('=')[1];
 const force = process.argv.includes('--force');
-if (!purpose || !['demo', 'test', 'performance'].includes(purpose)) {
-  console.error('usage: db:mark --purpose=demo|test|performance [--force]');
+if (!purpose || !['demo', 'test'].includes(purpose)) {
+  console.error('usage: db:mark --purpose=demo|test [--force]');
   process.exit(2);
 }
 const prisma = createPrismaClient(process.env.DATABASE_URL!, 1);

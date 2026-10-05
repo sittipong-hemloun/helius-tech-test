@@ -11,9 +11,8 @@ PostgreSQL 17 รันอยู่ใน Docker container (ดูบท 5) ต�
 | `employee_console_dev` | local dev | `demo` |
 | `employee_console_staging` | staging (คนละ container และ volume) | `demo` |
 | `employee_console_test_*` | test แต่ละรอบ สร้างใหม่ทุกครั้ง | `test` |
-| `employee_console_perf` | benchmark 10,000 records | `performance` |
 
-"เครื่องหมาย" ในตาราง `app_meta` คือป้ายบอกว่าฐานนี้เอาไว้ทำอะไร คำสั่งที่ลบข้อมูล (`demo:reset`, `test:reset`, `perf:seed`) จะตรวจป้ายนี้ก่อนเสมอ และปฏิเสธถ้าไม่ตรง ป้องกันการลบฐานผิดตัว (D-22)
+"เครื่องหมาย" ในตาราง `app_meta` คือป้ายบอกว่าฐานนี้เอาไว้ทำอะไร คำสั่งที่ลบข้อมูล (`demo:reset`, `test:reset`) จะตรวจป้ายนี้ก่อนเสมอ และปฏิเสธถ้าไม่ตรง ป้องกันการลบฐานผิดตัว (D-22)
 
 ## ตารางมีอะไรบ้าง
 
@@ -23,7 +22,7 @@ erDiagram
     DEPARTMENTS {
         varchar id PK "engineering, marketing, sales, hr"
         varchar name UK "Engineering ..."
-        int sort_order "ลำดับใน dropdown"
+        int sort_order "ลำดับใน GET /api/v1/departments"
     }
     EMPLOYEES {
         int id PK "identity, seed 101-105, คนใหม่เริ่ม 106"
@@ -48,7 +47,7 @@ erDiagram
     }
     APP_META {
         varchar key PK "database_purpose"
-        varchar value "demo, test, performance"
+        varchar value "demo, test"
     }
 ```
 
@@ -167,7 +166,7 @@ seed อ่านจาก [test-exam-data.json](../../apps/api/prisma/seed-data
 มีผู้ใช้ (role) แยกกันตามหลัก "ให้สิทธิ์เท่าที่จำเป็น" (D-43)
 
 - **app role** — แอปใช้ตัวนี้ อ่านเขียนข้อมูลได้แต่ **สร้างฐานข้อมูลไม่ได้** (`NOCREATEDB`)
-- **test role** — test runner ใช้ตัวนี้ สร้างและลบได้เฉพาะฐาน `employee_console_test_*` กับ `employee_console_perf`
+- **test role** — test runner ใช้ตัวนี้ สร้างและลบได้เฉพาะฐาน `employee_console_test_*`
 
 สคริปต์ที่สร้าง role คือ [init-databases.sh](../../infra/postgres/init-databases.sh) ซึ่งรันซ้ำได้ไม่พัง (idempotent) และรันทุกครั้งที่ `pnpm dev:up` หรือ deploy staging
 

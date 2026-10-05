@@ -1,11 +1,7 @@
 /** Employee list state ↔ URL search params (PRD §8.3: reload/back/forward restore filters). */
+import { isDepartmentId } from './departments';
+
 export const PAGE_SIZES = [10, 20, 50] as const;
-export const DEPARTMENT_OPTIONS = [
-  { id: 'engineering', name: 'Engineering' },
-  { id: 'marketing', name: 'Marketing' },
-  { id: 'sales', name: 'Sales' },
-  { id: 'hr', name: 'HR' },
-] as const;
 
 export type SortBy = 'id' | 'name' | 'department' | 'salary' | 'joinDate' | 'isActive' | 'lastUpdatedDate';
 export type StatusFilter = 'all' | 'active' | 'inactive';
@@ -46,7 +42,7 @@ export function readListParams(sp: Readable): ListParams {
   const dept = sp.get('departmentId') ?? '';
   return {
     q: (sp.get('q') ?? '').slice(0, 100),
-    departmentId: DEPARTMENT_OPTIONS.some((d) => d.id === dept) ? dept : '',
+    departmentId: isDepartmentId(dept) ? dept : '',
     status: status === 'active' || status === 'inactive' ? status : 'all',
     page: int(sp.get('page'), 1, (n) => n >= 1 && n <= 1_000_000),
     pageSize: int(sp.get('pageSize'), 20, (n) => (PAGE_SIZES as readonly number[]).includes(n)),

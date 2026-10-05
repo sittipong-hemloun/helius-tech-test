@@ -3,8 +3,9 @@
 import { Search, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { selectClass } from '@/components/ui/select-control';
-import { DEPARTMENT_OPTIONS, type ListParams, type StatusFilter } from '@/lib/list-params';
+import { DEPARTMENT_OPTIONS } from '@/lib/departments';
+import { statusLabel } from '@/lib/format';
+import type { ListParams, StatusFilter } from '@/lib/list-params';
 
 interface Props {
   params: ListParams;
@@ -66,7 +67,7 @@ export function EmployeeFilters({ params, onSearch, onChange, onClear, filtered 
             id="filter-department"
             value={params.departmentId}
             onChange={(e) => onChange({ departmentId: e.target.value })}
-            className={selectClass}
+            className="select-control"
           >
             <option value="">All departments</option>
             {DEPARTMENT_OPTIONS.map((d) => (
@@ -86,11 +87,11 @@ export function EmployeeFilters({ params, onSearch, onChange, onClear, filtered 
             id="filter-status"
             value={params.status}
             onChange={(e) => onChange({ status: e.target.value as StatusFilter })}
-            className={selectClass}
+            className="select-control"
           >
             <option value="all">All statuses</option>
-            <option value="active">Active</option>
-            <option value="inactive">In Active</option>
+            <option value="active">{statusLabel(true)}</option>
+            <option value="inactive">{statusLabel(false)}</option>
           </select>
         </div>
       </div>

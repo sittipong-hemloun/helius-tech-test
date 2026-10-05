@@ -3,7 +3,7 @@ import { Errors, type FieldErrorDetail } from '../common/api-exception.js';
 import { decodeRuleMessage } from './field-rule.decorator.js';
 
 /** Fields the server owns; sending them is a contract error, not just "unknown". */
-const READ_ONLY_FIELDS = new Set(['id', 'lastUpdatedDate', 'version', 'createdAt', 'updatedAt', 'departmentName', 'role']);
+const READ_ONLY_FIELDS = new Set(['id', 'lastUpdatedDate', 'version', 'createdAt', 'updatedAt', 'departmentName']);
 
 function flattenErrors(errors: ValidationError[], parent = ''): FieldErrorDetail[] {
   const out: FieldErrorDetail[] = [];

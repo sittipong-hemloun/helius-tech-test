@@ -5,18 +5,19 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { Notice } from '@/components/common/notice';
 import { applyServerErrors, EmployeeForm, toInput, valuesFromEmployee, type EmployeeFormValues } from '@/components/employees/employee-form';
+import { RecordUnavailable } from '@/components/employees/record-unavailable';
 import { PageHeader } from '@/components/layout/app-shell';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError, api, describeError } from '@/lib/api';
-import { useEmployee, useUpdateEmployee, type EmployeeInput } from '@/lib/queries';
+import { parseEmployeeId } from '@/lib/employee-id';
+import { useEmployee, useUpdateEmployee, type EmployeeInput, type EmployeePatch } from '@/lib/queries';
 import type { Employee } from '@employee-console/api-client';
-import { parseEmployeeId, RecordUnavailable } from '../employee-detail-view';
 
 type Banner = { tone: 'error' | 'warning'; title: string; detail?: string; reload?: boolean } | null;
 
-function diff(next: EmployeeInput, current: Employee): Partial<EmployeeInput> {
-  const patch: Partial<EmployeeInput> = {};
+function diff(next: EmployeeInput, current: Employee): EmployeePatch {
+  const patch: EmployeePatch = {};
   if (next.name !== current.name) patch.name = next.name;
   if (next.departmentId !== current.departmentId) patch.departmentId = next.departmentId;
   if (next.salary !== current.salary) patch.salary = next.salary;

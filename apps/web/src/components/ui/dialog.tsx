@@ -12,11 +12,11 @@ interface ConfirmDialogProps {
   children: ReactNode;
   confirmLabel: string;
   cancelLabel?: string;
-  tone?: 'danger' | 'primary';
   pending?: boolean;
   onConfirm: () => void;
 }
 
+/** Confirmation for destructive actions (delete, discard): warning icon and a danger confirm button. */
 export function ConfirmDialog({
   open,
   onOpenChange,
@@ -24,7 +24,6 @@ export function ConfirmDialog({
   children,
   confirmLabel,
   cancelLabel = 'Cancel',
-  tone = 'primary',
   pending,
   onConfirm,
 }: ConfirmDialogProps) {
@@ -34,7 +33,7 @@ export function ConfirmDialog({
         <RadixDialog.Overlay className="fixed inset-0 z-40 bg-ink/40" />
         <RadixDialog.Content className="fixed left-1/2 top-1/2 z-50 w-[min(28rem,calc(100vw-2rem))] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[var(--radius-sheet)] border border-rule-strong bg-sheet shadow-[0_16px_40px_-12px_rgb(28_28_28/0.4)]">
           <RadixDialog.Title className="flex items-center gap-2 border-b border-rule px-5 py-3 text-[0.9375rem] font-bold">
-            {tone === 'danger' ? <TriangleAlert aria-hidden className="size-4 shrink-0 text-stamp" /> : null}
+            <TriangleAlert aria-hidden className="size-4 shrink-0 text-stamp" />
             {title}
           </RadixDialog.Title>
           <RadixDialog.Description asChild>
@@ -46,8 +45,8 @@ export function ConfirmDialog({
                 {cancelLabel}
               </Button>
             </RadixDialog.Close>
-            <Button variant={tone === 'danger' ? 'danger' : 'primary'} onClick={onConfirm} disabled={pending}>
-              {tone === 'danger' ? <Trash2 aria-hidden /> : null}
+            <Button variant="danger" onClick={onConfirm} disabled={pending}>
+              <Trash2 aria-hidden />
               {pending ? 'Working…' : confirmLabel}
             </Button>
           </div>

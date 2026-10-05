@@ -5,7 +5,7 @@
 | คำ | ย่อมาจาก | ความหมายง่าย ๆ | ในโปรเจกต์นี้ |
 | --- | --- | --- | --- |
 | **CI** | Continuous Integration | ทุกครั้งที่มีโค้ดใหม่ ให้เครื่องตรวจอัตโนมัติว่ายังดีอยู่ (lint, typecheck, test, build) | stage `Checkout` ถึง `Images` |
-| **CD** | Continuous Delivery / Deployment | โค้ดที่ผ่านการตรวจแล้ว ส่งขึ้น environment ให้อัตโนมัติ | stage `Deploy staging` และ `Smoke` |
+| **CD** | Continuous Delivery / Deployment | โค้ดที่ผ่านการตรวจแล้ว ส่งขึ้น environment ให้อัตโนมัติ | stage `Deploy staging` (รวม smoke test และ rollback) |
 
 เปรียบเทียบกับโรงงาน: CI คือ **สายพานตรวจคุณภาพ** ที่ทุกชิ้นต้องผ่านทุกด่าน ชิ้นไหนตกด่านใดด่านหนึ่งก็ถูกคัดออก ส่วน CD คือ **รถขนส่ง** ที่เอาเฉพาะชิ้นที่ผ่านไปส่งถึงหน้าร้าน
 
@@ -23,7 +23,7 @@
 | **Agent** | เครื่องที่ลงมือรันคำสั่งจริง | `host-agent` = เครื่อง Mac ของเราเอง (มี Node 24, pnpm, Docker) label `employee-console` |
 | **Job** | งานหนึ่งงานที่ตั้งค่าไว้ | `employee-console` (pipeline job) |
 | **Pipeline** | ชุดขั้นตอนทั้งหมด เขียนเป็นโค้ด | ไฟล์ `Jenkinsfile` |
-| **Stage** | ด่านหนึ่งด่านใน pipeline เห็นเป็นช่องในหน้าเว็บ | `Static checks`, `Unit`, `E2E` ฯลฯ |
+| **Stage** | ด่านหนึ่งด่านใน pipeline เห็นเป็นช่องในหน้าเว็บ | `Static checks`, `Unit`, `Build + E2E` ฯลฯ |
 | **Step** | คำสั่งย่อยใน stage | `sh 'pnpm lint'` |
 | **Build** | การรัน pipeline หนึ่งครั้ง มีเลขกำกับ | `#12 a1b2c3d4e5f6` |
 | **Workspace** | folder ที่ agent checkout โค้ดมารัน | ภายใต้ `JENKINS_AGENT_WORKDIR` |
@@ -73,7 +73,6 @@ pipeline {
 
   parameters {                              // ③ ตัวเลือกตอนกด "Build with Parameters"
     booleanParam(name: 'DEPLOY_STAGING', defaultValue: false, ...)
-    booleanParam(name: 'RUN_PERF', defaultValue: false, ...)
   }
 
   environment {                             // ④ env ที่ทุก stage เห็น
@@ -102,18 +101,14 @@ flowchart TD
     DE --> SC["Static checks<br/>lint, typecheck, secrets:scan,<br/>openapi drift"]
     SC --> UN["Unit<br/>pnpm test:unit"]
     UN --> TD["Test DB<br/>ci-db.mjs up — postgres ของ build นี้"]
-    TD --> AP["API / Postman<br/>pnpm test:api + test:postman"]
-    AP --> BU["Build<br/>pnpm build"]
-    BU --> E2["E2E<br/>pnpm test:e2e"]
-    E2 --> IM["Images<br/>docker build api และ web<br/>tag = GIT_SHA"]
+    TD --> AP["API<br/>pnpm test:api"]
+    AP --> BE["Build + E2E<br/>pnpm test:e2e<br/>build production ครั้งเดียวของ run"]
+    BE --> PM["Postman<br/>POSTMAN_SKIP_BUILD=1 pnpm test:postman<br/>ใช้ build เดิม"]
+    PM --> IM["Images<br/>docker build api และ web<br/>tag = GIT_SHA"]
     IM --> Q1{"branch main<br/>หรือ DEPLOY_STAGING?"}
-    Q1 -->|"ใช่"| DS["Deploy staging<br/>lock + credentials<br/>staging.mjs up --tag=SHA"]
-    DS --> SM["Smoke<br/>staging.mjs smoke"]
-    Q1 -->|"ไม่"| Q2
-    SM --> Q2{"RUN_PERF?"}
-    Q2 -->|"ใช่"| PF["Performance<br/>pnpm perf:run"]
-    Q2 -->|"ไม่"| PO
-    PF --> PO["post always<br/>เก็บผล test, artifacts,<br/>ลบ DB ของ build นี้"]
+    Q1 -->|"ใช่"| DS["Deploy staging<br/>lock + credentials<br/>staging.mjs up --tag=SHA<br/>smoke ไม่ผ่าน = rollback"]
+    Q1 -->|"ไม่"| PO
+    DS --> PO["post always<br/>เก็บผล test, artifacts,<br/>ลบ DB ของ build นี้"]
 ```
 
 ด่านใดล้ม ด่านถัดไปจะไม่รัน (แต่ `post` ยังรันเสมอ)
@@ -125,22 +120,20 @@ flowchart TD
 | Static checks | `pnpm lint`, `typecheck`, `secrets:scan`, `openapi:generate` + `git diff --exit-code` | โค้ดผิดรูปแบบ, type ผิด, secret หลุดเข้า repo, ลืม generate OpenAPI (บท 4) | คำสั่งเดียวกัน |
 | Unit | `pnpm test:unit` | กฎของฟิลด์, config, การ format ฝั่งเว็บผิด | `pnpm test:unit` |
 | Test DB | `node scripts/ci-db.mjs up` | — (เตรียมฐานข้อมูลแยกของ build นี้บนพอร์ตว่าง) | — |
-| API / Postman | `pnpm test:api`, `pnpm test:postman` | API ทำงานผิดกับ PostgreSQL จริง, สัญญา status/header/error code เปลี่ยน | ต้อง `pnpm dev:up` ก่อน |
-| Build | `pnpm build` | build production ไม่ผ่าน | `pnpm build` |
-| E2E | `pnpm test:e2e` | flow ในเบราว์เซอร์พัง เช่น ฟอร์ม, filter, layout มือถือ | ต้อง `pnpm dev:up` ก่อน |
+| API | `pnpm test:api` | API ทำงานผิดกับ PostgreSQL จริง | ต้อง `pnpm dev:up` ก่อน |
+| Build + E2E | `pnpm test:e2e` (build production ของ API + web ครั้งเดียวของ run) | build production ไม่ผ่าน, flow ในเบราว์เซอร์พัง เช่น ฟอร์ม, filter, layout มือถือ | ต้อง `pnpm dev:up` ก่อน |
+| Postman | `POSTMAN_SKIP_BUILD=1 pnpm test:postman` (ใช้ build จาก stage ก่อนหน้า) | สัญญา status/header/error code เปลี่ยน | `pnpm test:postman` (ต้อง `pnpm dev:up` ก่อน) |
 | Images | `docker build` สอง image ติด tag `$GIT_SHA` | Dockerfile พัง | — |
-| Deploy staging | `staging.mjs up --tag=$GIT_SHA` ภายใต้ `lock` | migration ล้ม, container ไม่ healthy (rollback อัตโนมัติ) | `pnpm staging:up` |
-| Smoke | `staging.mjs smoke` | staging ขึ้นแต่ใช้งานไม่ได้ | `pnpm staging:smoke` |
-| Performance | `pnpm perf:run` | ช้ากว่าเป้าหมาย | `pnpm perf:run --label=<ชื่อ>` |
+| Deploy staging | `staging.mjs up --tag=$GIT_SHA` ภายใต้ `lock` (รัน smoke test ในตัว) | migration ล้ม, container ไม่ healthy, smoke ไม่ผ่าน (rollback อัตโนมัติ) | `pnpm staging:up`, ตรวจซ้ำด้วย `pnpm staging:smoke` |
 
 ### ส่วนพิเศษใน Jenkinsfile
 
-- **`when { anyOf { ... } }`** — ใส่เงื่อนไขให้ stage รันเฉพาะบางกรณี `Deploy staging` และ `Smoke` รันเมื่อ branch ลงท้ายด้วย `main` หรือเลือก `DEPLOY_STAGING` ไว้
+- **`when { anyOf { ... } }`** — ใส่เงื่อนไขให้ stage รันเฉพาะบางกรณี `Deploy staging` รันเมื่อ branch ลงท้ายด้วย `main` หรือเลือก `DEPLOY_STAGING` ไว้
 - **`lock('employee-console-staging')`** — จองทรัพยากรชื่อนี้ (ประกาศใน `casc.yaml`) ให้มี deploy staging ได้ทีละอันเท่านั้น
 - **`withCredentials([file(...)])`** — ดึงไฟล์ `.env.staging` จากที่เก็บความลับของ Jenkins มาเป็นตัวแปร `STAGING_ENV_FILE` ชั่วคราว ค่าไม่ถูกพิมพ์ลง log
 - **`post { always { ... } }`**
   - `junit` อ่านไฟล์ XML ใน `test-results/` แล้วแสดงเป็นตารางผล test ในหน้า build
-  - `archiveArtifacts` เก็บ `test-results/**`, `playwright-report/**`, ผล performance และ `.deploy/staging-manifest.json` ให้ดาวน์โหลดจากหน้า build
+  - `archiveArtifacts` เก็บ `test-results/**`, `playwright-report/**` และ `.deploy/staging-manifest.json` ให้ดาวน์โหลดจากหน้า build
   - `ci-db.mjs down` ลบ Compose project และ volume **ของ build นี้เท่านั้น** ไม่แตะ dev หรือ staging
 
 ## วิธีใช้งาน
@@ -153,7 +146,7 @@ pnpm ci:up
 
 2. เปิด <http://localhost:8080> แล้ว login ด้วยผู้ใช้ `admin` รหัสผ่านคือค่า `JENKINS_ADMIN_PASSWORD` ในไฟล์ `.env` (เปิดดูในไฟล์เอง อย่าคัดลอกไปวางในแชตหรือเอกสาร)
 3. commit โค้ดที่ต้องการให้ Jenkins ทดสอบก่อน
-4. เข้า job `employee-console` → **Build with Parameters** → เลือก `DEPLOY_STAGING` / `RUN_PERF` ตามต้องการ → **Build**
+4. เข้า job `employee-console` → **Build with Parameters** → เลือก `DEPLOY_STAGING` ถ้าต้องการ deploy staging จาก branch อื่นที่ไม่ใช่ main → **Build**
 5. กดเข้า build ที่กำลังรันเพื่อดู **Stage View** (ช่องเขียว = ผ่าน, แดง = ล้ม) และ **Console Output** (log ทั้งหมด)
 6. หลังจบดู **Test Result** และ **Build Artifacts** ในหน้า build
 7. ปิด Jenkins (ข้อมูล job ยังอยู่ใน volume `jenkins_home`)

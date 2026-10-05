@@ -8,7 +8,7 @@ export function makeQueryClient(): QueryClient {
         staleTime: 15_000,
         gcTime: 5 * 60_000,
         refetchOnWindowFocus: true,
-        retry: (count, err) => err instanceof ApiError && (err.status === 0 || err.status >= 500) && count < 2,
+        retry: (count, err) => err instanceof ApiError && err.outcomeUnknown && count < 2,
       },
       mutations: { retry: false },
     },

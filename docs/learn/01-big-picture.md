@@ -168,7 +168,7 @@ sequenceDiagram
 | วิธี deploy staging | [scripts/staging.mjs](../../scripts/staging.mjs) |
 | test ผ่านเบราว์เซอร์ | [tests/e2e/specs](../../tests/e2e/specs) |
 
-## Environment ทั้ง 4 แบบ
+## Environment ทั้ง 3 แบบ
 
 ระบบเดียวกันรันได้หลาย "สภาพแวดล้อม" แยกกันด้วยตัวแปร `APP_ENV` และแต่ละแบบมีฐานข้อมูลของตัวเอง ข้อมูลจึงไม่ปนกัน
 
@@ -185,10 +185,6 @@ flowchart TB
     subgraph TEST["test — สร้างใหม่ทุกครั้งที่รัน test"]
         direction LR
         tr["test runner"] --> td[("employee_console_test_*<br/>ฐานชั่วคราวของแต่ละรอบ")]
-    end
-    subgraph PERF["performance — วัดความเร็ว"]
-        direction LR
-        pk["k6 + Lighthouse"] --> pa["api :3201"] --> pd[("employee_console_perf<br/>10,000 records")]
     end
 ```
 

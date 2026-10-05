@@ -20,7 +20,6 @@ export function DeleteEmployeeDialog({ target, onClose, onDeleted }: { target: T
       onOpenChange={(open) => !open && onClose()}
       title="Delete employee?"
       confirmLabel="Delete employee"
-      tone="danger"
       pending={del.isPending}
       onConfirm={() => {
         if (!target) return;

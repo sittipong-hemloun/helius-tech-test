@@ -44,7 +44,7 @@ flowchart TD
 | `employees` | `id` identity (seed 101–105, sequence ต่อที่ 106), `salary numeric(12,2)`, `join_date`/`last_updated_date` เป็น `date`, `version` |
 | `departments` | 4 ค่าคงที่, FK RESTRICT |
 | `idempotency_keys` | unique (scope, key), เก็บ response 24 ชั่วโมง |
-| `app_meta` | `database_purpose` = demo/test/performance |
+| `app_meta` | `database_purpose` = demo/test |
 
 ## Security summary
 

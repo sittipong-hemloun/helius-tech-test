@@ -1,17 +1,12 @@
 'use client';
 
-import type { Employee, EmployeeListMeta } from '@employee-console/api-client';
+import type { components, Employee, EmployeeListMeta } from '@employee-console/api-client';
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from './api';
 import { toApiQuery, type ListParams } from './list-params';
 
-export interface EmployeeInput {
-  name: string;
-  departmentId: string;
-  salary: string;
-  joinDate: string;
-  isActive: boolean;
-}
+export type EmployeeInput = components['schemas']['CreateEmployeeDto'];
+export type EmployeePatch = components['schemas']['UpdateEmployeeDto'];
 
 export function useEmployees(params: ListParams) {
   const qs = toApiQuery(params);
@@ -49,7 +44,7 @@ export function useCreateEmployee() {
 export function useUpdateEmployee(id: number) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ patch, version }: { patch: Partial<EmployeeInput>; version: number }) =>
+    mutationFn: ({ patch, version }: { patch: EmployeePatch; version: number }) =>
       api<Employee, { changed: boolean }>(`/api/v1/employees/${id}`, {
         method: 'PATCH',
         body: patch,

@@ -43,4 +43,4 @@ feature ใหม่ = folder ของตัวเองที่มี `<name>
 
 ## Scripts (`scripts/`, รันด้วย `tsx`)
 
-`seed`, `demo-reset`, `test-reset`, `perf-seed`, `mark-database`, `generate-openapi` — สคริปต์ที่ลบ/เขียนทับข้อมูลตรวจเครื่องหมาย `app_meta.database_purpose` (demo/test/performance) ก่อนทำงาน อย่าข้ามการตรวจนี้ `build` ใน Docker คอมไพล์ `scripts/` ไป `dist-scripts/` ด้วย (`tsconfig.scripts.json`) เพื่อให้ staging รัน seed ได้
+`seed`, `demo-reset`, `test-reset`, `mark-database`, `generate-openapi` — สคริปต์ที่ลบ/เขียนทับข้อมูลตรวจเครื่องหมาย `app_meta.database_purpose` (demo/test) ก่อนทำงาน อย่าข้ามการตรวจนี้ `build` ใน Docker คอมไพล์ `scripts/` ไป `dist-scripts/` ด้วย (`tsconfig.scripts.json`) เพื่อให้ staging รัน seed ได้

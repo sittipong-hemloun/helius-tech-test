@@ -56,7 +56,7 @@ model IdempotencyKey {
   @@map("idempotency_keys")
 }
 
-/// Database purpose marker (demo/test/performance) checked by reset/fixture/perf scripts.
+/// Database purpose marker (demo/test) checked by reset/fixture scripts.
 model AppMeta {
   key   String @id @db.VarChar(50)
   value String @db.VarChar(200)

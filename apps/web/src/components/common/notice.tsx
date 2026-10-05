@@ -1,9 +1,8 @@
-import { CircleAlert, Info, TriangleAlert } from 'lucide-react';
+import { CircleAlert, TriangleAlert } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { cn } from '@/components/ui/cn';
 
 const tones = {
-  info: { box: 'border-rule bg-sheet', icon: 'text-ledger', Icon: Info },
   warning: { box: 'border-amber/40 bg-amber-wash', icon: 'text-amber', Icon: TriangleAlert },
   error: { box: 'border-stamp/35 bg-stamp-wash', icon: 'text-stamp', Icon: CircleAlert },
 } as const;
@@ -13,14 +12,14 @@ const tones = {
  * that already has its own border (no cards inside cards).
  */
 export function Notice({
-  tone = 'info',
+  tone,
   title,
   children,
   action,
   className,
   bare,
 }: {
-  tone?: keyof typeof tones;
+  tone: keyof typeof tones;
   title: string;
   children?: ReactNode;
   action?: ReactNode;

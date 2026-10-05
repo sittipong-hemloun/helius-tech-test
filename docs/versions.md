@@ -47,8 +47,6 @@
 | --- | --- |
 | @playwright/test (Chromium headless shell 153) | 1.63.0 |
 | newman | 6.2.2 |
-| k6 (Docker) | `grafana/k6:2.3.0` |
-| lighthouse | 13.5.0 |
 | Jenkins controller | `jenkins/jenkins:2.580.1-lts-jdk21` + plugin 78 ตัว pin เวอร์ชันตรงใน `infra/jenkins/plugins.txt` (ชุดที่ build #5 ผ่าน; `pnpm ci:up` ตรวจว่าติดตั้งตรงทุกตัว — D-44) |
 | Jenkins agent | Java 21 (OpenJDK 21.0.11) บนเครื่อง host |
 

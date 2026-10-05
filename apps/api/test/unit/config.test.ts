@@ -14,8 +14,7 @@ describe('configuration validation (PRD §13.2)', () => {
     expect(c.rateLimits).toMatchObject({ enabled: true, readPerWindow: 300, writePerWindow: 60 });
     expect(c.idempotencyTtlMs).toBe(24 * 3_600_000);
   });
-  it('refuses rate-limit override outside performance and plain HTTP off loopback', () => {
-    expect(() => loadConfig({ ...base, PERF_RATE_LIMIT_OVERRIDE: 'true' })).toThrow(/PERF_RATE_LIMIT_OVERRIDE/);
+  it('refuses plain HTTP off loopback', () => {
     expect(() => loadConfig({ ...base, PUBLIC_APP_ORIGIN: 'http://192.168.1.10:3000' })).toThrow(/HTTPS/);
     expect(loadConfig({ ...base, PUBLIC_APP_ORIGIN: 'https://console.example.test' }).publicAppOrigin).toBe('https://console.example.test');
   });

@@ -9,7 +9,6 @@
   /* Brand */
   --color-chememan-green: #09532d;
   --color-cman-emerald: #00805e;
-  --color-cman-navy: #1b3564;
 
   /* Surfaces */
   --color-ground: #f3f7f5;
@@ -22,7 +21,6 @@
   --color-ink-3: #6b7a72;
 
   /* Rules: gridlines and frames; the strong rule outlines interactive controls. */
-  --color-rule-subtle: #e2e8e0;
   --color-rule: #d3dbd2;
   --color-rule-strong: #9aa79e;
 
@@ -34,8 +32,6 @@
   --color-ledger: var(--color-chememan-green);
   --color-ledger-deep: #063d21;
   --color-ledger-hover: var(--color-cman-emerald);
-  --color-ledger-wash: #e9f3ec;
-  --color-navy: var(--color-cman-navy);
   --color-stamp: #c21e31;
   --color-stamp-wash: #fcebed;
   --color-amber: #8a5a00;
@@ -96,8 +92,7 @@
   .register :is(th, td):last-child {
     border-right: 0;
   }
-  .register > tbody:last-child > tr:last-child > :is(th, td),
-  .register > tfoot > tr:last-child > :is(th, td) {
+  .register > tbody:last-child > tr:last-child > :is(th, td) {
     border-bottom: 0;
   }
   .register > thead > tr > th {

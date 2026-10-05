@@ -47,7 +47,7 @@ describe('seed data (AC-01, AC-02, AC-03)', () => {
     ]);
   });
 
-  it('every source field matches Appendix C for Admin detail', async () => {
+  it('every source field matches Appendix C in the detail response', async () => {
     for (const [id, expected] of Object.entries(SOURCE)) {
       const res = await ctx.http.get(`/api/v1/employees/${id}`).expect(200);
       expect(res.body.data).toMatchObject({ id: Number(id), ...expected, version: 1 });

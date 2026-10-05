@@ -5,7 +5,7 @@ import { z } from 'zod';
  * defined here with the PRD default so business code never carries magic numbers.
  * Validation runs at startup; an invalid environment stops the process.
  */
-const APP_ENVS = ['local', 'staging', 'test', 'performance'] as const;
+const APP_ENVS = ['local', 'staging', 'test'] as const;
 export type AppEnv = (typeof APP_ENVS)[number];
 
 export interface AppConfig {
@@ -51,7 +51,6 @@ const envSchema = z.object({
   // loopback/private address, so client-supplied X-Forwarded-For entries are never believed.
   TRUST_PROXY: z.string().default('private-1hop'),
   LOG_LEVEL: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
-  PERF_RATE_LIMIT_OVERRIDE: bool(false),
   RATE_LIMIT_ENABLED: bool(true),
   BUILD_COMMIT_SHA: z.string().default('unknown'),
   APP_VERSION: z.string().default('1.0.0'),
@@ -97,16 +96,10 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   }
 
   if (!e.RATE_LIMIT_ENABLED && e.APP_ENV !== 'test') {
-    problems.push('RATE_LIMIT_ENABLED=false is only allowed when APP_ENV=test (performance uses PERF_RATE_LIMIT_OVERRIDE)');
+    problems.push('RATE_LIMIT_ENABLED=false is only allowed when APP_ENV=test');
   }
-  if (e.PERF_RATE_LIMIT_OVERRIDE && e.APP_ENV !== 'performance') {
-    problems.push('PERF_RATE_LIMIT_OVERRIDE=true is only allowed when APP_ENV=performance');
-  }
-
 
   if (problems.length > 0) throw new ConfigError(problems);
-
-  const rateLimitsEnabled = e.RATE_LIMIT_ENABLED && !e.PERF_RATE_LIMIT_OVERRIDE;
 
   return {
     appEnv: e.APP_ENV,
@@ -120,7 +113,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     trustProxy: e.TRUST_PROXY,
     logLevel: e.LOG_LEVEL,
     rateLimits: {
-      enabled: rateLimitsEnabled,
+      enabled: e.RATE_LIMIT_ENABLED,
       windowMs: MINUTE,
       readPerWindow: 300,
       writePerWindow: 60,

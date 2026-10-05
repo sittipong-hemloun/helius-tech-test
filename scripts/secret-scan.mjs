@@ -7,7 +7,7 @@ import { resolve } from 'node:path';
 import { readEnvFile } from './lib/env.mjs';
 import { ROOT } from './lib/sh.mjs';
 
-const SECRET_KEYS = /(SECRET|SECRET_KEY|PASSWORD|TOKEN|API_KEY|ENCRYPTION_KEY|DATABASE_URL|CLIENT_ID)$/;
+const SECRET_KEYS = /(SECRET|SECRET_KEY|PASSWORD|TOKEN|API_KEY|ENCRYPTION_KEY|DATABASE_URL)$/;
 const secrets = new Map();
 for (const file of ['.env', '.env.staging']) {
   const path = resolve(ROOT, file);
@@ -16,10 +16,8 @@ for (const file of ['.env', '.env.staging']) {
 }
 const PATTERNS = [
   ['Google API key', /AIza[0-9A-Za-z_-]{35}/],
-  ['Google OAuth client secret', /GOCSPX-[0-9A-Za-z_-]{20,}/],
   ['private key', /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/],
   ['GitHub token', /gh[pousr]_[0-9A-Za-z]{30,}/],
-  ['signed session cookie', /employee_console\.(?:local|staging)\.sid=s%3A[0-9A-Za-z_-]{20,}\.[0-9A-Za-z%_-]{20,}/],
 ];
 const files = execFileSync('git', ['ls-files', '-z'], { cwd: ROOT, encoding: 'utf8' }).split('\0').filter(Boolean);
 const findings = [];

@@ -19,4 +19,4 @@
 
 ## `postgres/init-databases.sh`
 
-สร้าง role/ฐานข้อมูลแยกสำหรับ app (`NOCREATEDB`) และ test runner (`CREATEDB`, เป็นเจ้าของเฉพาะฐาน `employee_console_test_*`/`employee_console_perf`) — D-43 สคริปต์ **ต้อง idempotent**: รันซ้ำทุก `pnpm dev:up` และทุก staging deploy เพื่อปรับ volume เดิมให้ตรงโครง role อย่าใช้คำสั่งที่ล้มเมื่อมีอยู่แล้ว และอย่าพิมพ์รหัสผ่าน
+สร้าง role/ฐานข้อมูลแยกสำหรับ app (`NOCREATEDB`) และ test runner (`CREATEDB`, เป็นเจ้าของเฉพาะฐาน `employee_console_test_*`) — D-43 สคริปต์ **ต้อง idempotent**: รันซ้ำทุก `pnpm dev:up` และทุก staging deploy เพื่อปรับ volume เดิมให้ตรงโครง role อย่าใช้คำสั่งที่ล้มเมื่อมีอยู่แล้ว และอย่าพิมพ์รหัสผ่าน

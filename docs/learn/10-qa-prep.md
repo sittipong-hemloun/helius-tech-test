@@ -40,13 +40,13 @@
 
 ### ใช้หลักฐานอะไรตัดสินใจเพิ่ม index
 
-> วัด baseline ก่อนด้วย build เดียวกันแต่ไม่มี index (`--without-perf-indexes`) แล้ววัดซ้ำหลังเพิ่ม ทั้งสองแบบผ่านเป้าหมายอยู่แล้ว และตัวเลข p95 แกว่งพอ ๆ กับส่วนต่าง จึงไม่ใช้ p95 เป็นหลักฐาน หลักฐานจริงคือ EXPLAIN ANALYZE ที่แสดงว่า filter แผนก+สถานะเปลี่ยนจาก Seq Scan เป็น Index Scan บน index ที่เพิ่มเข้าไป จึงเก็บ index นี้ ส่วน trigram index สำหรับค้นหาชื่อ ที่ 10,000 records planner ยังไม่เลือกใช้ (หน้าค้นหาเร็วขึ้นจาก 3 ms เป็น 0.4 ms เพราะเปลี่ยนไปใช้ primary key ไม่ใช่เพราะ trigram และ query นับจำนวนยังเป็น Seq Scan) จึงบันทึกไว้ตรง ๆ ว่ายังไม่ถูกใช้ เก็บไว้รอข้อมูลโตขึ้น และ drop ได้ถ้าข้อมูลเล็กแบบนี้ตลอด ข้อเสียคือ trigram index กินที่ 3.8 MB และมีต้นทุนตอนเขียน index อยู่ใน migration แยก จึง rollback หรือเทียบ baseline ได้
+> ดูจาก EXPLAIN ANALYZE (คำสั่งของ PostgreSQL ที่บอกว่า query อ่านทุกแถวหรือใช้ index) ไม่ได้เดาเอา index มีสองตัวอยู่ใน migration แยก ตัวแรกเป็น B-tree บน `(department_id, is_active)` ใช้กับ filter แผนก+สถานะและ query นับจำนวน EXPLAIN แสดงว่าเปลี่ยนจากอ่านทุกแถวเป็นใช้ index ตัวที่สองเป็น trigram GIN index บน `lower(name)` เพราะการค้นหาชื่อแบบ `LIKE '%…%'` ใช้ B-tree ไม่ได้ (ช่วยเมื่อคำค้นยาว 3 ตัวอักษรขึ้นไป) ตอนข้อมูลยังน้อย PostgreSQL อาจยังไม่เลือกใช้ จะเห็นผลเมื่อข้อมูลโตขึ้น migration นี้เพิ่ม index อย่างเดียว image เก่ายังใช้ได้ จึง rollback ได้ปลอดภัย ส่วนชุด performance test ถูกตัดออกภายหลังเพื่อความเรียบง่าย (D-52) แต่ index ยังอยู่
 
-เปิดประกอบ: [performance.md](../performance.md), [perf_indexes migration](../../apps/api/prisma/migrations/20261002000000_perf_indexes/migration.sql), D-32
+เปิดประกอบ: [perf_indexes migration](../../apps/api/prisma/migrations/20261002000000_perf_indexes/migration.sql), D-32, D-52
 
 ### AI ทำอะไรผิดจริงบ้าง
 
-> มีบันทึกไว้ 20 ข้อ ตัวอย่างที่เล่าง่าย:
+> มีบันทึกไว้ 21 ข้อ ตัวอย่างที่เล่าง่าย:
 > 1. จะติดตั้ง Prisma 8 RC เพราะ `latest` ชี้ไป RC ต้อง pin 7.10.0
 > 2. รันสคริปต์ OpenAPI ด้วย `tsx` แล้ว Nest DI พัง เพราะ esbuild ไม่สร้าง decorator metadata
 > 3. ช่อง Salary format ตอน focus ทำให้พิมพ์ใหม่แล้วข้อความต่อท้าย `62000.0063000.00` Playwright จับได้
@@ -75,7 +75,7 @@
 
 ### Jenkins pipeline มีกี่ขั้น ทำอะไรบ้าง
 
-> Checkout → ติดตั้ง dependency → static checks (lint, typecheck, scan secret, ตรวจ OpenAPI drift) → unit test → เปิดฐานข้อมูลเฉพาะ build → integration + Postman → build → E2E → build Docker image ติด tag เป็น commit SHA → ถ้าเป็น main ก็ deploy staging แล้ว smoke test ถ้า smoke ไม่ผ่านจะ rollback ไป image ก่อนหน้าอัตโนมัติ ทุกขั้นเรียกคำสั่ง `pnpm` เดียวกับที่รันในเครื่อง
+> Checkout → ติดตั้ง dependency → static checks (lint, typecheck, scan secret, ตรวจ OpenAPI drift) → unit test → เปิดฐานข้อมูลเฉพาะ build → integration test ของ API → build production ครั้งเดียวพร้อม E2E → Postman ใช้ build เดิม → build Docker image ติด tag เป็น commit SHA → ถ้าเป็น main ก็ deploy staging ซึ่งรัน smoke test ในตัว ถ้า smoke ไม่ผ่านจะ rollback ไป image ก่อนหน้าอัตโนมัติ ทุกขั้นเรียกคำสั่ง `pnpm` เดียวกับที่รันในเครื่อง
 
 เปิดประกอบ: [Jenkinsfile](../../Jenkinsfile), [บท 6](06-jenkins.md)
 

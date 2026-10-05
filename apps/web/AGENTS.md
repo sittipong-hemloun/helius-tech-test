@@ -25,7 +25,7 @@ Next.js 16 App Router + React 19, TanStack Query, react-hook-form + zod, Tailwin
 | Path | หน้าที่ |
 | --- | --- |
 | `app/` | route; `page.tsx` บางๆ ห่อ `*-view.tsx` (client component ที่ทำงานจริง) ไว้ใน folder เดียวกัน; กลุ่ม `(console)` ใช้ `AppShell` |
-| `components/ui/` | primitive ทั่วไปที่ไม่รู้จัก domain (`button`, `dialog`, `form-cell`, `select-control`, `skeleton`, `cn`) |
+| `components/ui/` | primitive ทั่วไปที่ไม่รู้จัก domain (`button`, `dialog`, `form-cell`, `skeleton`, `cn`) |
 | `components/layout/` | `AppShell`, `PageHeader`, `PageBar` |
 | `components/employees/` | ของเฉพาะ employee (table, filters, form, delete dialog, status badge) |
 | `components/common/` | ส่วนประกอบใช้ร่วมที่ไม่ใช่ primitive (`Notice`, `Pagination`, `unsaved-changes` = provider + `GuardedLink` กันออกจากฟอร์มที่ยังไม่บันทึก) |

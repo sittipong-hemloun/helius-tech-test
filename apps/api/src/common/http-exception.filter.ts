@@ -6,8 +6,6 @@ import type { AppRequest } from './request-context.js';
 
 const STATUS_CODES: Record<number, { code: string; message: string }> = {
   400: { code: 'BAD_REQUEST', message: 'The request is not valid.' },
-  401: { code: 'UNAUTHENTICATED', message: 'Sign in to continue.' },
-  403: { code: 'FORBIDDEN', message: 'You do not have permission to perform this action.' },
   404: { code: 'NOT_FOUND', message: 'The requested resource does not exist.' },
   405: { code: 'METHOD_NOT_ALLOWED', message: 'Method not allowed.' },
   413: { code: 'PAYLOAD_TOO_LARGE', message: 'The request body is too large.' },

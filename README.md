@@ -2,13 +2,13 @@
 
 เว็บจัดการข้อมูลพนักงานจากไฟล์ Excel ของโจทย์ ([`test-exam-data.xlsx`](apps/api/prisma/seed-data/test-exam-data.xlsx)) สำหรับแบบทดสอบ AI-Augmented Developer — Next.js 16 (UI) + NestJS 12 (API) + PostgreSQL 17, CI/CD ด้วย Jenkins ไป local staging
 
-สเปกตั้งต้นอยู่ใน [docs/prd.md](docs/prd.md) — ระบบ Login/สิทธิ์ (Admin/Viewer) และรายงาน AI (n8n + Gemini) ในสเปกถูกตัดออกโดยตั้งใจเพื่อให้โปรเจกต์เรียบง่าย ทุกคนที่เข้าถึงเว็บได้ใช้งานได้เต็มสิทธิ์
+สเปกตั้งต้นอยู่ใน [docs/prd.md](docs/prd.md) — ระบบ Login/สิทธิ์ (Admin/Viewer), รายงาน AI (n8n + Gemini) และชุด performance test (k6/Lighthouse) ในสเปกถูกตัดออกโดยตั้งใจเพื่อให้โปรเจกต์เรียบง่าย ทุกคนที่เข้าถึงเว็บได้ใช้งานได้เต็มสิทธิ์
 
 ## ทำอะไรได้บ้าง
 
 - **Employees** — ดูรายการ 5 records จาก Excel (ID, Name, Department, Salary `#,##0.00`, Join Date, Status, Last Updated Date), ค้นหาชื่อ (debounce 300 ms), กรอง Department/Status, เรียงลำดับ, แบ่งหน้า, สถานะทั้งหมดอยู่ใน URL
 - **CRUD** — เพิ่ม/แก้/ลบ, ID และ Last Updated Date กำหนดโดยระบบ, ป้องกันการเขียนทับด้วย `version` + `If-Match`, ป้องกันสร้างซ้ำด้วย `Idempotency-Key`
-- **Delivery** — Docker images (tag = commit SHA), local staging :3100, Jenkinsfile, Postman/Newman, Playwright, k6/Lighthouse
+- **Delivery** — Docker images (tag = commit SHA), local staging :3100, Jenkinsfile, Postman/Newman, Playwright
 
 ## โครงสร้าง
 
@@ -18,7 +18,7 @@
 │   ├── api/                      NestJS API
 │   │   ├── src/                  feature modules (employees, departments, health, …) + common/config/database
 │   │   ├── prisma/               schema, migrations, seed data (Excel ต้นฉบับ + JSON)
-│   │   ├── scripts/              seed, demo reset, OpenAPI, perf seed
+│   │   ├── scripts/              seed, demo reset, OpenAPI
 │   │   └── test/                 Vitest: unit + integration (PostgreSQL จริง)
 │   └── web/                      Next.js App Router (UI, /api rewrite → NestJS)
 │       └── src/                  app/ (routes) · components/{ui,layout,employees,common} · lib/
@@ -26,13 +26,12 @@
 │   └── api-client/               OpenAPI document + generated TypeScript types
 ├── tests/
 │   ├── e2e/                      Playwright
-│   ├── postman/                  Newman API contract tests
-│   └── performance/k6/           load scenarios (ผลลัพธ์ถูก generate ไม่ commit)
+│   └── postman/                  Newman API contract tests
 ├── infra/
 │   ├── docker/                   api / web Dockerfiles
 │   ├── jenkins/                  controller (JCasC) + host agent
 │   └── postgres/                 database init script
-├── scripts/                      pnpm task runners: setup, doctor, dev-up, staging, ci, perf
+├── scripts/                      pnpm task runners: setup, doctor, dev-up, staging, ci, tests
 ├── docs/                         PRD, architecture, decisions, runbook, …
 ├── compose.yaml                  dev: postgres (+ jenkins ตาม profile ci)
 ├── compose.staging.yaml          local staging :3100
@@ -95,8 +94,6 @@ pnpm dev
 | `pnpm staging:up` / `staging:restart` / `staging:smoke` / `staging:rollback` / `staging:down` | build images ตาม SHA → backup → migrate → deploy :3100 → smoke (ล้มแล้ว rollback อัตโนมัติ) / apply env ใหม่ / ย้อน image ก่อนหน้า |
 | `node scripts/staging.mjs reset --confirm-reset` / `restore --file=… --confirm-restore` | คืนข้อมูล 5 records บน staging / restore backup ด้วยสิทธิ์ที่ถูกต้อง |
 | `pnpm ci:up` | เปิด Jenkins controller (:8080) และ agent บนเครื่องนี้ |
-| `pnpm perf:seed` | สร้าง 10k synthetic records (seed 42) — เฉพาะ `APP_ENV=performance` + ฐานที่ mark performance |
-| `pnpm perf:run --label=<name>` | benchmark 10k records (k6 + Lighthouse); `--without-perf-indexes` สำหรับ baseline บน build เดียวกัน; `node scripts/perf-report.mjs <labels…>` สร้างตาราง |
 | `pnpm down` | หยุดทุก container ของโปรเจกต์ (ไม่ลบ volume) |
 
 ## Environments
@@ -106,7 +103,6 @@ pnpm dev
 | local dev | http://localhost:3000 | localhost:`PORT` | `employee_console_dev` |
 | local staging | http://localhost:3100 | ภายใน Docker เท่านั้น | `employee_console_staging` (container/volume แยก) |
 | test | พอร์ตที่ runner กำหนด | ภายใน runner | `employee_console_test_<run>` |
-| performance | http://localhost:3200 | :3201 (benchmark) | `employee_console_perf` |
 
 ## เอกสาร
 
@@ -117,4 +113,4 @@ pnpm dev
 - [docs/runbook.md](docs/runbook.md) — เปิด/ปิด, reset, backup/restore, rollback, Jenkins setup
 - [docs/demo-script.md](docs/demo-script.md) — แผนนำเสนอ 15 นาทีและการซ้อม Live Coding
 - [AGENTS.md](AGENTS.md) — คู่มือสำหรับ AI agent (กฎข้าม repo, ขอบเขต D-46); แต่ละ folder หลักมี `AGENTS.md` ของตัวเอง และ `CLAUDE.md` ที่ import ไฟล์นั้น
-- [docs/decisions.md](docs/decisions.md), [docs/versions.md](docs/versions.md), [docs/performance.md](docs/performance.md), [docs/ai-usage.md](docs/ai-usage.md), [docs/design.md](docs/design.md)
+- [docs/decisions.md](docs/decisions.md), [docs/versions.md](docs/versions.md), [docs/ai-usage.md](docs/ai-usage.md), [docs/design.md](docs/design.md)

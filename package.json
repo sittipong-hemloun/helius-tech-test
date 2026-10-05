@@ -30,13 +30,10 @@
     "staging:smoke": "node scripts/staging.mjs smoke",
     "staging:rollback": "node scripts/staging.mjs rollback",
     "staging:down": "node scripts/staging.mjs down",
-    "perf:seed": "pnpm --filter @employee-console/api run perf:seed",
-    "perf:run": "node scripts/perf-run.mjs",
     "ci:up": "node scripts/ci-up.mjs",
     "secrets:scan": "node scripts/secret-scan.mjs"
   },
   "devDependencies": {
-    "lighthouse": "13.5.0",
     "newman": "6.2.2",
     "pg": "8.23.1"
   }

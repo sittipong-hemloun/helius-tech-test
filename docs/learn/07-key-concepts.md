@@ -98,7 +98,7 @@ sequenceDiagram
 
 ถ้าไม่ส่ง `If-Match` เลยจะได้ **428** ไม่ใช่ทำงานต่อแบบไม่ตรวจ ระบบบังคับให้ทุก client ตรวจ version เสมอ (`If-Match` รับทั้ง `"3"` และ `3` — D-23)
 
-ดูโค้ด: `parseIfMatch` ใน [employees.controller.ts](../../apps/api/src/employees/employees.controller.ts), `update` และ `remove` ใน [employees.service.ts](../../apps/api/src/employees/employees.service.ts), test "two tabs editing the same record" ใน [admin-crud.spec.ts](../../tests/e2e/specs/admin-crud.spec.ts) (AC-16)
+ดูโค้ด: `parseIfMatch` ใน [employees.controller.ts](../../apps/api/src/employees/employees.controller.ts), `update` และ `remove` ใน [employees.service.ts](../../apps/api/src/employees/employees.service.ts), test "two tabs editing the same record" ใน [employee-crud.spec.ts](../../tests/e2e/specs/employee-crud.spec.ts) (AC-16)
 
 ## 3. กันการสร้างซ้ำ: `Idempotency-Key`
 
@@ -141,7 +141,7 @@ sequenceDiagram
 - คำขอพร้อมกัน 5 ครั้งด้วย key เดียวได้พนักงาน 1 คน มี integration test พิสูจน์
 - ฝั่งเว็บ **เก็บ key เดิมไว้** เมื่อไม่รู้ผล (network error หรือ 5xx) ดู `outcomeUnknown` ใน [api.ts](../../apps/web/src/lib/api.ts) — AI เคยทำพลาดตรงนี้โดยสุ่ม key ใหม่เมื่อได้ 5xx ([ai-usage.md](../ai-usage.md) ข้อ 13)
 
-ดูโค้ด: [idempotency.service.ts](../../apps/api/src/idempotency/idempotency.service.ts), test "lost create response" ใน [admin-crud.spec.ts](../../tests/e2e/specs/admin-crud.spec.ts) (AC-20)
+ดูโค้ด: [idempotency.service.ts](../../apps/api/src/idempotency/idempotency.service.ts), test "lost create response" ใน [employee-crud.spec.ts](../../tests/e2e/specs/employee-crud.spec.ts) (AC-20)
 
 ## 4. เงินเดือนเป็น string ทุกชั้น
 

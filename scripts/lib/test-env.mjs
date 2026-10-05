@@ -1,5 +1,5 @@
-// Shared helpers for E2E/Postman/perf runs: an isolated database marked with its purpose and
-// an API process in APP_ENV=test|performance.
+// Shared helpers for E2E/Postman runs: an isolated database marked with its purpose and
+// an API process in APP_ENV=test.
 import { spawn } from 'node:child_process';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -7,8 +7,8 @@ import pg from 'pg';
 import { readEnvFile } from './env.mjs';
 import { capture, ROOT, waitFor } from './sh.mjs';
 
-/** Connection base for the test role (CREATEDB, owns only throwaway test/perf databases). */
-export function localDb() {
+/** Connection base for the test role (CREATEDB, owns only throwaway test databases). */
+function localDb() {
   const env = readEnvFile(resolve(ROOT, '.env'));
   const user = env.get('TEST_DB_USER') || 'employee_console_test';
   const password = env.get('TEST_DB_PASSWORD');
@@ -18,20 +18,40 @@ export function localDb() {
   return { base, admin: `${base}/postgres` };
 }
 
-/** Drops and recreates `name`, applies migrations, marks the purpose, seeds the Excel data. */
-export async function freshDatabase(name, purpose, { seed = true } = {}) {
-  if (!/^employee_console_(test|perf)[a-z0-9_]*$/.test(name)) throw new Error(`refusing to recreate unexpected database ${name}`);
-  const { base, admin } = localDb();
-  const client = new pg.Client({ connectionString: admin });
+async function adminQuery(sql) {
+  const client = new pg.Client({ connectionString: localDb().admin });
   await client.connect();
-  await client.query(`DROP DATABASE IF EXISTS "${name}" WITH (FORCE)`);
-  await client.query(`CREATE DATABASE "${name}"`);
-  await client.end();
-  const url = `${base}/${name}`;
+  try {
+    await client.query(sql);
+  } finally {
+    await client.end();
+  }
+}
+
+function assertThrowaway(name) {
+  if (!/^employee_console_test[a-z0-9_]*$/.test(name)) throw new Error(`refusing to touch unexpected database ${name}`);
+}
+
+/** Drops a throwaway test database (kept when KEEP_TEST_DB is set, for debugging). */
+export async function dropDatabase(name) {
+  assertThrowaway(name);
+  if (process.env.KEEP_TEST_DB) {
+    console.log(`KEEP_TEST_DB set — kept database ${name}`);
+    return;
+  }
+  await adminQuery(`DROP DATABASE IF EXISTS "${name}" WITH (FORCE)`);
+}
+
+/** Drops and recreates `name`, applies migrations, marks it "test", seeds the Excel data. */
+export async function freshDatabase(name) {
+  assertThrowaway(name);
+  await adminQuery(`DROP DATABASE IF EXISTS "${name}" WITH (FORCE)`);
+  await adminQuery(`CREATE DATABASE "${name}"`);
+  const url = `${localDb().base}/${name}`;
   const env = { ...process.env, DATABASE_URL: url, ENV_FILE: '/dev/null' };
   runApi(['exec', 'prisma', 'migrate', 'deploy'], env);
-  runApi(['run', 'db:mark', `--purpose=${purpose}`], env);
-  if (seed) runApi(['run', 'db:seed'], env);
+  runApi(['run', 'db:mark', '--purpose=test'], env);
+  runApi(['run', 'db:seed'], env);
   return url;
 }
 
@@ -41,20 +61,19 @@ function runApi(args, env) {
   return out;
 }
 
-/** App variables for a test/performance API process (no inherited shell environment). */
-export function appEnv({ databaseUrl, port, origin, appEnv = 'test', extra = {} }) {
+/** App variables for a test API process (no inherited shell environment). */
+export function appEnv({ databaseUrl, port, origin }) {
   return {
     ENV_FILE: '/dev/null',
-    APP_ENV: appEnv,
+    APP_ENV: 'test',
     NODE_ENV: 'production',
     PORT: String(port),
     HOST: '127.0.0.1',
     DATABASE_URL: databaseUrl,
     PUBLIC_APP_ORIGIN: origin,
     // Every runner request comes from 127.0.0.1, i.e. one rate-limit key; limits have their own API test.
-    ...(appEnv === 'test' ? { RATE_LIMIT_ENABLED: 'false' } : {}),
+    RATE_LIMIT_ENABLED: 'false',
     LOG_LEVEL: 'warn',
-    ...extra,
   };
 }
 

@@ -41,7 +41,6 @@ export function UnsavedChangesProvider({ children }: { children: ReactNode }) {
         title="Discard unsaved changes?"
         confirmLabel="Discard changes"
         cancelLabel="Keep editing"
-        tone="danger"
         onConfirm={() => {
           const proceed = pending;
           dirtyRef.current = false;
