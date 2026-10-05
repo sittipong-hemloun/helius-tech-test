@@ -1,0 +1,81 @@
+{
+  "current": "01e23fd86a55",
+  "previous": "e3ac79c26d8a",
+  "history": [
+    {
+      "tag": "01e23fd86a55",
+      "deployedAt": "2026-10-05T06:55:46.800Z",
+      "previous": "e3ac79c26d8a"
+    },
+    {
+      "tag": "e3ac79c26d8a",
+      "deployedAt": "2026-10-03T03:06:15.530Z",
+      "previous": "51ff45e239bf"
+    },
+    {
+      "tag": "51ff45e239bf",
+      "deployedAt": "2026-10-03T02:47:24.560Z",
+      "previous": "435984ed431b"
+    },
+    {
+      "tag": "435984ed431b",
+      "deployedAt": "2026-10-02T12:36:03.030Z",
+      "previous": "b1aa0747ec84"
+    },
+    {
+      "tag": "b1aa0747ec84",
+      "deployedAt": "2026-10-02T05:01:21.418Z",
+      "previous": "a0dbe2f64a76"
+    },
+    {
+      "tag": "b1aa0747ec84",
+      "deployedAt": "2026-10-02T04:33:43.128Z",
+      "previous": "a0dbe2f64a76"
+    },
+    {
+      "tag": "b1aa0747ec84",
+      "deployedAt": "2026-10-02T04:30:27.554Z",
+      "previous": "a0dbe2f64a76"
+    },
+    {
+      "tag": "b1aa0747ec84",
+      "deployedAt": "2026-10-02T00:59:05.841Z",
+      "previous": "a0dbe2f64a76"
+    },
+    {
+      "tag": "a0dbe2f64a76",
+      "deployedAt": "2026-10-02T00:45:39.307Z",
+      "previous": "c0e9d918585d"
+    },
+    {
+      "tag": "c0e9d918585d",
+      "deployedAt": "2026-10-02T00:45:21.983Z",
+      "previous": "a0dbe2f64a76"
+    },
+    {
+      "tag": "a0dbe2f64a76",
+      "deployedAt": "2026-10-02T00:42:33.140Z",
+      "previous": "c0e9d918585d"
+    },
+    {
+      "tag": "c0e9d918585d",
+      "deployedAt": "2026-10-02T00:38:21.069Z",
+      "previous": null
+    },
+    {
+      "tag": "c0e9d918585d",
+      "deployedAt": "2026-10-01T15:57:43.130Z",
+      "previous": null
+    },
+    {
+      "tag": "c0e9d918585d",
+      "deployedAt": "2026-10-01T15:55:25.044Z",
+      "previous": null
+    },
+    {
+      "tag": "c0e9d918585d",
+      "deployedAt": "2026-10-01T15:54:37.983Z",
+      "previous": null
+    }
+  ]
+}

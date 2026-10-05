@@ -1,17 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { Employee } from '@employee-console/api-client';
 import { Loader2, Save } from 'lucide-react';
 import { useEffect, type ReactNode } from 'react';
-import { Controller, useForm, type UseFormSetError } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useUnsavedChanges } from '@/components/common/unsaved-changes';
-import { DEPARTMENT_OPTIONS, isDepartmentId } from '@/lib/departments';
+import type { Employee, EmployeeInput } from '@/lib/api';
+import { DEPARTMENTS, isDepartmentId } from '@/lib/departments';
 import { formatDateOnly, statusLabel } from '@/lib/format';
 import { formatSalaryInput, parseSalaryInput } from '@/lib/salary';
-import type { EmployeeInput } from '@/lib/queries';
-import type { FieldError } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { cellInputClass, FormCell } from '@/components/ui/form-cell';
 
@@ -25,7 +22,7 @@ function isRealDate(v: string): boolean {
   return d.getUTCFullYear() === Number(m[1]) && d.getUTCMonth() === Number(m[2]) - 1 && d.getUTCDate() === Number(m[3]);
 }
 
-/** Same rules as the API (PRD §9.3); the server stays the final judge. */
+/** Same rules as the API DTO (apps/api/src/employees/employee.dto.ts); the server stays the final judge. */
 const employeeSchema = z.object({
   name: z
     .string()
@@ -46,9 +43,7 @@ const employeeSchema = z.object({
 });
 
 /** What the inputs hold; `departmentId` is '' until a department is chosen. */
-export type EmployeeFormFields = z.input<typeof employeeSchema>;
-/** After validation: `departmentId` is narrowed to the API's department ids. */
-export type EmployeeFormValues = z.output<typeof employeeSchema>;
+export type EmployeeFormValues = z.infer<typeof employeeSchema>;
 
 export function toInput(values: EmployeeFormValues): EmployeeInput {
   const salary = parseSalaryInput(values.salary);
@@ -61,7 +56,7 @@ export function toInput(values: EmployeeFormValues): EmployeeInput {
   };
 }
 
-export function valuesFromEmployee(e: Employee): EmployeeFormFields {
+export function valuesFromEmployee(e: Employee): EmployeeFormValues {
   return {
     name: e.name,
     departmentId: e.departmentId,
@@ -71,56 +66,38 @@ export function valuesFromEmployee(e: Employee): EmployeeFormFields {
   };
 }
 
-export const EMPTY_VALUES: EmployeeFormFields = { name: '', departmentId: '', salary: '', joinDate: '', isActive: true };
-
-const FIELDS = ['name', 'departmentId', 'salary', 'joinDate', 'isActive'] as const;
-
-/** Puts server-side field errors under the matching inputs; returns false when none matched. */
-export function applyServerErrors(details: FieldError[], setError: UseFormSetError<EmployeeFormFields>): boolean {
-  let matched = false;
-  for (const d of details) {
-    const field = FIELDS.find((f) => f === d.field);
-    if (field) {
-      setError(field, { type: 'server', message: d.message }, { shouldFocus: !matched });
-      matched = true;
-    }
-  }
-  return matched;
-}
+export const EMPTY_VALUES: EmployeeFormValues = { name: '', departmentId: '', salary: '', joinDate: '', isActive: true };
 
 interface Props {
   mode: 'create' | 'edit';
   employee?: Employee;
-  defaultValues: EmployeeFormFields;
+  defaultValues: EmployeeFormValues;
   pending: boolean;
   banner?: ReactNode;
-  onSubmit: (values: EmployeeFormValues, setError: UseFormSetError<EmployeeFormFields>, markClean: (v?: EmployeeFormFields) => void) => void;
+  onSubmit: (values: EmployeeFormValues) => void;
   onCancel: () => void;
   /** Changes when the server copy is reloaded, so the form can reset to it. */
   resetKey?: string | number;
 }
 
 export function EmployeeForm({ mode, employee, defaultValues, pending, banner, onSubmit, onCancel, resetKey }: Props) {
-  const form = useForm<EmployeeFormFields, unknown, EmployeeFormValues>({
+  const { register, handleSubmit, control, formState, reset } = useForm<EmployeeFormValues>({
     resolver: zodResolver(employeeSchema),
     defaultValues,
     mode: 'onTouched',
     shouldFocusError: true,
   });
-  const { register, handleSubmit, control, formState, setError, reset } = form;
-  const { errors, isDirty } = formState;
+  const { errors } = formState;
 
   useEffect(() => {
     if (resetKey !== undefined) reset(defaultValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resetKey]);
 
-  const guard = useUnsavedChanges(isDirty && !pending);
-  const markClean = (v?: EmployeeFormFields) => reset(v ?? form.getValues());
-  const describedBy = (field: keyof EmployeeFormFields) => (errors[field] ? `emp-${field}-error` : undefined);
+  const describedBy = (field: keyof EmployeeFormValues) => (errors[field] ? `emp-${field}-error` : undefined);
 
   return (
-    <form noValidate onSubmit={handleSubmit((v) => onSubmit(v, setError, markClean))} className="max-w-3xl" aria-busy={pending}>
+    <form noValidate onSubmit={handleSubmit(onSubmit)} className="max-w-3xl" aria-busy={pending}>
       {banner ? <div className="mb-4">{banner}</div> : null}
 
       <fieldset className={`form-grid mb-4 grid-cols-2 ${employee ? 'sm:grid-cols-3' : ''}`} aria-label="Assigned by the system">
@@ -168,7 +145,7 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
             <option value="" disabled>
               Choose a department
             </option>
-            {DEPARTMENT_OPTIONS.map((d) => (
+            {DEPARTMENTS.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.name}
               </option>
@@ -236,7 +213,7 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
       </div>
 
       <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button variant="secondary" onClick={() => guard(onCancel)} disabled={pending}>
+        <Button variant="secondary" onClick={onCancel} disabled={pending}>
           Cancel
         </Button>
         <Button type="submit" disabled={pending}>

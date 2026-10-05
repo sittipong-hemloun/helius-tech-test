@@ -1,20 +1,19 @@
 'use client';
 
-import type { Employee } from '@employee-console/api-client';
 import { Loader2, Plus } from 'lucide-react';
+import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Notice } from '@/components/common/notice';
-import { GuardedLink } from '@/components/common/unsaved-changes';
 import { Pagination } from '@/components/common/pagination';
 import { DeleteEmployeeDialog } from '@/components/employees/delete-employee-dialog';
 import { EmployeeFilters } from '@/components/employees/employee-filters';
 import { EmployeeTable } from '@/components/employees/employee-table';
 import { PageHeader } from '@/components/layout/app-shell';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { describeError } from '@/lib/api';
+import { errorMessage, type Employee } from '@/lib/api';
 import { plural } from '@/lib/format';
-import { DEFAULT_PARAMS, isFiltered, readListParams, rememberListHref, toSearch, type ListParams, type SortBy } from '@/lib/list-params';
+import { DEFAULT_PARAMS, isFiltered, readListParams, toSearch, type ListParams, type SortBy } from '@/lib/list-params';
 import { useEmployees } from '@/lib/queries';
 
 export function EmployeesView() {
@@ -23,8 +22,6 @@ export function EmployeesView() {
   const searchParams = useSearchParams();
   const params = useMemo(() => readListParams(searchParams), [searchParams]);
   const [toDelete, setToDelete] = useState<Employee | null>(null);
-
-  useEffect(() => rememberListHref(`${pathname}${toSearch(params)}`), [pathname, params]);
 
   const navigate = useCallback(
     (next: ListParams, mode: 'push' | 'replace' = 'push') => {
@@ -40,8 +37,8 @@ export function EmployeesView() {
   const onSearch = useCallback((q: string) => navigate({ ...params, q, page: 1 }, 'replace'), [navigate, params]);
 
   const query = useEmployees(params);
-  const meta = query.data?.meta;
-  const rows = query.data?.data;
+  const meta = query.data;
+  const rows = query.data?.items;
 
   // Deleting the last row of a page: step back to the last page that still has data.
   useEffect(() => {
@@ -86,17 +83,17 @@ export function EmployeesView() {
           )
         }
         actions={
-          <GuardedLink href="/employees/new" className={buttonVariants({ variant: 'primary' })}>
+          <Link href="/employees/new" className={buttonVariants({ variant: 'primary' })}>
             <Plus aria-hidden />
             Add employee
-          </GuardedLink>
+          </Link>
         }
       />
 
       {query.isError && rows ? (
         // Background refresh failed: keep the last loaded data visible, say so, and offer a retry.
         <Notice tone="warning" title="Couldn't refresh the list. Showing the last loaded data." className="mb-4" action={retry}>
-          {describeError(query.error).detail}
+          {errorMessage(query.error)}
         </Notice>
       ) : null}
 
@@ -108,9 +105,7 @@ export function EmployeesView() {
 
         {query.isError && !rows ? (
           <div className="px-4 py-4">
-            <Notice bare tone="error" title={describeError(query.error).title} action={retry}>
-              {describeError(query.error).detail}
-            </Notice>
+            <Notice bare tone="error" title={errorMessage(query.error)} action={retry} />
           </div>
         ) : rows && rows.length === 0 && meta?.total === 0 ? (
           <div className="px-4 py-5">
@@ -122,10 +117,10 @@ export function EmployeesView() {
                   Clear filters
                 </Button>
               ) : (
-                <GuardedLink href="/employees/new" className={buttonVariants({ variant: 'primary' })}>
+                <Link href="/employees/new" className={buttonVariants({ variant: 'primary' })}>
                   <Plus aria-hidden />
                   Add employee
-                </GuardedLink>
+                </Link>
               )}
             </div>
           </div>

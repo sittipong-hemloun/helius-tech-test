@@ -4,50 +4,54 @@
 
 ```mermaid
 flowchart TD
-    B["Browser"] -->|"same origin: pages + /api/*"| W["Next.js :3000 / :3100<br/>UI, /api rewrite"]
-    W -->|"/api/*"| A["NestJS :3001<br/>Employees · Departments · Health"]
-    A --> DB[("PostgreSQL 17<br/>employees, departments, idempotency_keys")]
-    J["Jenkins controller :8080"] --> JA["Host agent: lint · tests · build · images"]
-    JA -->|"compose up (SHA tag)"| ST["local staging :3100"]
+    B["Browser"] -->|"same origin: pages + /api/*"| W["Next.js :3000<br/>UI, /api rewrite"]
+    W -->|"/api/*"| A["NestJS :3001<br/>EmployeesModule"]
+    A -->|"Prisma 7 (pg adapter)"| DB[("PostgreSQL 17 (Docker)<br/>employees, departments")]
 ```
 
 - เบราว์เซอร์คุยกับ origin เดียว (Next.js) — Next.js ไม่เชื่อม DB และไม่มี Server Actions ทำ CRUD ซ้ำ
-- staging ไม่ publish พอร์ต API ออก host — เบราว์เซอร์เข้าถึง API ผ่าน Next.js เท่านั้น
-- ไม่มีระบบ login: ทุกคนที่เข้าถึงเว็บได้ใช้งานเต็มสิทธิ์ (ตัดออกจากขอบเขตโดยตั้งใจ, D-46); API ตรวจ input/concurrency ทุก request
+- API ฟังที่ `127.0.0.1` และ PostgreSQL publish พอร์ตเฉพาะ `127.0.0.1` เท่านั้น
+- ไม่มีระบบ login: ทุกคนที่เข้าถึงเว็บได้ใช้งานเต็มสิทธิ์ (ตัดออกโดยตั้งใจ, D-46) — ความเรียบง่ายเหนือ hardening ระดับ production (D-56)
 
-## API modules (Controller → Service → Prisma)
+## API (Controller → Service → Prisma)
 
-| Module | หน้าที่ |
+| ไฟล์ | หน้าที่ |
 | --- | --- |
-| `config` | โหลด + ตรวจ env (zod), ค่าคงที่ตาม PRD |
-| `rate-limit` | global guard: fixed window ในหน่วยความจำต่อ IP (read 300 / write 60 ต่อนาที) |
-| `employees` | list/search/filter/sort/pagination (SQL whitelist + LIKE escape), CRUD, version/If-Match, idempotency |
-| `departments` | master list 4 ค่า |
-| `health` | `live` (process), `ready` (DB + migration ล่าสุด) |
-| `common` | request ID, JSON logger (redact), error envelope, success envelope, Clock |
+| `app.ts` | `createApp()`: prefix `/api`, global `ValidationPipe`, Swagger `/api/docs` |
+| `prisma/` | `PrismaModule` (global) ให้ `PrismaService` กับทุก feature |
+| `employees/employees.controller.ts` | HTTP: list, get, create, update, delete; อ่าน `If-Match` |
+| `employees/employees.service.ts` | query (search/filter/sort/page), กฎ version, แปลง Decimal/DATE ↔ string |
+| `employees/employee.dto.ts` | กฎของ input ทุกช่อง (class-validator) + คำอธิบาย Swagger |
+
+| Endpoint | ผล |
+| --- | --- |
+| `GET /api/employees?q=&departmentId=&status=&page=&pageSize=&sortBy=&sortOrder=` | `{ items, page, pageSize, total, totalPages }` |
+| `GET /api/employees/:id` | employee หรือ 404 |
+| `POST /api/employees` | 201 + employee (ID และ Last Updated Date มาจากระบบ, version 1) |
+| `PATCH /api/employees/:id` + `If-Match: "<version>"` | employee ที่ version +1; ไม่มี header → 428, version ไม่ตรง → 409 |
+| `DELETE /api/employees/:id` + `If-Match: "<version>"` | 204; 428/409/404 เหมือน PATCH |
+
+Employee: `{ id, name, departmentId, departmentName, salary: "65000.00", joinDate: "2023-01-15", isActive, lastUpdatedDate, version }`
 
 ## Request lifecycle
 
-1. `requestContextMiddleware` สร้าง UUID request ID (ไม่เชื่อ header จาก caller) และเขียน access log JSON ตอนจบ
-2. security headers → ตรวจ `Content-Type: application/json` → body parser (32 KB)
-3. Rate limit ต่อ IP (read 300 / write 60 ต่อนาที)
-4. `ValidationPipe` (whitelist + forbid unknown, ไม่แปลงชนิดอัตโนมัติ) + `@Rule()` → error code ระดับ field
-5. Service ทำงานใน transaction ที่จำเป็น → `EnvelopeInterceptor` ใส่ `meta.requestId` และ `Cache-Control: no-store`
-6. `HttpExceptionFilter` แปลงทุก error เป็น `{ error: { code, message, details?, requestId } }` ไม่มี stack/SQL/ค่าที่ส่งมา
+1. Next.js rewrite `/api/*` → NestJS (`API_INTERNAL_URL`, ฝังตอน build)
+2. `ValidationPipe` แปลง body/query เป็น DTO: field ที่ไม่รู้จักหรือเป็นของระบบ (`id`, `version`, `lastUpdatedDate`) → 400, query ได้ค่า default (page 1, pageSize 20, sort id asc)
+3. Service เรียก Prisma — list ใช้ `count` + `findMany` ใน `$transaction` เดียว; update/delete ใช้ `updateMany`/`deleteMany` ที่ `where: { id, version }` ถ้าไม่โดนแถวไหนจึงตรวจว่า 404 หรือ 409
+4. Error เป็น exception ของ NestJS → `{ statusCode, message, error }` (validation: `message` เป็น array) ไม่มี stack/SQL
 
 ## Data model
 
-ดู `apps/api/prisma/schema.prisma` และ `apps/api/prisma/migrations/*/migration.sql` (identity column, CHECK constraints, partial unique indexes)
+ดู `apps/api/prisma/schema.prisma` และ `apps/api/prisma/migrations/*/migration.sql` (identity column, CHECK constraints, trigram index)
 
 | Table | จุดสำคัญ |
 | --- | --- |
-| `employees` | `id` identity (seed 101–105, sequence ต่อที่ 106), `salary numeric(12,2)`, `join_date`/`last_updated_date` เป็น `date`, `version` |
-| `departments` | 4 ค่าคงที่, FK RESTRICT |
-| `idempotency_keys` | unique (scope, key), เก็บ response 24 ชั่วโมง |
-| `app_meta` | `database_purpose` = demo/test |
+| `employees` | `id` identity (seed 101–105, ID ใหม่เริ่ม 106 และไม่ย้อนใช้), `salary numeric(12,2)`, `join_date`/`last_updated_date` เป็น `date`, `version` |
+| `departments` | 4 ค่าคงที่ (Engineering, Marketing, Sales, HR), FK RESTRICT |
 
-## Security summary
+## จุดที่ตั้งใจให้ถูกต้อง
 
-- CORS ไม่เปิด (same-origin เท่านั้น); API port ของ staging ไม่ publish ออก host
-- SQL parameterized ทั้งหมด, sort whitelist, LIKE escape; ชื่อ render เป็น text
-- Logs redact cookie/authorization/salary/body/token
+- **เงิน**: `numeric(12,2)` → Prisma Decimal → `toFixed(2)` → JSON string → form ไม่มี float ตรงไหนเลย
+- **วันที่**: DATE ↔ `YYYY-MM-DD` แปลงที่ service จุดเดียว (UTC midnight) จึงไม่เลื่อนตาม time zone ของ server หรือ browser; Last Updated Date = วันที่ปัจจุบันในเขต Asia/Bangkok
+- **แก้ทับกัน**: optimistic locking ด้วย `version` + `If-Match`
+- **ค้นหา**: SQL parameterized ผ่าน Prisma, `%`/`_` ถูก escape ให้เป็นตัวอักษรธรรมดา, sort รับเฉพาะชื่อคอลัมน์ที่กำหนด

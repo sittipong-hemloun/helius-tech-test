@@ -14,30 +14,21 @@ const swcPlugin = swc.vite({
 export default defineConfig({
   plugins: [swcPlugin],
   test: {
+    environment: 'node',
     projects: [
-      {
-        extends: true,
-        test: {
-          name: 'unit',
-          include: ['test/unit/**/*.test.ts'],
-          environment: 'node',
-        },
-      },
+      { extends: true, test: { name: 'unit', include: ['test/unit/**/*.test.ts'] } },
       {
         extends: true,
         test: {
           name: 'integration',
           include: ['test/integration/**/*.test.ts'],
-          environment: 'node',
-          globalSetup: ['test/support/global-setup.ts'],
-          // One PostgreSQL database per run; files share it, so run them one at a time.
+          // Real PostgreSQL: one shared test database, so files run one at a time.
+          globalSetup: ['test/integration/setup.ts'],
           fileParallelism: false,
           testTimeout: 30_000,
           hookTimeout: 120_000,
         },
       },
     ],
-    // JUnit files are named per suite by the package scripts (--outputFile.junit=…) so CI keeps both.
-    reporters: process.env.CI ? ['default', 'junit'] : ['default'],
   },
 });

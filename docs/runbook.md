@@ -9,12 +9,14 @@ pnpm install
 ```
 
 ```bash
-pnpm run setup
+cp .env.example .env
 ```
 
 ```bash
 pnpm dev:up
 ```
+
+`dev:up` = `docker compose up -d --wait` (PostgreSQL) → `pnpm db:migrate` → `pnpm db:seed` (ใส่ 5 records เมื่อตารางว่าง) รันซ้ำได้ทุกครั้ง ไม่ลบข้อมูล
 
 ## 2. Dev
 
@@ -22,74 +24,39 @@ pnpm dev:up
 pnpm dev
 ```
 
-- พอร์ต API มาจาก `PORT` — ถ้าพอร์ตชน ให้เปลี่ยนทั้ง `PORT` และ `API_INTERNAL_URL`
-- `pnpm run doctor` ตรวจทุกอย่างโดยไม่พิมพ์ secret
+- web http://localhost:3000, API http://localhost:3001, Swagger http://localhost:3000/api/docs
+- หยุด: `Ctrl+C` แล้ว `pnpm down` ถ้าต้องการปิด PostgreSQL ด้วย (ข้อมูลอยู่ใน volume `pgdata`)
 
 ## 3. Reset ข้อมูล demo
 
 ```bash
-pnpm demo:reset --confirm-reset
+pnpm db:reset
 ```
 
-ลบ employees/idempotency แล้ว seed 5 records ใหม่ (ID ถัดไป = 106) ทำได้เฉพาะ APP_ENV local/staging และฐานที่ mark ว่า demo — สำหรับ staging:
+ลบพนักงานทั้งหมดในฐาน `DATABASE_URL` แล้ว seed 5 records จาก Excel ใหม่ใน transaction เดียว (ID ถัดไป = 106)
+
+## 4. Tests
 
 ```bash
-node scripts/staging.mjs reset --confirm-reset
+pnpm lint && pnpm typecheck && pnpm test:unit && pnpm build
 ```
-
-## 4. Local staging (CD target)
 
 ```bash
-pnpm staging:up
+pnpm test:api
 ```
-
-ลำดับ: build `employee-console/api:<sha>` และ `web:<sha>` → start postgres → **pg_dump backup** (ถ้ามี schema แล้ว) → `prisma migrate deploy` → seed เฉพาะการ bootstrap ครั้งแรก → start api → web → smoke → บันทึก manifest (current/previous/history) ขั้นใดล้ม (migrate, health, smoke) จะ redeploy tag ที่ดีล่าสุดอัตโนมัติ และบันทึก `failed` ไว้ใน manifest
-
-สถานะ deploy อยู่ที่ `~/.employee-console/staging/` (`manifest.json`, `backups/`) — ใช้ร่วมกันระหว่างคำสั่งในเครื่องและ Jenkins (เปลี่ยนได้ด้วย `STAGING_STATE_DIR`); สำเนา manifest อยู่ที่ `.deploy/staging-manifest.json` ใน workspace
 
 ```bash
-pnpm staging:smoke
+pnpm test:e2e
 ```
 
-ตรวจ liveness, readiness (DB + migration), หน้า Employees, static asset และ API ตอบผ่าน web origin (200) — `pnpm staging:up` รันชุดนี้เองหลัง deploy ทุกครั้ง
+`test:api` และ `test:e2e` ใช้ฐาน `TEST_DATABASE_URL` (Prisma สร้างให้ตอน migrate ครั้งแรก) ต้องเปิด PostgreSQL ไว้ก่อน (`pnpm dev:up`) — `test:e2e` build แอปใหม่และใช้พอร์ต 3020/3021
 
-```bash
-pnpm staging:restart
-```
-
-redeploy tag ปัจจุบันเพื่อให้ค่าใน `.env.staging` ที่แก้มีผล
-
-```bash
-pnpm staging:rollback
-```
-
-กลับไป tag ก่อนหน้า (`previous` ใน manifest) โดย **ไม่ย้อน schema** (migration ออกแบบให้ expand-compatible) — ยกเว้น `20261003000000_remove_login_and_reports` ซึ่งลบตาราง: rollback ไป image ที่เก่ากว่า migration นี้ต้อง restore backup ที่ทำไว้ก่อน migrate:
-
-```bash
-node scripts/staging.mjs restore --file=$HOME/.employee-console/staging/backups/<file>.sql --tag=<sha ที่ตรงกับ backup> --confirm-restore
-```
-
-คำสั่งนี้หยุด api/web → drop + create `employee_console_staging` โดยให้ app role เป็นเจ้าของ → โหลด dump ด้วย app role (object ทั้งหมดเป็นของ app role) → deploy tag ที่ระบุ → smoke
-
-## 5. Jenkins
-
-```bash
-pnpm ci:up
-```
-
-- เปิด controller (Docker, http://localhost:8080, ผู้ใช้ `admin`, รหัสผ่าน = `JENKINS_ADMIN_PASSWORD` ใน `.env`) และ agent บนเครื่องนี้ (label `employee-console`, มี Node 24/pnpm/Docker)
-- Job `employee-console` อ่าน `Jenkinsfile` จาก `JENKINS_GIT_URL` ถ้ามี ไม่งั้นใช้ repo ในเครื่อง (`file://<path>`, branch `main`) — commit ก่อน build
-- Build with Parameters: `DEPLOY_STAGING` (deploy แม้ไม่ใช่ main)
-- Credentials: `employee-console-staging-env` (file) มาจาก `.env.staging` ที่ mount read-only
-- `pnpm ci:up` ตรวจหลัง start ว่า JCasC ถูก apply (job + parameters + node `host-agent`) และ plugin ทั้ง 78 ตัวตรงเวอร์ชันที่ pin ไม่ตรง = exit 1
-- เปลี่ยนเวอร์ชัน plugin: แก้ `infra/jenkins/plugins.txt` → `pnpm ci:up` → รัน pipeline → commit (D-44)
-- หยุด: `pnpm ci:up --stop`
-
-## 6. ปัญหาที่พบบ่อย
+## 5. ปัญหาที่พบบ่อย
 
 | อาการ | ตรวจ / แก้ |
 | --- | --- |
-| หน้า Employees แสดง error ตอนโหลด | `pnpm run doctor` → API ไม่รันหรือพอร์ตชน; ตรวจ `API_INTERNAL_URL` |
-| API start ไม่ได้ "Invalid configuration" | อ่านรายการปัญหาที่พิมพ์ออกมา (เช่น `PUBLIC_APP_ORIGIN` เป็น HTTP นอก loopback) |
+| หน้า Employees แสดง error ตอนโหลด | API ไม่รันหรือพอร์ต 3001 ถูกใช้: `lsof -nP -iTCP:3001 -sTCP:LISTEN` แล้วปิดโปรแกรมนั้น หรือรัน API ที่พอร์ตอื่นด้วย `PORT` และตั้ง `API_INTERNAL_URL` ให้ตรง |
+| `pnpm dev:up` ค้างหรือ `Can't reach database server` | เปิด Docker Desktop แล้ว `docker compose ps` ดูสถานะ `postgres` |
+| `password authentication failed` | volume `pgdata` ถูกสร้างด้วยรหัสผ่านอื่น — ใช้ `POSTGRES_PASSWORD` เดิมใน `.env` หรือเริ่มใหม่ด้วย `docker compose down -v` (**ลบข้อมูลทั้งหมด**) แล้ว `pnpm dev:up` |
+| `TEST_DATABASE_URL is missing` | `.env` เก่ายังไม่มีตัวแปรนี้ — คัดลอกบรรทัดจาก `.env.example` |
 | `ERR_PNPM_IGNORED_BUILDS` | `pnpm approve-builds` |
-| Test ล้มด้วย `TEST_DB_PASSWORD missing` หรือ `permission denied to create database` | `.env` สร้างก่อนมี test role → `pnpm run setup` (เติมค่าที่ขาด) แล้ว `pnpm dev:up` (ปรับ role ของ volume เดิม, D-43) |

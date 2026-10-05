@@ -1,33 +1,34 @@
-import type { ApiErrorBody, components } from '@employee-console/api-client';
-
-export type FieldError = components['schemas']['FieldErrorDto'];
-
-/** Normalized failure: HTTP errors keep the server code/requestId; network failures use status 0. */
-export class ApiError extends Error {
-  constructor(
-    public readonly status: number,
-    public readonly code: string,
-    message: string,
-    public readonly requestId?: string | null,
-    public readonly details: FieldError[] = [],
-  ) {
-    super(message);
-    this.name = 'ApiError';
-  }
-
-  /**
-   * True when we cannot know whether the server applied the request: no response at all, or a
-   * 5xx (the API may have committed before failing, or a proxy answered while the API restarted).
-   * Create flows keep their Idempotency-Key in this case so a retry replays instead of duplicating.
-   */
-  get outcomeUnknown(): boolean {
-    return this.status === 0 || this.status >= 500;
-  }
+/** Shapes returned by the NestJS API (apps/api/src/employees). Salary and dates stay strings end-to-end. */
+export interface Employee {
+  id: number;
+  name: string;
+  departmentId: string;
+  departmentName: string;
+  salary: string;
+  joinDate: string;
+  isActive: boolean;
+  lastUpdatedDate: string;
+  version: number;
 }
 
-export interface ApiResult<T, M = Record<string, unknown>> {
-  data: T;
-  meta: { requestId?: string } & M;
+export type EmployeeInput = Pick<Employee, 'name' | 'departmentId' | 'salary' | 'joinDate' | 'isActive'>;
+
+export interface EmployeePage {
+  items: Employee[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+/** HTTP error with the server's message; status 0 means the server could not be reached. */
+export class ApiError extends Error {
+  constructor(
+    readonly status: number,
+    message: string,
+  ) {
+    super(message);
+  }
 }
 
 interface RequestOptions {
@@ -35,68 +36,35 @@ interface RequestOptions {
   body?: unknown;
   headers?: Record<string, string>;
   signal?: AbortSignal;
-  timeoutMs?: number;
 }
 
-/** Same-origin fetch to the NestJS API through the Next.js /api rewrite. */
-export async function api<T, M = Record<string, unknown>>(path: string, opts: RequestOptions = {}): Promise<ApiResult<T, M>> {
-  const method = opts.method ?? 'GET';
-  const timeout = AbortSignal.timeout(opts.timeoutMs ?? 15_000);
-  const signal = opts.signal ? AbortSignal.any([opts.signal, timeout]) : timeout;
-  const headers: Record<string, string> = { Accept: 'application/json', ...opts.headers };
-  if (opts.body !== undefined) headers['Content-Type'] = 'application/json';
-
+/** fetch to the NestJS API through the Next.js `/api` rewrite (same origin). */
+export async function api<T>(path: string, { method = 'GET', body, headers, signal }: RequestOptions = {}): Promise<T> {
   let res: Response;
   try {
     res = await fetch(path, {
       method,
-      headers,
-      body: opts.body === undefined ? undefined : JSON.stringify(opts.body),
-      cache: 'no-store',
       signal,
+      headers: body === undefined ? headers : { 'Content-Type': 'application/json', ...headers },
+      body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch (err) {
-    if (opts.signal?.aborted) throw err; // superseded by a newer request — not an error
-    const timedOut = timeout.aborted;
-    throw new ApiError(
-      0,
-      timedOut ? 'TIMEOUT' : 'NETWORK_ERROR',
-      timedOut ? 'The server took too long to respond.' : 'Could not reach the server. Check your connection.',
-    );
+    if (signal?.aborted) throw err; // replaced by a newer request, not a failure
+    throw new ApiError(0, 'Could not reach the server. Check your connection and try again.');
   }
+  if (res.status === 204) return undefined as T;
 
-  if (res.status === 204) return { data: undefined as T, meta: {} as ApiResult<T, M>['meta'] };
-
-  let json: unknown = null;
-  try {
-    json = await res.json();
-  } catch {
-    json = null;
-  }
-
+  const json = await res.json().catch(() => null);
   if (!res.ok) {
-    const err = (json as ApiErrorBody | null)?.error;
-    const code = err?.code ?? (res.status >= 500 ? 'INTERNAL_ERROR' : 'HTTP_ERROR');
-    throw new ApiError(
-      res.status,
-      code,
-      err?.message ?? 'Something went wrong. Try again.',
-      err?.requestId ?? res.headers.get('x-request-id'),
-      err?.details ?? [],
-    );
+    // NestJS errors look like { statusCode, message, error }; validation errors have a message array.
+    const message: unknown = json?.message;
+    throw new ApiError(res.status, Array.isArray(message) ? message.join(' ') : String(message ?? 'Something went wrong. Try again.'));
   }
-
-  const body = json as { data: T; meta: ApiResult<T, M>['meta'] };
-  return { data: body.data, meta: body.meta ?? {} };
+  return json as T;
 }
 
-/** Human message for an error, with the request ID for support when the server produced one. */
-export function describeError(err: unknown): { title: string; detail?: string } {
-  if (err instanceof ApiError) {
-    const ref = err.requestId ? `Request ID ${err.requestId}` : undefined;
-    if (err.status === 0) return { title: err.message, detail: 'Nothing was shown as saved. Check the record before trying again.' };
-    if (err.status >= 500) return { title: 'The server could not complete the request. Try again.', detail: ref };
-    return { title: err.message, detail: ref };
-  }
-  return { title: 'Something went wrong. Try again.' };
+/** Text to show the user for an error thrown by `api`. */
+export function errorMessage(err: unknown): string {
+  if (err instanceof ApiError && err.status < 500) return err.message;
+  return 'The server could not complete the request. Try again.';
 }

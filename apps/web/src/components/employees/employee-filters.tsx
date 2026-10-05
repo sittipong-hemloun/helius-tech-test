@@ -3,7 +3,7 @@
 import { Search, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { DEPARTMENT_OPTIONS } from '@/lib/departments';
+import { DEPARTMENTS } from '@/lib/departments';
 import { statusLabel } from '@/lib/format';
 import type { ListParams, StatusFilter } from '@/lib/list-params';
 
@@ -70,7 +70,7 @@ export function EmployeeFilters({ params, onSearch, onChange, onClear, filtered 
             className="select-control"
           >
             <option value="">All departments</option>
-            {DEPARTMENT_OPTIONS.map((d) => (
+            {DEPARTMENTS.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.name}
               </option>

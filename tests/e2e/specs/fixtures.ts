@@ -1,24 +1,11 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
 import { test, expect, type Page } from '@playwright/test';
 
-const ROOT = resolve(import.meta.dirname, '../../..');
-const runtime = JSON.parse(readFileSync(resolve(ROOT, 'tests/e2e/.runtime/env.json'), 'utf8')) as {
-  apiEnv: Record<string, string>;
-};
-
-function api(script: string): string {
-  return execFileSync('pnpm', ['--silent', 'run', script], {
-    cwd: resolve(ROOT, 'apps/api'),
-    env: { ...process.env, ...runtime.apiEnv },
-    encoding: 'utf8',
-  });
-}
-
-/** Restores the 5 Excel records (test database only). */
+/** Restores the 5 Excel records in the test database. Only `pnpm test:e2e` sets TEST_DATABASE_URL for us. */
 export function resetData(): void {
-  api('test:reset');
+  const url = process.env.TEST_DATABASE_URL;
+  if (!url) throw new Error('Run the e2e tests with `pnpm test:e2e`');
+  execFileSync('pnpm', ['--silent', '--filter', '@employee-console/api', 'run', 'db:reset'], { env: { ...process.env, DATABASE_URL: url }, stdio: 'pipe' });
 }
 
 export { expect, test };

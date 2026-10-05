@@ -1,8 +1,8 @@
 'use client';
 
-import type { Employee } from '@employee-console/api-client';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
-import { GuardedLink } from '@/components/common/unsaved-changes';
+import Link from 'next/link';
+import type { Employee } from '@/lib/api';
 import { formatDateOnly, formatSalary } from '@/lib/format';
 import type { ListParams, SortBy } from '@/lib/list-params';
 import { StatusBadge } from '@/components/employees/status-badge';
@@ -98,9 +98,9 @@ export function EmployeeTable({ rows, params, loading, onSort, onDelete }: Props
                 <tr key={e.id} className={cn(loading && 'opacity-70')}>
                   <td className="figures px-2.5 py-1.5 font-semibold">{e.id}</td>
                   <td className="whitespace-nowrap px-2.5 py-1.5">
-                    <GuardedLink href={`/employees/${e.id}`} className="font-medium text-ledger underline-offset-2 hover:underline">
+                    <Link href={`/employees/${e.id}`} className="font-medium text-ledger underline-offset-2 hover:underline">
                       {e.name}
-                    </GuardedLink>
+                    </Link>
                   </td>
                   <td className="whitespace-nowrap px-2.5 py-1.5">{e.departmentName}</td>
                   <td className="figures px-2.5 py-1.5 text-right">{formatSalary(e.salary)}</td>
@@ -110,13 +110,13 @@ export function EmployeeTable({ rows, params, loading, onSort, onDelete }: Props
                   </td>
                   <td className="figures whitespace-nowrap px-2.5 py-1.5 text-ink-2">{formatDateOnly(e.lastUpdatedDate)}</td>
                   <td className="whitespace-nowrap px-2.5 py-1 text-center">
-                    <GuardedLink
+                    <Link
                       href={`/employees/${e.id}/edit`}
                       className="rounded px-1 text-ledger underline-offset-2 hover:underline"
                       aria-label={`Edit ${e.name}`}
                     >
                       Edit
-                    </GuardedLink>
+                    </Link>
                     <span aria-hidden className="mx-1.5 text-rule-strong">|</span>
                     <button
                       type="button"

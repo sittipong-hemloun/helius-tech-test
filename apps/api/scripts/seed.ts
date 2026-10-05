@@ -1,23 +1,11 @@
-// pnpm db:seed — add the Excel source data that is missing by ID; never overwrites (PRD §9.5).
-import { loadEnvFile } from '../src/config/env-file.js';
-import { createPrismaClient } from '../src/database/prisma.service.js';
-import { seedOriginal, seedSummary } from '../src/seed/seed-original.js';
+// pnpm db:seed  — load the 5 Excel records into an empty employees table (never overwrites).
+// pnpm db:reset — delete every employee, then load the 5 records again.
+import { loadEnv } from '../src/env.js';
+import { createPrismaClient } from '../src/prisma/prisma.service.js';
+import { seed } from '../src/seed.js';
 
-loadEnvFile();
-const url = process.env.DATABASE_URL;
-if (!url) {
-  console.error('DATABASE_URL is not set (run pnpm run setup)');
-  process.exit(1);
-}
-const prisma = createPrismaClient(url, 2);
-try {
-  const result = await seedOriginal(prisma);
-  const summary = await seedSummary(prisma);
-  console.log(
-    `seed: +${result.departmentsInserted} departments, +${result.employeesInserted} employees; ` +
-      `now ${summary.total} employees (${summary.active} Active / ${summary.inactive} In Active), ` +
-      `${summary.departments} departments, salary sum ${summary.salary_sum}; next ID ${result.nextEmployeeId}`,
-  );
-} finally {
-  await prisma.$disconnect();
-}
+loadEnv();
+const prisma = createPrismaClient();
+const inserted = await seed(prisma, { reset: process.argv.includes('--reset') });
+console.log(inserted ? `Loaded ${inserted} employees from the Excel data.` : 'Employees already exist; nothing to seed.');
+await prisma.$disconnect();

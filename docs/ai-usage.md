@@ -9,6 +9,7 @@
 3. **Vertical slice + test ทันที** — เขียน rule → DTO → service → integration test บน PostgreSQL จริง แล้วค่อยทำ UI
 4. **ให้ test เป็นตัวตัดสิน** ไม่ใช่การอ่านโค้ด: unit (กฎ), integration (DB จริง, concurrency), E2E (built app), Newman (สัญญา API)
 5. **แยกงานที่อิสระให้ subagent** เมื่อ contract นิ่งแล้ว (เช่น Postman collection) แล้วตรวจผลด้วยการรันจริง
+6. **ตัดให้เรียบง่าย (D-56)** — ให้ AI เสนอระดับการตัดเป็นตัวเลือก (cleanup อย่างเดียว / ตัดของกันพัง / ตัด delivery) ผู้ใช้เลือก แล้วเขียนใหม่โดยใช้ test เดิมเป็นตัวกำหนดว่าพฤติกรรมไหนต้องคงไว้ และรัน integration ซ้ำใน time zone อื่นเพื่อพิสูจน์ว่าวันที่ไม่เลื่อน
 
 ## Prompt ที่ได้ผล
 
@@ -22,7 +23,7 @@
 
 ## ปัญหาจริงที่เจอและวิธีแก้
 
-แถวที่ขึ้นต้นด้วย **ประวัติก่อน D-46** เป็นปัญหาในส่วน Login/AI reports ที่ตัดออกแล้ว เก็บไว้เป็นบันทึกการใช้ AI ไม่ใช่โค้ดที่ยังมีอยู่ ข้อ 2 และ 12 บทเรียนยังใช้ได้ แต่ `AuthenticationGuard` และ guard ของหน้า docs ถูกลบไปพร้อม D-46 แล้ว (ตอนนี้ `/api/docs-yaml` ตอบ 404 เพราะ `raw: ['json']`)
+แถวที่อ้างถึง Idempotency-Key, Jenkins, staging, `@Rule()`, สคริปต์ OpenAPI หรือ exception filter เป็นประวัติก่อน D-56 (ส่วนนั้นถูกตัดแล้ว) ส่วนแถวที่ขึ้นต้นด้วย **ประวัติก่อน D-46** เป็นปัญหาในส่วน Login/AI reports ที่ตัดออกแล้ว เก็บไว้เป็นบันทึกการใช้ AI ไม่ใช่โค้ดที่ยังมีอยู่ ข้อ 2 และ 12 บทเรียนยังใช้ได้ แต่ `AuthenticationGuard` และ guard ของหน้า docs ถูกลบไปพร้อม D-46 แล้ว (หลัง D-56 Swagger ใช้ค่า default จึงมี `/api/docs-yaml` ด้วย — เป็นเอกสาร API สาธารณะ ไม่มีข้อมูลลับ)
 
 | # | อาการ | สาเหตุ | วิธีแก้ / หลักฐาน |
 | --- | --- | --- | --- |
@@ -47,6 +48,8 @@
 | 19 | App role มี `CREATEDB` (ใช้ร่วมกับ test runner) — **reviewer subagent จับได้** | ใช้ role เดียวทั้งรันแอปและสร้างฐาน test | แยก test role (D-43); `init-databases.sh` idempotent รันซ้ำทุก `dev:up`/deploy เพื่อปรับ volume เดิม |
 | 20 | **ประวัติก่อน D-46** · Playwright E2E error `Protocol error (Network.getResponseBody): No resource with given identifier found` ใน `viewer.spec.ts` | `page.on('response')` ดักอ่าน `res.text()` แบบ async ระหว่างที่ browser navigate ไปหน้าอื่น ทำให้ context/body หลุด | wrap `res.text()` ด้วย try-catch ละเว้นคำขอที่ถูก navigate หนีไปแล้ว |
 | 21 | Jenkins build #7 (`51ff45e`) ล้มที่ Static checks: `TS2307 Cannot find module '../../src/app/login/page.js'` ทั้งที่ gate ในเครื่องผ่านครบ | workspace ของ agent เก็บ `apps/web/.next` (gitignore, checkout ไม่ลบ) จาก build #6 ก่อน D-46 และ `tsconfig` include `.next/types` | ทำซ้ำในเครื่องด้วยการเติม route เก่าใน `validator.ts` → web `typecheck` = `next typegen && tsc` (D-47) |
+| 22 | หลังเปลี่ยนเป็น Prisma `contains` ค้นหา `%` แล้วได้ทั้ง 5 แถว (D-56) | Prisma ส่งค่า `contains` เข้า ILIKE โดยไม่ escape `%`/`_` — **integration test AC-23 จับได้** | escape `\`, `%`, `_` ใน `EmployeesService.list` |
+| 23 | PATCH `{"name": null}` ได้ 500 แทน 400 (D-56) | `PartialType` ใส่ `@IsOptional` ซึ่งข้ามค่า `null` → ไปชน NOT NULL ใน DB — **AI reviewer จับได้ระหว่างตรวจงาน** | `PartialType(CreateEmployeeDto, { skipNullProperties: false })` + test |
 
 ## สิ่งที่ AI ไม่ได้ทำแทน (ต้องใช้ข้อมูลจริงของผู้สมัคร)
 

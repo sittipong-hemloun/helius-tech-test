@@ -8,6 +8,8 @@
 > **D-46:** ระบบ Login/สิทธิ์ (Admin/Viewer) และ AI reports (n8n + Gemini) ถูกตัดออกจากขอบเขต — §6.5, §10.6 บางส่วน, §11.1–11.3, §11.5, §12, §16.4 และรหัส USR-03, USR-06–08, AC-27–34, M2, M5, D-03, D-09 จึงเหลือแค่หัวข้อ/รหัสพร้อมป้าย “ตัดออกตาม D-46” (คงเลขหัวข้อและรหัสไว้เพราะโค้ดอ้างอยู่) ส่วนที่ยังพูดถึงสองเรื่องนี้ในคำขอเดิม (§1), บริบท JD (§5) และภาคผนวกเป็นประวัติ/ต้นฉบับ ไม่ใช่งานที่ต้องทำ
 >
 > **D-52:** ชุด performance test (k6, Lighthouse, synthetic seed 10,000 รายการ, `perf:seed`/`perf:run`, `APP_ENV=performance`, Jenkins `RUN_PERF`) ถูกตัดออก — §15, USR-09, AC-56, M6 และ D-11 เหลือแค่หัวข้อ/รหัสพร้อมป้าย “ตัดออกตาม D-52”; index จาก migration `20261002000000_perf_indexes` (trigram บนชื่อ, department+status) ยังอยู่
+>
+> **D-56:** ทำให้โปรเจกต์เรียบง่ายตรงโจทย์ — ตัด Jenkins/local staging/Docker images/Postman (USR-04, USR-05 และ §14), Idempotency-Key, rate limit, envelope `{data, meta}`/request ID/error code ของ §10.1 และ §10.5, health/readiness (§13.4), `packages/api-client`, `pnpm run setup`/`doctor` (§13.3) และ endpoint departments (§10.6); route เป็น `/api/employees` และ error เป็นรูปแบบ default ของ NestJS ส่วน `version` + `If-Match`, salary เป็น string, วันที่ `YYYY-MM-DD`, seed จาก Excel และ UI ยังเป็นไปตามสเปก — เนื้อหาในหัวข้อที่อ้างถึงเป็นสเปกตั้งต้น (ประวัติ) ไม่ใช่งานที่ต้องทำ ดูรายละเอียดใน `docs/decisions.md`
 
 ## 1. วัตถุประสงค์และวิธีใช้เอกสาร
 

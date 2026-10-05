@@ -2,32 +2,25 @@
 node_modules/
 .pnpm-store/
 dist/
-dist-scripts/
 .next/
 out/
 coverage/
 *.tsbuildinfo
 apps/api/src/generated/
 
-# environment files with secrets (templates stay tracked)
+# local settings (the template stays tracked)
 .env
 .env.*
 !.env.example
-!.env.staging.example
 
 # test output
 test-results/
 playwright-report/
 blob-report/
-tests/e2e/.runtime/
 
 # local runtime state
 .tmp/
-.backups/
-.deploy/
 .planning/
-infra/jenkins/agent/agent.jar
-infra/jenkins/agent/work/
 
 # editor / OS
 .vscode/

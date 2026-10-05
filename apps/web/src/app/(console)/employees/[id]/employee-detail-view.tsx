@@ -1,20 +1,18 @@
 'use client';
 
 import { Pencil, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Notice } from '@/components/common/notice';
-import { GuardedLink } from '@/components/common/unsaved-changes';
 import { DeleteEmployeeDialog } from '@/components/employees/delete-employee-dialog';
 import { RecordUnavailable } from '@/components/employees/record-unavailable';
 import { StatusBadge } from '@/components/employees/status-badge';
 import { PageBar, pageTitleClass } from '@/components/layout/app-shell';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ApiError, describeError } from '@/lib/api';
-import { parseEmployeeId } from '@/lib/employee-id';
+import { ApiError, errorMessage } from '@/lib/api';
 import { formatDateOnly, formatSalary } from '@/lib/format';
-import { lastListHref } from '@/lib/list-params';
 import { useEmployee } from '@/lib/queries';
 
 /** One label | value pair of the property sheet; label cells are shaded like a printed form. */
@@ -28,18 +26,15 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 /** "Personnel card": the record number is the one large element; the forest-green rule echoes the register header. */
-export function EmployeeDetailView({ rawId }: { rawId: string }) {
-  const id = parseEmployeeId(rawId);
+export function EmployeeDetailView({ id }: { id: number }) {
   const router = useRouter();
   const query = useEmployee(id);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  if (id === null || (query.error instanceof ApiError && query.error.status === 404)) return <RecordUnavailable />;
+  if (query.error instanceof ApiError && query.error.status === 404) return <RecordUnavailable />;
   if (query.isError) {
     return (
-      <Notice tone="error" title={describeError(query.error).title} action={<Button variant="secondary" size="sm" onClick={() => void query.refetch()}>Try again</Button>}>
-        {describeError(query.error).detail}
-      </Notice>
+      <Notice tone="error" title={errorMessage(query.error)} action={<Button variant="secondary" size="sm" onClick={() => void query.refetch()}>Try again</Button>} />
     );
   }
 
@@ -69,14 +64,14 @@ export function EmployeeDetailView({ rawId }: { rawId: string }) {
   return (
     <article aria-labelledby="employee-name">
       <PageBar
-        back={{ href: lastListHref(), label: 'Employees' }}
+        back={{ href: '/employees', label: 'Employees' }}
         actions={
           e ? (
             <>
-              <GuardedLink href={`/employees/${e.id}/edit`} className={buttonVariants({ variant: 'primary' })}>
+              <Link href={`/employees/${e.id}/edit`} className={buttonVariants({ variant: 'primary' })}>
                 <Pencil aria-hidden />
                 Edit employee
-              </GuardedLink>
+              </Link>
               <Button variant="danger-secondary" onClick={() => setConfirmDelete(true)}>
                 <Trash2 aria-hidden />
                 Delete employee
@@ -114,7 +109,7 @@ export function EmployeeDetailView({ rawId }: { rawId: string }) {
           onClose={() => setConfirmDelete(false)}
           onDeleted={() => {
             setConfirmDelete(false);
-            router.push(lastListHref());
+            router.push('/employees');
           }}
         />
       ) : null}

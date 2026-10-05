@@ -11,12 +11,9 @@
     "lint": "eslint .",
     "db:migrate": "prisma migrate deploy",
     "db:seed": "tsx scripts/seed.ts",
-    "db:mark": "tsx scripts/mark-database.ts",
-    "demo:reset": "tsx scripts/demo-reset.ts",
-    "test:unit": "vitest run --project unit --outputFile.junit=../../test-results/api-unit-junit.xml",
-    "test:api": "vitest run --project integration --outputFile.junit=../../test-results/api-integration-junit.xml",
-    "openapi:generate": "prisma generate && tsc -p tsconfig.scripts.json && node .tmp/scripts/scripts/generate-openapi.js",
-    "test:reset": "tsx scripts/test-reset.ts"
+    "db:reset": "tsx scripts/seed.ts --reset",
+    "test:unit": "vitest run --project unit",
+    "test:api": "vitest run --project integration"
   },
   "dependencies": {
     "@nestjs/common": "12.1.2",
@@ -27,21 +24,15 @@
     "@prisma/client": "7.10.0",
     "class-transformer": "0.5.1",
     "class-validator": "0.15.1",
-    "dotenv": "18.0.5",
-    "express": "5.2.1",
-    "pg": "8.23.1",
     "prisma": "7.10.0",
     "reflect-metadata": "0.2.2",
-    "rxjs": "7.8.2",
-    "zod": "4.6.5"
+    "rxjs": "7.8.2"
   },
   "devDependencies": {
     "@eslint/js": "9.39.5",
     "@nestjs/cli": "12.0.8",
     "@swc/core": "1.16.13",
-    "@types/express": "5.0.6",
     "@types/node": "24.19.0",
-    "@types/pg": "8.23.1",
     "@types/supertest": "7.2.1",
     "eslint": "9.39.5",
     "globals": "17.13.0",

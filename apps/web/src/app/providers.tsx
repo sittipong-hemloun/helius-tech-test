@@ -1,12 +1,12 @@
 'use client';
 
-import { QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
 import { Toaster } from 'sonner';
-import { makeQueryClient } from '@/lib/query-client';
 
 export function Providers({ children }: { children: ReactNode }) {
-  const [client] = useState(makeQueryClient);
+  // No refetch on window focus: it would replace an open edit form's values (and version) under the user.
+  const [client] = useState(() => new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false, retry: 1 } } }));
   return (
     <QueryClientProvider client={client}>
       {children}

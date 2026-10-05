@@ -12,9 +12,9 @@ const { chromium } = createRequire(resolve(repo, 'tests/e2e/package.json'))('@pl
 
 const ORDER = [
   'README', '01-big-picture', '02-nestjs', '03-database-prisma', '04-openapi', '05-docker',
-  '06-jenkins', '07-key-concepts', '08-testing', '09-docs-guide', '10-qa-prep', 'glossary',
+  '06-key-concepts', '07-testing', '08-docs-guide', '09-qa-prep', 'glossary',
 ];
-const EXPECTED_DIAGRAMS = 26;
+const EXPECTED_DIAGRAMS = 17;
 
 const chapters = ORDER.map((name) => {
   let md = readFileSync(resolve(here, `${name}.md`), 'utf8');
@@ -41,11 +41,11 @@ const html = `<!doctype html>
 <section class="cover">
   <div class="cover-kicker">Employee Console</div>
   <h1 class="cover-title">คู่มือเรียนรู้ฉบับมือใหม่</h1>
-  <p class="cover-sub">NestJS · Prisma · OpenAPI · Docker · Jenkins · การทดสอบ · เตรียมตอบคำถาม</p>
+  <p class="cover-sub">NestJS · Prisma · OpenAPI · Docker · การทดสอบ · เตรียมตอบคำถาม</p>
   <table class="cover-meta">
     <tr><th>ที่มา</th><td><code>docs/learn/</code> (${chapters.length} ไฟล์)</td></tr>
     <tr><th>Commit</th><td><code>${sha}</code></td></tr>
-    <tr><th>สร้างเมื่อ</th><td>4 ตุลาคม 2026</td></tr>
+    <tr><th>สร้างเมื่อ</th><td>5 ตุลาคม 2026</td></tr>
   </table>
   <p class="cover-note">ฉบับ PDF แปลงจาก Markdown — ถ้าเนื้อหาไม่ตรงกับไฟล์ใน repo ให้ยึดไฟล์ใน repo</p>
 </section>
@@ -69,11 +69,10 @@ try {
       '03-database-prisma': 'บทที่ 3',
       '04-openapi': 'บทที่ 4',
       '05-docker': 'บทที่ 5',
-      '06-jenkins': 'บทที่ 6',
-      '07-key-concepts': 'บทที่ 7',
-      '08-testing': 'บทที่ 8',
-      '09-docs-guide': 'บทที่ 9',
-      '10-qa-prep': 'บทที่ 10',
+      '06-key-concepts': 'บทที่ 6',
+      '07-testing': 'บทที่ 7',
+      '08-docs-guide': 'บทที่ 8',
+      '09-qa-prep': 'บทที่ 9',
       glossary: 'ภาคผนวก',
     };
 
@@ -101,7 +100,7 @@ try {
       for (const a of sec.querySelectorAll('a')) {
         const href = a.getAttribute('href') || '';
         if (href.startsWith('http://') || href.startsWith('https://')) continue;
-        const target = href.replace(/#.*$/, '');
+        const target = decodeURI(href.replace(/#.*$/, ''));
         let path = '';
         if (target.startsWith('../../')) path = target.replace('../../', '');
         else if (target.startsWith('../')) path = `docs/${target.replace('../', '')}`;
@@ -135,8 +134,8 @@ try {
         }
       }
 
-      // 3. Chapter 9: Group each document entry into a .doc-entry card
-      if (ch.name === '09-docs-guide') {
+      // 3. Chapter 8: Group each document entry into a .doc-entry card
+      if (ch.name === '08-docs-guide') {
         const h2s = [...sec.querySelectorAll('h2')];
         for (const h2 of h2s) {
           const card = document.createElement('article');
@@ -149,8 +148,8 @@ try {
         }
       }
 
-      // 4. Chapter 10: Group each Q&A question into a .qa-entry card
-      if (ch.name === '10-qa-prep') {
+      // 4. Chapter 9: Group each Q&A question into a .qa-entry card
+      if (ch.name === '09-qa-prep') {
         const h3s = [...sec.querySelectorAll('h3')];
         for (const h3 of h3s) {
           const card = document.createElement('article');

@@ -1,42 +1,37 @@
 # Employee Console
 
-เว็บจัดการข้อมูลพนักงานจากไฟล์ Excel ของโจทย์ ([`test-exam-data.xlsx`](apps/api/prisma/seed-data/test-exam-data.xlsx)) สำหรับแบบทดสอบ AI-Augmented Developer — Next.js 16 (UI) + NestJS 12 (API) + PostgreSQL 17, CI/CD ด้วย Jenkins ไป local staging
+เว็บจัดการข้อมูลพนักงานจากไฟล์ Excel ของโจทย์ ([`test-exam-data.xlsx`](apps/api/prisma/seed-data/test-exam-data.xlsx)) สำหรับแบบทดสอบ AI-Augmented Developer — Next.js 16 (UI) + NestJS 12 (API) + PostgreSQL 17 (Prisma 7)
 
-สเปกตั้งต้นอยู่ใน [docs/prd.md](docs/prd.md) — ระบบ Login/สิทธิ์ (Admin/Viewer), รายงาน AI (n8n + Gemini) และชุด performance test (k6/Lighthouse) ในสเปกถูกตัดออกโดยตั้งใจเพื่อให้โปรเจกต์เรียบง่าย ทุกคนที่เข้าถึงเว็บได้ใช้งานได้เต็มสิทธิ์
+สเปกตั้งต้นอยู่ใน [docs/prd.md](docs/prd.md) — โปรเจกต์นี้ทำให้ **เรียบง่ายตรงโจทย์** โดยตั้งใจ: Login/สิทธิ์, รายงาน AI, performance test, Jenkins/staging/Postman และ hardening ระดับ production ถูกตัดออก (D-46, D-52, D-56) ทุกคนที่เข้าถึงเว็บได้ใช้งานได้เต็มสิทธิ์
 
 ## ทำอะไรได้บ้าง
 
-- **Employees** — ดูรายการ 5 records จาก Excel (ID, Name, Department, Salary `#,##0.00`, Join Date, Status, Last Updated Date), ค้นหาชื่อ (debounce 300 ms), กรอง Department/Status, เรียงลำดับ, แบ่งหน้า, สถานะทั้งหมดอยู่ใน URL
-- **CRUD** — เพิ่ม/แก้/ลบ, ID และ Last Updated Date กำหนดโดยระบบ, ป้องกันการเขียนทับด้วย `version` + `If-Match`, ป้องกันสร้างซ้ำด้วย `Idempotency-Key`
-- **Delivery** — Docker images (tag = commit SHA), local staging :3100, Jenkinsfile, Postman/Newman, Playwright
+- **Employees** — ดูรายการ 5 records จาก Excel (ID, Name, Department, Salary `#,##0.00`, Join Date, Status, Last Updated Date), ค้นหาชื่อ (debounce 300 ms), กรอง Department/Status, เรียงลำดับ, แบ่งหน้า — สถานะทั้งหมดอยู่ใน URL
+- **CRUD** — เพิ่ม/แก้/ลบ, ID และ Last Updated Date กำหนดโดยระบบ, กันการแก้ทับกันด้วย `version` + `If-Match` (อีกแท็บบันทึกก่อน → 409 พร้อมปุ่ม Reload latest)
+- **API docs** — Swagger UI ที่ http://localhost:3000/api/docs
+- **Tests** — unit (Vitest), integration บน PostgreSQL จริง, E2E (Playwright)
 
 ## โครงสร้าง
 
 ```text
 .
 ├── apps/
-│   ├── api/                      NestJS API
-│   │   ├── src/                  feature modules (employees, departments, health, …) + common/config/database
-│   │   ├── prisma/               schema, migrations, seed data (Excel ต้นฉบับ + JSON)
-│   │   ├── scripts/              seed, demo reset, OpenAPI
-│   │   └── test/                 Vitest: unit + integration (PostgreSQL จริง)
-│   └── web/                      Next.js App Router (UI, /api rewrite → NestJS)
-│       └── src/                  app/ (routes) · components/{ui,layout,employees,common} · lib/
-├── packages/
-│   └── api-client/               OpenAPI document + generated TypeScript types
-├── tests/
-│   ├── e2e/                      Playwright
-│   └── postman/                  Newman API contract tests
-├── infra/
-│   ├── docker/                   api / web Dockerfiles
-│   ├── jenkins/                  controller (JCasC) + host agent
-│   └── postgres/                 database init script
-├── scripts/                      pnpm task runners: setup, doctor, dev-up, staging, ci, tests
-├── docs/                         PRD, architecture, decisions, runbook, …
-├── compose.yaml                  dev: postgres (+ jenkins ตาม profile ci)
-├── compose.staging.yaml          local staging :3100
-├── Jenkinsfile                   CI/CD pipeline
-└── package.json                  คำสั่งทั้งหมดของ repo (pnpm workspace)
+│   ├── api/                  NestJS API
+│   │   ├── src/
+│   │   │   ├── employees/    module · controller · service · dto  (feature เดียวของระบบ)
+│   │   │   ├── prisma/       PrismaModule + PrismaService
+│   │   │   ├── app.ts        createApp(): /api prefix, ValidationPipe, Swagger
+│   │   │   ├── main.ts       entrypoint
+│   │   │   └── seed.ts       ข้อมูลตั้งต้นจาก Excel
+│   │   ├── prisma/           schema, migrations, seed data (Excel ต้นฉบับ + JSON)
+│   │   ├── scripts/seed.ts   pnpm db:seed / db:reset
+│   │   └── test/             unit + integration
+│   └── web/                  Next.js App Router (UI, /api rewrite → NestJS)
+│       └── src/              app/ (routes) · components/ · lib/ (api, hooks, formatters)
+├── tests/e2e/                Playwright + run.mjs
+├── docs/                     PRD, architecture, decisions, runbook, คู่มือเรียนรู้
+├── compose.yaml              PostgreSQL (dev + test)
+└── package.json              คำสั่งทั้งหมดของ repo (pnpm workspace)
 ```
 
 ## สิ่งที่ต้องมีในเครื่อง
@@ -45,72 +40,56 @@
 | --- | --- | --- |
 | Node.js | 24 LTS (≥ 24.15, ใช้ 24.21.0) | `brew install node@24` แล้วเพิ่ม `/opt/homebrew/opt/node@24/bin` หน้า PATH |
 | pnpm | 12.8.1 | `corepack enable` (อ่านเวอร์ชันจาก `packageManager`) |
-| Docker Desktop | Compose v2 | ต้องเปิด daemon ไว้ |
-| Java | 17+ | เฉพาะเมื่อรัน Jenkins agent (`brew install openjdk@21`) |
+| Docker Desktop | Compose v2 | ต้องเปิด daemon ไว้ (ใช้รัน PostgreSQL) |
 
-## เริ่มใช้งาน (local dev)
+## เริ่มใช้งาน
 
 ```bash
 pnpm install
 ```
 
 ```bash
-pnpm run setup
+cp .env.example .env
 ```
-
-`setup` สร้าง `.env` และ `.env.staging` พร้อม secret แบบสุ่ม (ไม่ทับค่าที่มีอยู่, ไม่พิมพ์ค่าออกจอ) — ไม่มีค่าภายนอกที่ต้องเติม (ยกเว้น `JENKINS_GIT_URL` ถ้าต้องการใช้ Git remote)
 
 ```bash
 pnpm dev:up
 ```
 
-เปิด PostgreSQL ใน Docker, apply migrations, และครั้งแรกจะ mark ฐานเป็น demo + seed 5 records จาก Excel
+เปิด PostgreSQL ใน Docker, apply migrations และ seed 5 records จาก Excel (ถ้าตารางยังว่าง)
 
 ```bash
 pnpm dev
 ```
 
-เปิด http://localhost:3000 — web (Next.js hot reload) และ API (NestJS watch) ที่พอร์ต `PORT` ใน `.env` (ค่าเริ่มต้น 3001)
-
-> คำสั่ง `setup` และ `doctor` ต้องมี `run` (`pnpm run setup`, `pnpm run doctor`) เพราะ pnpm มีคำสั่ง built-in ชื่อเดียวกัน
->
-> ถ้าพอร์ต 3001 มีโปรแกรมอื่นใช้อยู่ ให้ปิดโปรแกรมนั้น หรือเปลี่ยน `PORT` และ `API_INTERNAL_URL` ใน `.env` ให้ตรงกัน (`pnpm run doctor` จะบอกว่าโปรเซสไหนใช้พอร์ต)
+เปิด http://localhost:3000 — web (Next.js hot reload) และ API (NestJS watch) ที่พอร์ต 3001
 
 ## คำสั่งทั้งหมด
 
 | คำสั่ง | ทำอะไร |
 | --- | --- |
-| `pnpm run setup` | ตรวจ Node/pnpm/Docker/พอร์ต, สร้าง env ที่ขาด |
-| `pnpm run doctor` | ตรวจ process/DB/migration/config โดยไม่แสดง secret |
-| `pnpm dev:up` / `pnpm dev` | เปิด DB + migrate (+ seed ครั้งแรก) / รัน web + API แบบ hot reload |
-| `pnpm db:migrate` / `pnpm db:seed` | apply migrations / เติมข้อมูล Excel ที่ขาด (ไม่ทับ) |
-| `pnpm demo:reset --confirm-reset` | คืนข้อมูลเป็น 5 records (เฉพาะ APP_ENV local/staging และฐานที่ mark ว่า demo) |
-| `pnpm test:unit` / `pnpm test:api` | Vitest unit / integration บน PostgreSQL จริง (ฐานทดสอบแยก) |
-| `pnpm test:e2e` | Playwright กับ production build + ฐานทดสอบแยก (`E2E_SCREENSHOT_DIR=…` เก็บภาพ 375/1024/1440 px) |
-| `pnpm secrets:scan` | ตรวจว่าไม่มีค่า secret จาก `.env*` หรือ pattern credential ใน tracked files |
-| `pnpm test:postman` | Newman กับ API ใน APP_ENV=test |
+| `pnpm dev:up` / `pnpm dev` | เปิด DB + migrate + seed / รัน web + API แบบ hot reload |
+| `pnpm down` | หยุด PostgreSQL (ข้อมูลใน volume ยังอยู่) |
+| `pnpm db:migrate` / `pnpm db:seed` | apply migrations / ใส่ข้อมูล Excel เมื่อตารางว่าง |
+| `pnpm db:reset` | ลบพนักงานทั้งหมดแล้วคืนเป็น 5 records (ID ถัดไป = 106) |
+| `pnpm test:unit` / `pnpm test:api` | Vitest unit / integration บน PostgreSQL จริง (ฐาน `TEST_DATABASE_URL`) |
+| `pnpm test:e2e` | Playwright กับ production build บนฐานทดสอบ (`E2E_SCREENSHOT_DIR=…` เก็บภาพ 375/1024/1440 px) |
 | `pnpm lint` / `pnpm typecheck` / `pnpm build` | ตรวจและ build ทั้ง web/api |
-| `pnpm openapi:generate` | สร้าง OpenAPI + client types (CI ตรวจ drift) |
-| `pnpm staging:up` / `staging:restart` / `staging:smoke` / `staging:rollback` / `staging:down` | build images ตาม SHA → backup → migrate → deploy :3100 → smoke (ล้มแล้ว rollback อัตโนมัติ) / apply env ใหม่ / ย้อน image ก่อนหน้า |
-| `node scripts/staging.mjs reset --confirm-reset` / `restore --file=… --confirm-restore` | คืนข้อมูล 5 records บน staging / restore backup ด้วยสิทธิ์ที่ถูกต้อง |
-| `pnpm ci:up` | เปิด Jenkins controller (:8080) และ agent บนเครื่องนี้ |
-| `pnpm down` | หยุดทุก container ของโปรเจกต์ (ไม่ลบ volume) |
 
 ## Environments
 
 | Environment | Web | API | Database |
 | --- | --- | --- | --- |
-| local dev | http://localhost:3000 | localhost:`PORT` | `employee_console_dev` |
-| local staging | http://localhost:3100 | ภายใน Docker เท่านั้น | `employee_console_staging` (container/volume แยก) |
-| test | พอร์ตที่ runner กำหนด | ภายใน runner | `employee_console_test_<run>` |
+| dev | http://localhost:3000 | http://localhost:3001 (เบราว์เซอร์เรียกผ่าน `/api` ของ :3000) | `employee_console_dev` |
+| test | http://localhost:3020 (E2E) | :3021 (E2E) / พอร์ตสุ่ม (integration) | `employee_console_test` |
 
 ## เอกสาร
 
-- [docs/learn/](docs/learn/README.md) — **คู่มือเรียนรู้ฉบับมือใหม่** (NestJS, OpenAPI, Docker, Jenkins, แนวคิดสำคัญ, สรุปเอกสารทุกไฟล์แบบอ่านง่าย) พร้อมแผนภาพ
-- [docs/architecture.md](docs/architecture.md) — สถาปัตยกรรม, flow, ความปลอดภัย
-- [docs/configuration.md](docs/configuration.md) — environment variables ทั้งหมด
-- [docs/prd.md](docs/prd.md) — สเปกตั้งต้น (REQ/USR/AC ที่โค้ดอ้างถึงเป็น `PRD §…`; ส่วน Login และ AI reports ถูกตัดออก)
-- [docs/runbook.md](docs/runbook.md) — เปิด/ปิด, reset, backup/restore, rollback, Jenkins setup
+- [docs/learn/](docs/learn/README.md) — **คู่มือเรียนรู้ฉบับมือใหม่** (NestJS, Prisma, Docker, แนวคิดสำคัญ, การทดสอบ, เตรียมตอบคำถาม) พร้อมแผนภาพ
+- [docs/architecture.md](docs/architecture.md) — สถาปัตยกรรม, request flow, data model
+- [docs/configuration.md](docs/configuration.md) — environment variables
+- [docs/prd.md](docs/prd.md) — สเปกตั้งต้น (REQ/USR/AC ที่โค้ดอ้างถึงเป็น `PRD §…`; ส่วนที่ตัดออกมีป้าย D-46/D-52/D-56)
+- [docs/runbook.md](docs/runbook.md) — เปิด/ปิด, reset ข้อมูล, ปัญหาที่พบบ่อย
 - [docs/demo-script.md](docs/demo-script.md) — แผนนำเสนอ 15 นาทีและการซ้อม Live Coding
-- [AGENTS.md](AGENTS.md) — คู่มือสำหรับ AI agent (กฎข้าม repo, ขอบเขต D-46); แต่ละ folder หลักมี `AGENTS.md` ของตัวเอง และ `CLAUDE.md` ที่ import ไฟล์นั้น
+- [AGENTS.md](AGENTS.md) — คู่มือสำหรับ AI agent (กฎข้าม repo, ขอบเขต); แต่ละ folder หลักมี `AGENTS.md` ของตัวเอง และ `CLAUDE.md` ที่ import ไฟล์นั้น
 - [docs/decisions.md](docs/decisions.md), [docs/versions.md](docs/versions.md), [docs/ai-usage.md](docs/ai-usage.md), [docs/design.md](docs/design.md)

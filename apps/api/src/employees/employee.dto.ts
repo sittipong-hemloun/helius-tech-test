@@ -1,105 +1,81 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Rule } from '../validation/field-rule.decorator.js';
-import { departmentRule, isActiveRule, joinDateRule, nameRule, salaryRule, DEPARTMENT_IDS } from './employee-rules.js';
-import {
-  departmentFilterRule,
-  pageRule,
-  pageSizeRule,
-  qRule,
-  SORT_FIELDS,
-  sortByRule,
-  sortOrderRule,
-  STATUS_FILTERS,
-  statusFilterRule,
-} from './employee-query.js';
+import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
+import { IsBoolean, IsIn, IsInt, IsISO8601, IsOptional, IsString, Length, Matches, Max, MaxLength, Min } from 'class-validator';
 
+export const DEPARTMENT_IDS = ['engineering', 'marketing', 'sales', 'hr'] as const;
+export const SORT_FIELDS = ['id', 'name', 'department', 'salary', 'joinDate', 'isActive', 'lastUpdatedDate'] as const;
+export type SortField = (typeof SORT_FIELDS)[number];
+
+/** "  Zoë " → "Zoë": trim and NFC-normalize text before it is validated and stored. */
+const trimmed = ({ value }: { value: unknown }) => (typeof value === 'string' ? value.normalize('NFC').trim() : value);
+
+/** The five fields a user may set. ID, Last Updated Date and version belong to the server. */
 export class CreateEmployeeDto {
-  @ApiProperty({ example: 'Dana Lee', maxLength: 100, description: 'Trimmed and NFC-normalized; 1–100 code points.' })
-  @Rule(nameRule)
+  @ApiProperty({ example: 'Dana Lee', maxLength: 100 })
+  @Transform(trimmed)
+  @IsString({ message: 'Name is required.' })
+  @Length(1, 100, { message: 'Name must be 1–100 characters.' })
+  @Matches(/^\P{Cc}*$/u, { message: 'Name cannot contain line breaks or control characters.' })
   name: string;
 
   @ApiProperty({ enum: DEPARTMENT_IDS, example: 'engineering' })
-  @Rule(departmentRule)
+  @IsIn(DEPARTMENT_IDS, { message: 'Choose a department: engineering, marketing, sales or hr.' })
   departmentId: string;
 
-  @ApiProperty({ type: String, example: '62000.00', pattern: '^\\d{1,10}(\\.\\d{1,2})?$', description: 'Decimal string, 0–9999999999.99' })
-  @Rule(salaryRule)
+  /** A decimal string, never a JSON number, so no floating-point rounding can happen on the way. */
+  @ApiProperty({ example: '62000.00', description: 'Decimal string, at most 2 decimal places' })
+  @IsString({ message: 'Salary must be sent as a string, e.g. "65000.00".' })
+  @Matches(/^\d{1,10}(\.\d{1,2})?$/, { message: 'Salary must be a positive number with at most 2 decimal places.' })
   salary: string;
 
-  @ApiProperty({ type: String, format: 'date', example: '2026-09-01' })
-  @Rule(joinDateRule)
+  @ApiProperty({ example: '2026-09-01', format: 'date' })
+  @Matches(/^(19\d\d|20\d\d|2100)-\d\d-\d\d$/, { message: 'Join date must be YYYY-MM-DD between 1900 and 2100.' })
+  @IsISO8601({ strict: true }, { message: 'Join date is not a real calendar date.' })
   joinDate: string;
 
-  @ApiProperty({ type: Boolean, example: true, description: 'true = Active, false = In Active' })
-  @Rule(isActiveRule)
+  @ApiProperty({ example: true, description: 'true = Active, false = In Active' })
+  @IsBoolean({ message: 'isActive must be true or false.' })
   isActive: boolean;
 }
 
-export class UpdateEmployeeDto {
-  @ApiPropertyOptional({ example: 'Dana Lee', maxLength: 100 })
-  @Rule(nameRule, { optional: true })
-  name?: string;
+/** PATCH: any subset of the create fields. A field sent as null is still validated (and rejected). */
+export class UpdateEmployeeDto extends PartialType(CreateEmployeeDto, { skipNullProperties: false }) {}
 
-  @ApiPropertyOptional({ enum: DEPARTMENT_IDS })
-  @Rule(departmentRule, { optional: true })
-  departmentId?: string;
-
-  @ApiPropertyOptional({ type: String, example: '63000.00' })
-  @Rule(salaryRule, { optional: true })
-  salary?: string;
-
-  @ApiPropertyOptional({ type: String, format: 'date' })
-  @Rule(joinDateRule, { optional: true })
-  joinDate?: string;
-
-  @ApiPropertyOptional({ type: Boolean })
-  @Rule(isActiveRule, { optional: true })
-  isActive?: boolean;
-}
-
-export class ListEmployeesQueryDto {
-  @ApiPropertyOptional({ description: 'Case-insensitive name contains; trimmed; ≤100 characters' })
-  @Rule(qRule, { optional: true })
+export class ListEmployeesQuery {
+  @ApiPropertyOptional({ description: 'Part of the name, case-insensitive' })
+  @IsOptional()
+  @Transform(trimmed)
+  @IsString()
+  @MaxLength(100)
   q?: string;
 
   @ApiPropertyOptional({ enum: DEPARTMENT_IDS })
-  @Rule(departmentFilterRule, { optional: true })
+  @IsOptional()
+  @IsIn(DEPARTMENT_IDS)
   departmentId?: string;
 
-  @ApiPropertyOptional({ enum: STATUS_FILTERS, default: 'all' })
-  @Rule(statusFilterRule, { optional: true })
-  status?: string;
+  @ApiPropertyOptional({ enum: ['all', 'active', 'inactive'], default: 'all' })
+  @IsIn(['all', 'active', 'inactive'])
+  status: 'all' | 'active' | 'inactive' = 'all';
 
-  @ApiPropertyOptional({ type: Integer(), default: 1, minimum: 1, maximum: 1_000_000 })
-  @Rule(pageRule, { optional: true })
-  page?: string;
+  @ApiPropertyOptional({ default: 1, minimum: 1 })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page: number = 1;
 
-  @ApiPropertyOptional({ type: Integer(), default: 20, minimum: 1, maximum: 100 })
-  @Rule(pageSizeRule, { optional: true })
-  pageSize?: string;
+  @ApiPropertyOptional({ default: 20, minimum: 1, maximum: 100 })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  pageSize: number = 20;
 
-  @ApiPropertyOptional({ enum: SORT_FIELDS, default: 'id', })
-  @Rule(sortByRule, { optional: true })
-  sortBy?: string;
+  @ApiPropertyOptional({ enum: SORT_FIELDS, default: 'id' })
+  @IsIn(SORT_FIELDS)
+  sortBy: SortField = 'id';
 
   @ApiPropertyOptional({ enum: ['asc', 'desc'], default: 'asc' })
-  @Rule(sortOrderRule, { optional: true })
-  sortOrder?: string;
-}
-
-function Integer(): 'integer' {
-  return 'integer';
-}
-
-export class EmployeeDto {
-  @ApiProperty({ example: 106 }) id: number;
-  @ApiProperty({ example: 'Dana Lee' }) name: string;
-  @ApiProperty({ enum: DEPARTMENT_IDS }) departmentId: string;
-  @ApiProperty({ example: 'Engineering' }) departmentName: string;
-  @ApiProperty({ type: String, example: '62000.00' })
-  salary: string;
-  @ApiProperty({ type: String, format: 'date', example: '2026-09-01' }) joinDate: string;
-  @ApiProperty({ example: true }) isActive: boolean;
-  @ApiProperty({ type: String, format: 'date', example: '2026-10-01' }) lastUpdatedDate: string;
-  @ApiProperty({ example: 1 }) version: number;
+  @IsIn(['asc', 'desc'])
+  sortOrder: 'asc' | 'desc' = 'asc';
 }

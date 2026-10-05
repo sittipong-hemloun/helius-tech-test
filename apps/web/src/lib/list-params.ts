@@ -1,4 +1,4 @@
-/** Employee list state ↔ URL search params (PRD §8.3: reload/back/forward restore filters). */
+/** Employee list state ↔ URL search params, so reload/back/forward restore the filters (PRD §8.3). */
 import { isDepartmentId } from './departments';
 
 export const PAGE_SIZES = [10, 20, 50] as const;
@@ -16,6 +16,7 @@ export interface ListParams {
   sortOrder: 'asc' | 'desc';
 }
 
+/** Same defaults as the API, so the URL (and the API query) only carries what differs. */
 export const DEFAULT_PARAMS: ListParams = {
   q: '',
   departmentId: '',
@@ -28,66 +29,35 @@ export const DEFAULT_PARAMS: ListParams = {
 
 const SORTS: SortBy[] = ['id', 'name', 'department', 'salary', 'joinDate', 'isActive', 'lastUpdatedDate'];
 
-interface Readable {
-  get(name: string): string | null;
-}
-
-export function readListParams(sp: Readable): ListParams {
-  const int = (v: string | null, fallback: number, ok: (n: number) => boolean) => {
-    const n = v && /^\d+$/.test(v) ? Number(v) : NaN;
-    return Number.isFinite(n) && ok(n) ? n : fallback;
-  };
-  const sortBy = sp.get('sortBy') as SortBy | null;
+/** Reads the URL; anything invalid falls back to the default. */
+export function readListParams(sp: { get(name: string): string | null }): ListParams {
+  const page = Number(sp.get('page'));
+  const pageSize = Number(sp.get('pageSize'));
+  const sortBy = sp.get('sortBy') as SortBy;
   const status = sp.get('status');
-  const dept = sp.get('departmentId') ?? '';
+  const departmentId = sp.get('departmentId') ?? '';
   return {
     q: (sp.get('q') ?? '').slice(0, 100),
-    departmentId: isDepartmentId(dept) ? dept : '',
+    departmentId: isDepartmentId(departmentId) ? departmentId : '',
     status: status === 'active' || status === 'inactive' ? status : 'all',
-    page: int(sp.get('page'), 1, (n) => n >= 1 && n <= 1_000_000),
-    pageSize: int(sp.get('pageSize'), 20, (n) => (PAGE_SIZES as readonly number[]).includes(n)),
-    sortBy: sortBy && SORTS.includes(sortBy) ? sortBy : 'id',
+    page: Number.isInteger(page) && page >= 1 ? page : 1,
+    pageSize: (PAGE_SIZES as readonly number[]).includes(pageSize) ? pageSize : 20,
+    sortBy: SORTS.includes(sortBy) ? sortBy : 'id',
     sortOrder: sp.get('sortOrder') === 'desc' ? 'desc' : 'asc',
   };
 }
 
-/** Only non-default values go into the URL, so the bare /employees is the default view. */
+/** `?…` with the non-default values only; '' for the default view. Used for both the page URL and the API call. */
 export function toSearch(params: ListParams): string {
   const out = new URLSearchParams();
-  if (params.q.trim()) out.set('q', params.q.trim());
-  if (params.departmentId) out.set('departmentId', params.departmentId);
-  if (params.status !== 'all') out.set('status', params.status);
-  if (params.page !== 1) out.set('page', String(params.page));
-  if (params.pageSize !== 20) out.set('pageSize', String(params.pageSize));
-  if (params.sortBy !== 'id') out.set('sortBy', params.sortBy);
-  if (params.sortOrder !== 'asc') out.set('sortOrder', params.sortOrder);
+  for (const key of Object.keys(DEFAULT_PARAMS) as (keyof ListParams)[]) {
+    const value = key === 'q' ? params.q.trim() : params[key];
+    if (value !== DEFAULT_PARAMS[key]) out.set(key, String(value));
+  }
   const s = out.toString();
   return s ? `?${s}` : '';
 }
 
-/** API query: the same keys, trimmed search, always explicit paging. */
-export function toApiQuery(params: ListParams): string {
-  const out = new URLSearchParams();
-  if (params.q.trim()) out.set('q', params.q.trim());
-  if (params.departmentId) out.set('departmentId', params.departmentId);
-  if (params.status !== 'all') out.set('status', params.status);
-  out.set('page', String(params.page));
-  out.set('pageSize', String(params.pageSize));
-  out.set('sortBy', params.sortBy);
-  out.set('sortOrder', params.sortOrder);
-  return out.toString();
-}
-
 export function isFiltered(params: ListParams): boolean {
   return Boolean(params.q.trim() || params.departmentId || params.status !== 'all');
-}
-
-/** Where "back to Employees" goes: the list URL (with filters) the user last saw, kept per tab in memory. */
-export function rememberListHref(href: string) {
-  if (typeof window !== 'undefined') (window as unknown as { __ecListHref?: string }).__ecListHref = href;
-}
-
-export function lastListHref(): string {
-  if (typeof window === 'undefined') return '/employees';
-  return (window as unknown as { __ecListHref?: string }).__ecListHref ?? '/employees';
 }

@@ -1,37 +1,25 @@
 # Configuration
 
-ค่าทั้งหมดถูกตรวจตอน API start (`apps/api/src/config/app-config.ts`, zod) — ถ้าผิด process จะหยุดพร้อมรายการปัญหา (ไม่แสดงค่า secret) ค่า timeout/limit ทั้งหมดเป็น typed config ตาม PRD ไม่กระจายเป็น magic number
+ไฟล์เดียว: `.env` ที่ root ของ repo คัดลอกจาก template ครั้งแรกด้วย `cp .env.example .env` (อยู่ใน `.gitignore`) — ค่าใน template ใช้ได้เฉพาะ PostgreSQL ในเครื่องที่ bind `127.0.0.1` เท่านั้น
 
-ไฟล์: `.env` (dev) และ `.env.staging` (staging) สร้างโดย `pnpm run setup` จาก `.env.example` / `.env.staging.example` — ทั้งคู่อยู่ใน `.gitignore` ค่า secret ที่ต้องสุ่มจะถูกสร้างให้อัตโนมัติ ไม่มีค่าภายนอกที่ต้องกรอก
+API อ่าน `.env` ผ่าน `apps/api/src/env.ts` และ Prisma CLI อ่านผ่าน `apps/api/prisma.config.ts` (ทั้งคู่ใช้ `process.loadEnvFile` ของ Node 24) — ตัวแปรที่ตั้งไว้ใน shell แล้วชนะค่าในไฟล์
 
-## API / runtime
-
-| Variable | Default | ความหมาย / กฎที่บังคับ |
+| Variable | ค่าใน `.env.example` | ใช้โดย |
 | --- | --- | --- |
-| `APP_ENV` | `local` | `local` · `staging` · `test` — คุม guard ทั้งหมด |
-| `NODE_ENV` | `development` | ไม่ใช้แทน APP_ENV |
-| `APP_TIMEZONE` | `Asia/Bangkok` | วันธุรกิจของ Last Updated Date |
-| `PUBLIC_APP_ORIGIN` | `http://localhost:3000` | origin ของเว็บ (ต้องเป็น origin เท่านั้น); HTTP ได้เฉพาะ loopback |
-| `PORT` / `HOST` | `3001` / `127.0.0.1` | listener ของ NestJS (container ใช้ `0.0.0.0`) |
-| `API_INTERNAL_URL` | `http://localhost:3001` | ปลายทาง rewrite `/api/*` ของ Next.js — **ถูกฝังตอน build**; staging image build ด้วย `http://api:3001` |
-| `DATABASE_URL` | สร้างโดย setup | connection ของ API/Prisma |
-| `DB_POOL_MAX` | `10` | pool ของ Prisma adapter |
-| `TRUST_PROXY` | `private-1hop` | เชื่อเฉพาะ proxy ตัวที่ต่อตรงจาก loopback/private (D-35, D-50); ค่าอื่นส่งให้ Express ตรง ๆ — `compose.staging.yaml` ตั้งเป็น `loopback, linklocal, uniquelocal`; ไม่เปิด `true` |
-| `LOG_LEVEL` | `info` | JSON logs; debug ไม่พิมพ์ body/secret |
-| `RATE_LIMIT_ENABLED` | `true` | ปิดได้ใน test |
-| `BUILD_COMMIT_SHA` / `APP_VERSION` | `unknown` / `1.0.0` | อยู่ใน log `api_started` และ OpenAPI; image ตั้งจาก build arg |
+| `POSTGRES_PASSWORD` | `postgres` | รหัสผ่าน superuser `postgres` ของ container (ใช้ตอนสร้าง volume ครั้งแรกเท่านั้น) |
+| `POSTGRES_HOST_PORT` | (ไม่ตั้ง = `5432`) | พอร์ตบน host ของ PostgreSQL — เปลี่ยนแล้วต้องแก้พอร์ตใน URL สองตัวด้านล่างด้วย |
+| `DATABASE_URL` | `…/employee_console_dev` | API, `db:migrate`, `db:seed`, `db:reset` |
+| `TEST_DATABASE_URL` | `…/employee_console_test` | `pnpm test:api` และ `pnpm test:e2e` — **ข้อมูลในฐานนี้ถูกลบทุกครั้งที่ test รัน** ต้องไม่ใช่ฐานเดียวกับ `DATABASE_URL` |
 
-ค่าคงที่ตาม PRD ที่อยู่ใน config: rate limit read 300 / write 60 ต่อนาทีต่อ IP, body 32 KB, idempotency key 24 ชั่วโมง
+ตัวแปรเสริม (ไม่ต้องอยู่ใน `.env`):
 
-## Docker / tools (อยู่ใน `.env`)
-
-| Variable | ใช้โดย |
-| --- | --- |
-| `POSTGRES_PASSWORD`, `APP_DB_USER`, `APP_DB_PASSWORD`, `POSTGRES_HOST_PORT` | postgres container (role แอปแยกจาก superuser, `NOCREATEDB`) |
-| `TEST_DB_USER`, `TEST_DB_PASSWORD` | role แยกสำหรับ integration/E2E/Newman (`CREATEDB`, เป็นเจ้าของเฉพาะ `employee_console_test_*`) — setup สร้างรหัสให้, `pnpm dev:up` ปรับ role ของ volume เดิมให้ตรง |
-| `JENKINS_ADMIN_ID`, `JENKINS_ADMIN_PASSWORD`, `JENKINS_GIT_URL`, `JENKINS_GIT_BRANCH`, `GIT_CREDENTIAL_ID` | Jenkins controller (JCasC) |
+| Variable | Default | ความหมาย |
+| --- | --- | --- |
+| `PORT` | `3001` | พอร์ตของ NestJS (ฟังที่ `127.0.0.1`) |
+| `API_INTERNAL_URL` | `http://127.0.0.1:3001` | ปลายทาง rewrite `/api/*` ของ Next.js — **ถูกฝังตอน `next build`** (dev อ่านตอน start); ถ้าเปลี่ยน `PORT` ให้ตั้งตัวนี้ให้ตรงตอนรัน `pnpm dev` |
+| `E2E_SCREENSHOT_DIR` | — | ให้ `pnpm test:e2e` เก็บภาพหน้าจอ 375/1024/1440 px ไว้ใน folder นี้ |
 
 ## สิ่งที่ห้ามทำ
 
-- ห้ามใส่ secret ใน `NEXT_PUBLIC_*` หรือ commit `.env*` (ยกเว้น `.example`)
-- ห้ามใช้ `demo:reset` กับฐานที่ไม่ได้ mark ไว้ — คำสั่งจะปฏิเสธเอง
+- ห้าม commit `.env` หรือใส่ค่าใน `.env` ลงเอกสาร/log
+- ห้ามตั้ง `TEST_DATABASE_URL` ให้ชี้ฐานที่มีข้อมูลจริง — integration test จะปฏิเสธถ้าเท่ากับ `DATABASE_URL` แต่ไม่รู้จักฐานอื่น

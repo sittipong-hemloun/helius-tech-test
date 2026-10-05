@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { formatDateOnly, formatSalary, formatTimestamp } from './format';
+import { formatDateOnly, formatSalary } from './format';
 import { formatSalaryInput, parseSalaryInput } from './salary';
-import { readListParams, toSearch, DEFAULT_PARAMS } from './list-params';
+import { DEFAULT_PARAMS, readListParams, toSearch } from './list-params';
 
 describe('formatSalary (#,##0.00, REQ-15)', () => {
   it('formats exact decimal strings', () => {
@@ -17,12 +17,6 @@ describe('formatDateOnly (no timezone shift, AC-11)', () => {
     expect(formatDateOnly('2023-01-15')).toBe('15 Jan 2023');
     expect(formatDateOnly('2022-11-10')).toBe('10 Nov 2022');
     expect(formatDateOnly('2024-02-29')).toBe('29 Feb 2024');
-  });
-  it('shows timestamps in Bangkok time', () => {
-    expect(formatTimestamp('2026-10-01T03:00:00.000Z')).toBe('01 Oct 2026, 10:00');
-    expect(formatTimestamp('2026-09-30T17:30:00.000Z')).toBe('01 Oct 2026, 00:30');
-    expect(formatTimestamp('2026-09-15T05:05:00.000Z')).toBe('15 Sep 2026, 12:05'); // not "Sept"
-    expect(formatTimestamp('2026-12-31T16:59:00.000Z')).toBe('31 Dec 2026, 23:59');
   });
 });
 

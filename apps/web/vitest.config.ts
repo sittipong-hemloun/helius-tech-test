@@ -3,10 +3,5 @@ import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
-  test: {
-    include: ['src/**/*.test.ts'],
-    environment: 'node',
-    reporters: process.env.CI ? ['default', 'junit'] : ['default'],
-    outputFile: { junit: '../../test-results/web-unit-junit.xml' },
-  },
+  test: { include: ['src/**/*.test.ts'], environment: 'node' },
 });

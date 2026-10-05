@@ -1,7 +1,7 @@
 'use client';
 
 import { toast } from 'sonner';
-import { ApiError, describeError } from '@/lib/api';
+import { ApiError, errorMessage } from '@/lib/api';
 import { useDeleteEmployee } from '@/lib/queries';
 import { ConfirmDialog } from '@/components/ui/dialog';
 
@@ -36,13 +36,8 @@ export function DeleteEmployeeDialog({ target, onClose, onDeleted }: { target: T
                 onDeleted();
                 return;
               }
-              if (err instanceof ApiError && err.code === 'VERSION_CONFLICT') {
-                toast.error('This employee was changed by another user. Reload the latest version before deleting.');
-                onClose();
-                return;
-              }
-              const { title, detail } = describeError(err);
-              toast.error(title, { description: detail });
+              toast.error(errorMessage(err)); // 409: someone else edited it first
+              onClose();
             },
           },
         );

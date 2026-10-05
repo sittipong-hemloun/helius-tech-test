@@ -1,9 +1,9 @@
 'use client';
 
 import { ArrowLeft, Menu, X } from 'lucide-react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, type ReactNode } from 'react';
-import { GuardedLink } from '@/components/common/unsaved-changes';
 import { cn } from '@/components/ui/cn';
 
 const NAV = [{ href: '/employees', label: 'Employees' }];
@@ -11,11 +11,11 @@ const NAV = [{ href: '/employees', label: 'Employees' }];
 /** Company name set solid, product name lighter after a rule: a plain text lockup, no logo art. */
 function Brand() {
   return (
-    <GuardedLink href="/employees" className="flex shrink-0 items-center gap-2.5 rounded px-1 py-1 text-white">
+    <Link href="/employees" className="flex shrink-0 items-center gap-2.5 rounded px-1 py-1 text-white">
       <span className="text-[0.9375rem] font-bold tracking-tight">Chememan</span>
       <span aria-hidden className="h-4 w-px bg-white/40" />
       <span className="text-[0.875rem] text-white/85">Employee Console</span>
-    </GuardedLink>
+    </Link>
   );
 }
 
@@ -40,7 +40,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {NAV.map(({ href, label }) => {
               const active = isActive(href);
               return (
-                <GuardedLink
+                <Link
                   key={href}
                   href={href}
                   aria-current={active ? 'page' : undefined}
@@ -50,7 +50,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   )}
                 >
                   {label}
-                </GuardedLink>
+                </Link>
               );
             })}
           </nav>
@@ -74,7 +74,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             {NAV.map(({ href, label }) => {
               const active = isActive(href);
               return (
-                <GuardedLink
+                <Link
                   key={href}
                   href={href}
                   onClick={() => setOpen(false)}
@@ -82,7 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   className={cn('border-l-[3px] px-4 py-2.5', active ? 'border-ledger bg-bar font-semibold text-ledger-deep' : 'border-transparent text-ink-2')}
                 >
                   {label}
-                </GuardedLink>
+                </Link>
               );
             })}
           </nav>
@@ -101,10 +101,10 @@ export function PageBar({ back, children, actions }: { back?: { href: string; la
   return (
     <div className="-mx-4 -mt-4 mb-4 border-b border-rule bg-sheet px-4 py-3 sm:-mx-6 sm:px-6">
       {back ? (
-        <GuardedLink href={back.href} className="mb-1 inline-flex items-center gap-1 text-[0.8125rem] text-ink-2 hover:text-ledger hover:underline">
+        <Link href={back.href} className="mb-1 inline-flex items-center gap-1 text-[0.8125rem] text-ink-2 hover:text-ledger hover:underline">
           <ArrowLeft aria-hidden className="size-3.5" />
           {back.label}
-        </GuardedLink>
+        </Link>
       ) : null}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">{children}</div>

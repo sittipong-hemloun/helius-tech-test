@@ -9,32 +9,17 @@
     "node": ">=24.15.0 <25"
   },
   "scripts": {
-    "setup": "node scripts/setup.mjs",
-    "doctor": "node scripts/doctor.mjs",
-    "dev:up": "node scripts/dev-up.mjs",
+    "dev:up": "docker compose up -d --wait && pnpm db:migrate && pnpm db:seed",
     "dev": "pnpm --parallel --filter @employee-console/api --filter @employee-console/web run dev",
-    "down": "node scripts/down.mjs",
+    "down": "docker compose down",
     "db:migrate": "pnpm --filter @employee-console/api run db:migrate",
     "db:seed": "pnpm --filter @employee-console/api run db:seed",
-    "demo:reset": "pnpm --filter @employee-console/api run demo:reset",
+    "db:reset": "pnpm --filter @employee-console/api run db:reset",
     "test:unit": "pnpm --filter @employee-console/api run test:unit && pnpm --filter @employee-console/web run test:unit",
     "test:api": "pnpm --filter @employee-console/api run test:api",
-    "test:postman": "node scripts/test-postman.mjs",
-    "test:e2e": "node scripts/test-e2e.mjs",
+    "test:e2e": "node tests/e2e/run.mjs",
     "lint": "pnpm -r --if-present run lint",
     "typecheck": "pnpm -r --if-present run typecheck",
-    "build": "pnpm --filter @employee-console/api --filter @employee-console/web run build",
-    "openapi:generate": "pnpm --filter @employee-console/api run openapi:generate && pnpm --filter @employee-console/api-client run generate",
-    "staging:up": "node scripts/staging.mjs up",
-    "staging:restart": "node scripts/staging.mjs restart",
-    "staging:smoke": "node scripts/staging.mjs smoke",
-    "staging:rollback": "node scripts/staging.mjs rollback",
-    "staging:down": "node scripts/staging.mjs down",
-    "ci:up": "node scripts/ci-up.mjs",
-    "secrets:scan": "node scripts/secret-scan.mjs"
-  },
-  "devDependencies": {
-    "newman": "6.2.2",
-    "pg": "8.23.1"
+    "build": "pnpm --filter @employee-console/api --filter @employee-console/web run build"
   }
 }
