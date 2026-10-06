@@ -34,6 +34,32 @@ pnpm monorepo: **Next.js 16** (UI) + **NestJS 12** (API) + **PostgreSQL 17** (Pr
 - รันทุกคำสั่งจาก root; filter รายแพ็กเกจด้วย `pnpm --filter @employee-console/<api|web|e2e> run <script>`
 - Node 24 (`.node-version`), pnpm ตาม `packageManager` ใน `package.json`
 
+## สูตรต่อขยายระบบ (Live Coding Extension Recipes)
+
+เมื่อได้โจทย์ live coding ให้ทำตามลำดับ vertical slice ดังนี้เสมอ เพื่อไม่ให้ลืม layer ใด:
+
+1. **เพิ่มฟิลด์ใหม่ (New Field)** เช่น `email`, `phoneNumber`:
+   - `apps/api/prisma/schema.prisma` → เพิ่มฟิลด์ใน model
+   - migration: รัน `pnpm --filter @employee-console/api exec prisma migrate dev --name add_<field>` หรือเขียน SQL migration ใน `apps/api/prisma/migrations/`
+   - `apps/api/src/employees/employee.dto.ts` → เพิ่มใน `CreateEmployeeDto` (+ validation decorator)
+   - `apps/api/src/employees/employees.service.ts` → เพิ่มใน `toEmployee()` และตอน map create/update
+   - `apps/web/src/lib/api.ts` → เพิ่มใน type `Employee`, `CreateEmployeeInput`, `UpdateEmployeeInput`
+   - `apps/web/src/components/employees/employee-form.tsx` → เพิ่ม form cell + zod schema
+   - `apps/web/src/components/employees/employee-table.tsx` → เพิ่มคอลัมน์แสดงผล
+   - ตรวจสอบ: รัน `pnpm test:unit && pnpm test:api`
+
+2. **เพิ่ม Filter / Search (Query Parameter)** เช่น `joinDateFrom`, `joinDateTo`:
+   - `apps/api/src/employees/employee.dto.ts` → เพิ่มใน `ListEmployeesQuery` (`@IsOptional()`, decorator ตรวจชนิด)
+   - `apps/api/src/employees/employees.service.ts` → เติม Prisma `where` clause ในเมธอด `list` (ถ้าเป็นวันที่ใช้ `fromDateOnly()`)
+   - `apps/web/src/lib/list-params.ts` → เพิ่มใน `ListParams`, `parseListParams()`, `toListSearchParams()`
+   - `apps/web/src/components/employees/employee-filters.tsx` → เพิ่ม input element ผูกกับ URL search params
+   - ตรวจสอบ: รัน `pnpm test:api`
+
+3. **เพิ่ม Validation Rule**:
+   - `apps/api/src/employees/employee.dto.ts` → เพิ่ม decorator ใน DTO
+   - `apps/web/src/components/employees/employee-form.tsx` → เพิ่ม zod rule ให้แจ้งเตือนฝั่ง client ให้ตรงกัน
+   - `apps/api/test/unit/employee-dto.test.ts` → เพิ่ม test case ใน Vitest ดักจับค่าที่ valid และ invalid
+
 ## ก่อนบอกว่างานเสร็จ
 
 ```bash
