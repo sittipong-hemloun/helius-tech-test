@@ -98,7 +98,7 @@ export function EmployeesView() {
       ) : null}
 
       {/* One sheet: filter toolbar, register, pagination footer. */}
-      <section aria-label="Employee register" className="overflow-hidden rounded-[var(--radius-sheet)] border border-rule-strong/60 bg-sheet">
+      <section aria-label="Employee register" className="overflow-hidden rounded-(--radius-sheet) border border-rule-strong/60 bg-sheet">
         <div className="border-b border-rule px-3 py-2">
           <EmployeeFilters params={params} onSearch={onSearch} onChange={update} onClear={clearAll} filtered={filtered} />
         </div>

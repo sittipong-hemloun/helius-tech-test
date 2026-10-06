@@ -45,7 +45,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   href={href}
                   aria-current={active ? 'page' : undefined}
                   className={cn(
-                    'flex items-center border-b-[3px] px-3 pt-[3px] text-[0.875rem] text-white/80 hover:bg-white/10 hover:text-white',
+                    'flex items-center border-b-[3px] px-3 pt-0.75 text-[0.875rem] text-white/80 hover:bg-white/10 hover:text-white',
                     active ? 'border-white font-semibold text-white' : 'border-transparent',
                   )}
                 >
@@ -60,7 +60,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-nav"
-            className="my-auto ml-auto inline-flex size-9 items-center justify-center rounded-[var(--radius-control)] hover:bg-white/10 md:hidden"
+            className="my-auto ml-auto inline-flex size-9 items-center justify-center rounded-(--radius-control) hover:bg-white/10 md:hidden"
           >
             {open ? <X aria-hidden className="size-5" /> : <Menu aria-hidden className="size-5" />}
             <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>

@@ -84,14 +84,14 @@ export function EmployeeDetailView({ id }: { id: number }) {
           <p aria-label={e ? `Employee ID ${e.id}` : undefined} className={`figures ${pageTitleClass} text-ledger`}>
             {e ? e.id : <Skeleton className="h-5 w-10" />}
           </p>
-          <h1 id="employee-name" className={`${pageTitleClass} break-words`}>
+          <h1 id="employee-name" className={`${pageTitleClass} wrap-break-word`}>
             {e ? e.name : <Skeleton className="h-5 w-40" />}
           </h1>
           {e ? <p className="text-[0.8125rem] text-ink-2">{e.departmentName}</p> : null}
         </div>
       </PageBar>
 
-      <div className="max-w-4xl overflow-hidden rounded-[var(--radius-sheet)] border border-rule">
+      <div className="max-w-4xl overflow-hidden rounded-(--radius-sheet) border border-rule">
         <dl className="grid gap-px bg-rule sm:grid-cols-2">
           {e
             ? fields

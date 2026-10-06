@@ -11,7 +11,7 @@ function EmployeesFallback() {
   return (
     <div aria-busy="true" aria-label="Loading employees">
       <PageHeader title="Employees" meta="Loading employees…" />
-      <div className="rounded-[var(--radius-sheet)] border border-rule bg-sheet">
+      <div className="rounded-(--radius-sheet) border border-rule bg-sheet">
         <div className="border-b border-rule px-3 py-2">
           <Skeleton className="h-8 w-full max-w-xl" />
         </div>

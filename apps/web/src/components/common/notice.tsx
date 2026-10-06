@@ -30,7 +30,7 @@ export function Notice({
   return (
     <div
       role={tone === 'error' ? 'alert' : 'status'}
-      className={cn('flex gap-3 text-ink', bare ? 'py-1' : cn('rounded-[var(--radius-control)] border p-4', box), className)}
+      className={cn('flex gap-3 text-ink', bare ? 'py-1' : cn('rounded-(--radius-control) border p-4', box), className)}
     >
       <Icon aria-hidden className={cn('mt-0.5 size-5 shrink-0', icon)} />
       <div className="min-w-0 flex-1">

@@ -157,7 +157,7 @@ export function EmployeeForm({ mode, employee, defaultValues, pending, banner, o
           <input
             id="emp-isActive"
             type="checkbox"
-            className="size-5 shrink-0 accent-[var(--color-ledger)] focus-visible:outline-none"
+            className="size-5 shrink-0 accent-(--color-ledger) focus-visible:outline-none"
             aria-describedby="emp-isActive-hint"
             {...register('isActive')}
           />
